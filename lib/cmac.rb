@@ -87,7 +87,7 @@ class CMAC
     overflow = 0
     words = input.unpack('N4').reverse
     words = words.map do |word|
-      new_word = word << 1
+      new_word = (word << 1) & 0xFFFFFFFF
       new_word |= overflow
       overflow = (word & 0x80000000) >= 0x80000000 ? 1 : 0
       new_word
