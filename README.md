@@ -1,4 +1,4 @@
-# CMAC
+# CMAC [![Build Status](https://secure.travis-ci.org/jtdowney/cmac.png?branch=master)](https://travis-ci.org/jtdowney/cmac)
 
 This gem is ruby implementation of the Cipher-based Message Authentication Code (CMAC) as defined in [RFC4493](http://tools.ietf.org/html/rfc4493), [RFC4494](http://tools.ietf.org/html/rfc4494), and [RFC4615](http://tools.ietf.org/html/rfc4615). Message authentication codes provide integrity protection of data given that two parties share a secret key.
 
