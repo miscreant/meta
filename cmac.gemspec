@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ['John Downey']
   s.email       = ['jdowney@gmail.com']
   s.homepage    = 'https://github.com/jtdowney/cmac'
+  s.license     = 'MIT'
   s.summary     = %q{Cipher-based Message Authentication Code}
   s.description = %q{A ruby implementation of RFC4493, RFC4494, and RFC4615. CMAC is a message authentication code (MAC) built using AES-128.}
 
