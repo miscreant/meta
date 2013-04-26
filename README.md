@@ -29,7 +29,3 @@ cmac = CMAC.new(key)
 cmac.sign(message)
  => "\\\x11\x90\xE6\x91\xB2\xC4\x82`\x90\xA6\xEC:\x0E\x1C\xF3"
 ```
-
-## License
-
-The CMAC gem is released under the [MIT license](http://www.opensource.org/licenses/MIT).
