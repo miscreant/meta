@@ -26,9 +26,9 @@ type cmac struct {
 	c                  cipher.Block
 }
 
-// NewCMAC returns a new instance of a CMAC message authentication code
+// New returns a new instance of a CMAC message authentication code
 // digest using the given cipher.Block.
-func NewCMAC(c cipher.Block) (hash.Hash, error) {
+func New(c cipher.Block) (hash.Hash, error) {
 	var r int
 	n := c.BlockSize()
 	switch n {
