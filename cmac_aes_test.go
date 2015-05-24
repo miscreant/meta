@@ -145,3 +145,15 @@ func TestCMAC_AES(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkCMAC_AES128(b *testing.B) {
+	c, _ := aes.NewCipher(commonKey128)
+	v := make([]byte, 1024)
+	out := make([]byte, 16)
+	b.SetBytes(int64(len(v)))
+	for i := 0; i < b.N; i++ {
+		d, _ := NewCMAC(c)
+		d.Write(v)
+		out = d.Sum(out[:0])
+	}
+}
