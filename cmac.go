@@ -50,11 +50,11 @@ func NewCMAC(c cipher.Block) (hash.Hash, error) {
 	// Subkey generation, p. 7
 	c.Encrypt(d.k1, d.k1)
 
-	x := subtle.ConstantTimeSelect(shift1(d.k1, d.k1), r, 0)
-	d.k1[n-1] ^= byte(x)
+	v1 := shift1(d.k1, d.k1)
+	d.k1[n-1] ^= byte(subtle.ConstantTimeSelect(v1, r, 0))
 
-	y := subtle.ConstantTimeSelect(shift1(d.k1, d.k2), r, 0)
-	d.k2[n-1] ^= byte(y)
+	v2 := shift1(d.k1, d.k2)
+	d.k2[n-1] ^= byte(subtle.ConstantTimeSelect(v2, r, 0))
 
 	return d, nil
 }
