@@ -9,6 +9,7 @@ package cmac
 
 import (
 	"crypto/cipher"
+	"crypto/subtle"
 	"errors"
 	"hash"
 )
@@ -28,7 +29,7 @@ type cmac struct {
 // NewCMAC returns a new instance of a CMAC message authentication code
 // digest using the given cipher.Block.
 func NewCMAC(c cipher.Block) (hash.Hash, error) {
-	var r byte
+	var r int
 	n := c.BlockSize()
 	switch n {
 	case 64 / 8:
@@ -48,12 +49,12 @@ func NewCMAC(c cipher.Block) (hash.Hash, error) {
 
 	// Subkey generation, p. 7
 	c.Encrypt(d.k1, d.k1)
-	if shift1(d.k1, d.k1) != 0 {
-		d.k1[n-1] ^= r
-	}
-	if shift1(d.k1, d.k2) != 0 {
-		d.k2[n-1] ^= r
-	}
+
+	x := subtle.ConstantTimeSelect(shift1(d.k1, d.k1), r, 0)
+	d.k1[n-1] ^= byte(x)
+
+	y := subtle.ConstantTimeSelect(shift1(d.k1, d.k2), r, 0)
+	d.k2[n-1] ^= byte(y)
 
 	return d, nil
 }
@@ -105,12 +106,12 @@ func (d *cmac) Size() int { return len(d.digest) }
 
 func (d *cmac) BlockSize() int { return d.c.BlockSize() }
 
-func shift1(src, dst []byte) byte {
+func shift1(src, dst []byte) int {
 	var b byte
 	for i := len(src) - 1; i >= 0; i-- {
 		bb := src[i] >> 7
 		dst[i] = src[i]<<1 | b
 		b = bb
 	}
-	return b
+	return int(b)
 }
