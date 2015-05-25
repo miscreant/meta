@@ -24,7 +24,6 @@ const MaxAssociatedDataItems = 126 // maximum number of associated data items
 var (
 	ErrKeySize                    = errors.New("siv: bad key size")
 	ErrNotAuthentic               = errors.New("siv: authentication failed")
-	ErrShortCiphertext            = errors.New("siv: ciphertext is too short")
 	ErrTooManyAssociatedDataItems = errors.New("siv: too many associated data items")
 )
 
@@ -108,7 +107,7 @@ func (c *Cipher) Open(dst []byte, ciphertext []byte, data ...[]byte) ([]byte, er
 		return nil, ErrTooManyAssociatedDataItems
 	}
 	if len(ciphertext) < c.Overhead() {
-		return nil, ErrShortCiphertext
+		return nil, ErrNotAuthentic
 	}
 
 	// Decrypt
