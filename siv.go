@@ -119,8 +119,8 @@ func (c *Cipher) Open(dst []byte, ciphertext []byte, data ...[]byte) ([]byte, er
 	ctr.XORKeyStream(out, ciphertext[len(iv):])
 
 	// Authenticate
-	t := c.s2v(data, out)
-	if subtle.ConstantTimeCompare(ciphertext[:len(iv)], t) != 1 {
+	expected := c.s2v(data, out)
+	if subtle.ConstantTimeCompare(ciphertext[:len(iv)], expected) != 1 {
 		zero(out)
 		return nil, ErrNotAuthentic
 	}
