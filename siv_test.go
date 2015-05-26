@@ -42,8 +42,9 @@ var testVectors = []struct {
 		"fffefdfc fbfaf9f8 f7f6f5f4 f3f2f1f0 f0f1f2f3 f4f5f6f7 f8f9fafb fcfdfeff",
 		[]string{},
 		"",
-		"f2007a5beb2b8900c588a7adf599f172", //TODO: verify this with other implementations
+		"f2007a5beb2b8900c588a7adf599f172", //TODO(dchest): verify this with other implementations
 	},
+	//TODO(dchest): find more test vectors.
 }
 
 func decode(s string) []byte {
