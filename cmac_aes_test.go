@@ -146,6 +146,59 @@ func TestCMAC_AES(t *testing.T) {
 	}
 }
 
+func TestWrite(t *testing.T) {
+	tt := cmacAESTests[len(cmacAESTests)-1]
+	c, err := aes.NewCipher(tt.key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d, err := New(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Test writing byte-by-byte
+	for _, b := range tt.in {
+		d.Write([]byte{b})
+	}
+	sum := d.Sum(nil)
+	if !bytes.Equal(sum, tt.digest) {
+		x := d.(*cmac)
+		t.Fatalf("write bytes: digest mismatch\n\twant %x\n\thave %x\n\tk1 %x\n\tk2 %x", tt.digest, sum, x.k1, x.k2)
+	}
+
+	// Test writing halves
+	d.Reset()
+	d.Write(tt.in[:len(tt.in)/2])
+	d.Write(tt.in[len(tt.in)/2:])
+	sum = d.Sum(nil)
+	if !bytes.Equal(sum, tt.digest) {
+		x := d.(*cmac)
+		t.Fatalf("write halves: digest mismatch\n\twant %x\n\thave %x\n\tk1 %x\n\tk2 %x", tt.digest, sum, x.k1, x.k2)
+	}
+
+	// Test writing third, then the rest
+	d.Reset()
+	d.Write(tt.in[:len(tt.in)/3])
+	d.Write(tt.in[len(tt.in)/3:])
+	sum = d.Sum(nil)
+	if !bytes.Equal(sum, tt.digest) {
+		x := d.(*cmac)
+		t.Fatalf("write third: digest mismatch\n\twant %x\n\thave %x\n\tk1 %x\n\tk2 %x", tt.digest, sum, x.k1, x.k2)
+	}
+
+	// Test continuing after Sum
+	d.Reset()
+	d.Write(tt.in[:len(tt.in)/2])
+	sum = d.Sum(nil)
+	d.Write(tt.in[len(tt.in)/2:])
+	sum = d.Sum(nil)
+	if !bytes.Equal(sum, tt.digest) {
+		x := d.(*cmac)
+		t.Fatalf("continue after Sum: digest mismatch\n\twant %x\n\thave %x\n\tk1 %x\n\tk2 %x", tt.digest, sum, x.k1, x.k2)
+	}
+}
+
 func BenchmarkCMAC_AES128(b *testing.B) {
 	c, _ := aes.NewCipher(commonKey128)
 	v := make([]byte, 1024)

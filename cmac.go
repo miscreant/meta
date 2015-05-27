@@ -68,18 +68,29 @@ func (d *cmac) Reset() {
 }
 
 // Write adds the given data to the digest state.
-func (d *cmac) Write(p []byte) (n int, err error) {
-	// Xor input into ci.
-	for _, c := range p {
-		// If ci is full, encrypt and start over.
-		if d.p >= len(d.ci) {
-			d.c.Encrypt(d.ci, d.ci)
-			d.p = 0
-		}
-		d.ci[d.p] ^= c
-		d.p++
+func (d *cmac) Write(p []byte) (nn int, err error) {
+	nn = len(p)
+	bs := len(d.ci)
+	left := bs - d.p
+
+	if len(p) > left {
+		xor(d.ci[d.p:], p[:left])
+		p = p[left:]
+		d.c.Encrypt(d.ci, d.ci)
+		d.p = 0
 	}
-	return len(p), nil
+
+	for len(p) > bs {
+		xor(d.ci, p[:bs])
+		p = p[bs:]
+		d.c.Encrypt(d.ci, d.ci)
+	}
+
+	if len(p) > 0 {
+		xor(d.ci[d.p:], p)
+		d.p += len(p)
+	}
+	return
 }
 
 // Sum returns the CMAC digest, one cipher block in length,
@@ -114,4 +125,10 @@ func shift1(src, dst []byte) int {
 		b = bb
 	}
 	return int(b)
+}
+
+func xor(a, b []byte) {
+	for i, v := range b {
+		a[i] ^= v
+	}
 }
