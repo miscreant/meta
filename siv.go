@@ -134,21 +134,10 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	tmp, d := c.tmp1, c.tmp2
 	zero(tmp)
 
-	// NOTE(dchest): RFC has this case, however with SIV it's not
-	// triggered, as we always have associated data items,
-	// since we always pass plaintext (sn), even if
-	// it's zero length.
-	//
-	// I found one implementation that considers zero-length
-	// plaintext as no plantext at all. If compatibility with
-	// it is needed, uncomment this (but tests will fail).
-	/*
-		if len(s) == 0 && len(sn) == 0 {
-			tmp[len(tmp)-1] = 1
-			h.Write(tmp)
-			return h.Sum(tmp[:0])
-		}
-	*/
+	// NOTE(dchest): The standalone S2V returns CMAC(1) if the number of
+	// passed vectors is zero, however in SIV contruction this case is
+	// never triggered, since we always pass plaintext as the last vector
+	// (even if it's zero-length), so we omit this case.
 
 	h.Write(tmp)
 	d = h.Sum(d[:0])
