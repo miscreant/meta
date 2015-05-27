@@ -64,6 +64,9 @@ func (d *cmac) Reset() {
 	for i := range d.ci {
 		d.ci[i] = 0
 	}
+	for i := range d.digest {
+		d.digest[i] = 0
+	}
 	d.p = 0
 }
 
