@@ -12,11 +12,10 @@ Gem::Specification.new do |s|
   s.summary     = %q{Cipher-based Message Authentication Code}
   s.description = %q{A ruby implementation of RFC4493, RFC4494, and RFC4615. CMAC is a message authentication code (MAC) built using AES-128.}
 
-  s.files         = Dir.glob('{lib,spec}/**/*') + %w{README.md}
+  s.files         = Dir.glob('{lib,spec}/**/*') + %w{README.md LICENSE}
   s.test_files    = Dir.glob('spec/**/*')
   s.require_paths = ['lib']
 
-  s.add_dependency 'jruby-openssl' if RUBY_PLATFORM == 'java'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', '~> 2.12.0'
+  s.add_development_dependency 'rake', '10.5.0'
+  s.add_development_dependency 'rspec', '~> 2.12'
 end
