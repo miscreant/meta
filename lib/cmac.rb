@@ -114,8 +114,8 @@ class CMAC
   end
 
   def _xor(a, b)
-    a.force_encoding('BINARY') if a.respond_to?(:force_encoding)
-    b.force_encoding('BINARY') if b.respond_to?(:force_encoding)
+    a = a.b
+    b = b.b
 
     output = ''
     length = [a.length, b.length].min
