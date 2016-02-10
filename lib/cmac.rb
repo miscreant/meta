@@ -13,7 +13,7 @@ class CMAC
   end
 
   def inspect
-    "#<CMAC:#{object_id.to_s(16)}>"
+    "#<CMAC:0x#{object_id.to_s(16)}>"
   end
 
   def sign(message, truncate = 16)
