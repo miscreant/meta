@@ -9,18 +9,16 @@ end
 def test_vectors
   test_file = File.expand_path('../test_vectors.txt', __FILE__)
   test_lines = File.readlines(test_file).map(&:strip).reject(&:empty?)
-
-  vectors = {}
-  test_lines.each_slice(5) do |lines|
+  test_lines.each_slice(5).reduce({}) do |vectors, lines|
     name = lines.shift
-    values = lines.inject({}) do |hash, line|
+    vector = lines.reduce({}) do |values, line|
       key, value = line.split('=').map(&:strip)
-      value = '' unless value
+      value ||= ''
       value = [value.slice(2..-1)].pack('H*') if value.start_with?('0x')
-      hash[key.to_sym] = value
-      hash
+
+      values.merge!(key.to_sym => value)
     end
-    vectors[name] = values
+
+    vectors.merge!(name => vector)
   end
-  vectors
 end
