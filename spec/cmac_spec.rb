@@ -5,13 +5,15 @@ describe CMAC do
     test_vectors.each do |name, options|
       it "should match the \"#{name}\" test vector" do
         cmac = CMAC.new(options[:Key])
-        cmac.sign(options[:Message], options[:Truncate].to_i).should == options[:Tag]
+        output = cmac.sign(options[:Message], options[:Truncate].to_i)
+        expect(output).to eq(options[:Tag])
       end
     end
 
     it 'should give a truncated output if requested' do
       cmac = CMAC.new(TestKey)
-      cmac.sign('attack at dawn', 12).length.should == 12
+      output = cmac.sign('attack at dawn', 12)
+      expect(output.length).to eq(12)
     end
 
     it 'should raise error if truncation request is greater than 16 bytes' do
@@ -34,13 +36,15 @@ describe CMAC do
       message = 'attack at dawn'
       cmac = CMAC.new(TestKey)
       tag = cmac.sign(message)
-      cmac.should be_valid_message(tag, message)
+      result = cmac.valid_message?(tag, message)
+      expect(result).to be_truthy
     end
 
     it 'should be false for modified messages' do
       cmac = CMAC.new(TestKey)
       tag = cmac.sign('attack at dawn')
-      cmac.should_not be_valid_message(tag, 'attack at dusk')
+      result = cmac.valid_message?(tag, 'attack at dusk')
+      expect(result).to be_falsey
     end
   end
 end

@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_development_dependency 'rake', '10.5.0'
-  s.add_development_dependency 'rspec', '~> 2.12'
+  s.add_development_dependency 'rspec', '3.4.0'
 end
