@@ -12,6 +12,10 @@ class CMAC
     @key1, @key2 = _generate_subkeys(@key)
   end
 
+  def inspect
+    "#<CMAC:#{object_id.to_s(16)}>"
+  end
+
   def sign(message, truncate = 16)
     raise CMAC::Exception.new('Tag cannot be greater than maximum (16 bytes)') if truncate > 16
     raise CMAC::Exception.new('Tag cannot be less than minimum (8 bytes)') if truncate < 8

@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe CMAC do
+  describe 'inspect' do
+    it 'does not contain instance variable values' do
+      cmac = CMAC.new(TestKey)
+      expect(cmac.inspect).to match(/\A#<CMAC:0[xX][0-9a-fA-F]+>\z/)
+    end
+  end
+
   describe 'sign' do
     test_vectors.each do |name, options|
       it "matches the \"#{name}\" test vector" do
