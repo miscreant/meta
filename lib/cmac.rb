@@ -8,15 +8,15 @@ class CMAC
   ConstantBlock = ("\0" * 15) + "\x87"
 
   def initialize(key)
-    key.force_encoding('BINARY') if key.respond_to?(:force_encoding)
-    @key = _derive_key(key)
+    @key = _derive_key(key.b)
     @key1, @key2 = _generate_subkeys(@key)
   end
 
   def sign(message, truncate = 16)
     raise CMAC::Exception.new('Tag cannot be greater than maximum (16 bytes)') if truncate > 16
     raise CMAC::Exception.new('Tag cannot be less than minimum (8 bytes)') if truncate < 8
-    message.force_encoding('BINARY') if message.respond_to?(:force_encoding)
+
+    message = message.b
 
     if _needs_padding?(message)
       message = _pad_message(message)
@@ -97,7 +97,7 @@ class CMAC
 
   def _pad_message(message)
     padded_length = message.length + 16 - (message.length % 16)
-    message = message + "\x80"
+    message = message + "\x80".b
     message.ljust(padded_length, "\0")
   end
 
