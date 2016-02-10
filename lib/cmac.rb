@@ -1,9 +1,9 @@
 require 'openssl'
 
-require 'cmac/exception'
 require 'cmac/version'
 
 class CMAC
+  Exception = Class.new(StandardError)
   ZeroBlock = "\0" * 16
   ConstantBlock = ("\0" * 15) + "\x87"
 
