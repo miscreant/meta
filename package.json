@@ -1,0 +1,24 @@
+{
+  "name": "@stablelib/cmac",
+  "version": "0.0.1",
+  "description": "CMAC message authentication code",
+  "main": "./dist/cmac.js",
+  "typings": "./dist/cmac.d.ts",
+  "author": "Dmitry Chestnykh",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "jasmine JASMINE_CONFIG_PATH=../../configs/jasmine.json",
+    "bench": "node ./dist/cmac.bench.js"
+  },
+  "dependencies": {
+    "@stablelib/blockcipher": "*",
+    "@stablelib/constant-time": "*",
+    "@stablelib/wipe": "*"
+  },
+  "devDependencies": {
+    "@stablelib/aes": "*",
+    "@stablelib/benchmark": "*",
+    "@stablelib/hex": "*"
+  }
+}
