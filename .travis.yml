@@ -1,0 +1,36 @@
+script: ./ci.sh
+
+branches:
+  only:
+    - master
+
+matrix:
+  fast_finish: true
+  include:
+  - env: SUITE="go"
+    language: go
+    go: 1.8
+  - env: SUITE="js"
+    language: node_js
+    node_js: 7
+  - env: SUITE="python"
+    language: python
+    python: 2.7
+  - env: SUITE="python"
+    language: python
+    python: 3.6
+  - env: SUITE="ruby"
+    language: ruby
+    rvm: 2.4.0
+  - env: SUITE="ruby"
+    language: ruby
+    rvm: 2.3.3
+  - env: SUITE="ruby"
+    language: ruby
+    rvm: 2.2.2
+  - env: SUITE="rust"
+    language: rust
+    rust: stable
+  - env: SUITE="rust"
+    language: rust
+    rust: nightly
