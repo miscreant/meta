@@ -118,7 +118,7 @@ export class CMAC {
 
 }
 
-function dbl(src: Uint8Array, dst: Uint8Array) {
+export function dbl(src: Uint8Array, dst: Uint8Array) {
     let carry = 0;
     for (let i = src.length - 1; i >= 0; i--) {
         const b = (src[i] >>> 7) & 0xff;
