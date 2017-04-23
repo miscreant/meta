@@ -11,12 +11,12 @@ import { equal } from "@stablelib/constant-time";
 export const MAX_ASSOCIATED_DATA = 126;
 
 export class SIV {
-    _mac: CMAC;
-    _ctr: CTR | undefined;
-    _macCipher: BlockCipher;
-    _encCipher: BlockCipher;
-    _tmp1: Uint8Array;
-    _tmp2: Uint8Array;
+    private _mac: CMAC;
+    private _ctr: CTR | undefined;
+    private _macCipher: BlockCipher;
+    private _encCipher: BlockCipher;
+    private _tmp1: Uint8Array;
+    private _tmp2: Uint8Array;
 
     tagLength: number;
 
