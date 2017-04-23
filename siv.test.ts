@@ -4,6 +4,7 @@
 import { SIV } from "./siv";
 import { AES } from "@stablelib/aes";
 import { encode, decode } from "@stablelib/hex";
+import { byteSeq } from "@stablelib/benchmark";
 
 // tslint:disable
 const vectors = [
@@ -88,12 +89,34 @@ describe("SIV (AES)", () => {
             expect(encode(sealed)).toEqual(encode(output));
             const unsealed = siv.open(ad, sealed);
             expect(unsealed).not.toBeNull();
-            if (unsealed) {
-                expect(encode(unsealed)).toEqual(encode(plaintext));
-            }
+            expect(encode(unsealed!)).toEqual(encode(plaintext));
             expect(() => siv.clean()).not.toThrow();
         });
     });
+
+    it("should correctly seal and open different plaintext under the same key", () => {
+        const key = byteSeq(64);
+        const ad1 = [ byteSeq(32), byteSeq(10) ];
+        const pt1 = byteSeq(100);
+
+        const ad2 = [ byteSeq(32), byteSeq(10) ];
+        const pt2 = byteSeq(40, 100);
+
+        const siv = new SIV(AES, key);
+
+        const sealed1 = siv.seal(ad1, pt1);
+        const opened1 = siv.open(ad1, sealed1);
+        expect(opened1).not.toBeNull();
+        expect(encode(opened1!)).toEqual(encode(pt1));
+
+        const sealed2 = siv.seal(ad2, pt2);
+        const opened2 = siv.open(ad2, sealed2);
+        expect(opened2).not.toBeNull();
+        expect(encode(opened2!)).toEqual(encode(pt2));
+
+        expect(() => siv.clean()).not.toThrow();
+    });
+
 
     it("should not open with incorrect key", () => {
         vectors.forEach(v => {
