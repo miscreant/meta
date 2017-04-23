@@ -10,7 +10,9 @@
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Advanced symmetric encryption using the AES-SIV ([RFC 5297]) and [CHAIN] constructions
+Advanced symmetric encryption using the AES-SIV ([RFC 5297]) and [CHAIN] constructions,
+providing easy-to-use (or rather, hard-to-misuse) encryption of individual
+messages or message streams.
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
@@ -26,7 +28,7 @@ to be incrementally encrypted/decrypted while still providing
 
 The following constructions are provided by **SIVChain**:
 
-* [AES-SIV]: (standardized in [RFC 5297])combines the [AES-CTR] mode of
+* [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR] mode of
   encryption with the [AES-CMAC] function for integrity. Unlike most
   [authenticated encryption] algorithms, **AES-SIV** uses a
   MAC-then-encrypt construction, first using **AES-CMAC** to derive an
