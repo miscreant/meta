@@ -81,7 +81,7 @@ function operates.
 
 ### Encryption
 
-<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://github.com/zcred/sivchain/blob/master/docs/images/siv-encrypt.svg" width="410" height="300">
+<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://www.zcred.org/sivchain/images/siv-encrypt.svg" width="410px" height="300px">
 
 #### Inputs:
 
@@ -96,9 +96,34 @@ function operates.
 
 #### Description:
 
-**AES-SIV** first computes **AES-CMAC** on the message headers and messages
-under *K<sub>1</sub>*, computing a *synthetic IV* (SIV). This IV is used to
-perform **AES-CTR** encryption under *K<sub>2</sub>*
+**AES-SIV** first computes **AES-CMAC** on the message headers *H<sub>1</sub>*
+through *H<sub>m</sub>* and messages under *K<sub>1</sub>*, computing a
+*synthetic IV* (SIV). This IV is used to perform **AES-CTR** encryption under
+*K<sub>2</sub>*
+
+### Decryption
+
+<img src="https://camo.githubusercontent.com/b2b2da0d26fccb4397e30b7555c7a0ace9df7737/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d646563727970742e737667" data-canonical-src="https://www.zcred.org/sivchain/images/siv-decrypt.svg" width="410px" height="368px">
+
+#### Inputs:
+
+* **AES-CMAC** and **AES-CTR** *keys*: *K<sub>1</sub>* and *K<sub>2</sub>*
+* Zero or more message *headers*: *H<sub>1</sub>* through *H<sub>m</sub>*
+* Initialization vector: *IV*
+* *Ciphertext* message: *C*
+
+#### Outputs:
+
+* Plaintext *message*: *M*
+
+#### Description:
+
+To decrypt a message, **AES-SIV** first performs an **AES-CTR** decryption of
+the message under the provided synthetic IV. The message headers
+*H<sub>1</sub>* through *H<sub>m</sub>* and candidate decryption message are
+then authenticated by **AES-CMAC**. If the computed `IV’` does not match the
+original one supplied, the decryption operation is aborted. Otherwise, we've
+authenticated the original plaintext and can return it.
 
 ## Copyright
 
