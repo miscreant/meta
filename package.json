@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "@stablelib/cmac",
   "version": "0.0.1",
   "description": "CMAC message authentication code",
@@ -20,5 +21,33 @@
     "@stablelib/aes": "*",
     "@stablelib/benchmark": "*",
     "@stablelib/hex": "*"
+=======
+  "name": "@stablelib/siv",
+  "version": "0.1.2",
+  "description": "Synthetic Initialization Vector (SIV) authenticated encryption",
+  "main": "./dist/siv.js",
+  "typings": "./dist/siv.d.ts",
+  "author": "Dmitry Chestnykh",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jasmine JASMINE_CONFIG_PATH=../../configs/jasmine.json",
+    "bench": "node ./dist/siv.bench.js"
+  },
+  "dependencies": {
+    "@stablelib/blockcipher": "^0.1.2",
+    "@stablelib/constant-time": "^0.0.2",
+    "@stablelib/cmac": "^0.1.2",
+    "@stablelib/ctr": "^0.1.2",
+    "@stablelib/wipe": "^0.0.1"
+  },
+  "devDependencies": {
+    "@stablelib/aes": "^0.1.2",
+    "@stablelib/benchmark": "^0.0.1",
+    "@stablelib/hex": "^0.0.1"
+>>>>>>> fbaf893... siv: add package
   }
 }
