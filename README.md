@@ -80,7 +80,7 @@ The following is a more in-depth description of the core **AES-SIV** function:
 
 ### Encryption
 
-![AES-SIV Encryption Diagram](https://www.zcred.org/sivchain/images/siv-encrypt.png)
+<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://github.com/zcred/sivchain/blob/master/docs/images/siv-encrypt.svg" width="410" height="300">
 
 #### Inputs:
 
