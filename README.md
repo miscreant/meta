@@ -12,7 +12,7 @@ Advanced symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructio
 
 ## Language Support
 
-Packages implementing zser are available for the following languages:
+Packages implementing SIVChain are available for the following languages:
 
 | Language               | Version                              |
 |------------------------|--------------------------------------|
