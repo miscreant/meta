@@ -45,6 +45,7 @@ The following constructions are provided by **SIVChain**:
    and the paper contains a rigorous security analysis proving it secure.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
+[AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
