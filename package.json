@@ -23,7 +23,7 @@
     "@stablelib/hex": "*"
 =======
   "name": "@stablelib/siv",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Synthetic Initialization Vector (SIV) authenticated encryption",
   "main": "./dist/siv.js",
   "typings": "./dist/siv.d.ts",
@@ -39,8 +39,8 @@
   },
   "dependencies": {
     "@stablelib/blockcipher": "^0.1.2",
-    "@stablelib/constant-time": "^0.0.2",
     "@stablelib/cmac": "^0.1.2",
+    "@stablelib/constant-time": "^0.0.2",
     "@stablelib/ctr": "^0.1.2",
     "@stablelib/wipe": "^0.0.1"
   },
