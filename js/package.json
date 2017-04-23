@@ -1,0 +1,38 @@
+{
+  "name": "sivchain",
+  "version": "0.0.0",
+  "description": "Symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions",
+  "homepage": "https://github.com/zcred/sivchain/tree/master/js/",
+  "main": "index.js",
+  "author": "Tony Arcieri",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zcred/sivchain.git"
+  },
+  "keywords": [
+    "cryptography",
+    "encryption",
+    "streaming",
+    "security"
+  ],
+  "bugs": {
+    "url": "https://github.com/zcred/sivchain/issues"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha --require ts-node/register test/**/*.spec.ts"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mocha-typescript": "^1.0.23",
+    "ts-node": "^3.0.2",
+    "typescript": "^2.2.1",
+    "@types/chai": "^3.4.35",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^7.0.13"
+  }
+}
