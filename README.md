@@ -8,8 +8,11 @@
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
 
+> The best crypto you've never heard of, brought to you by [Phil Rogaway]
+
 Advanced symmetric encryption using the AES-SIV ([RFC 5297]) and [CHAIN] constructions
 
+[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 
