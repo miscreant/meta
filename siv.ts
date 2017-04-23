@@ -18,7 +18,7 @@ export class SIV {
     _tmp1: Uint8Array;
     _tmp2: Uint8Array;
 
-    tagLength: number;
+    readonly tagLength: number;
 
     constructor(cipher: BlockCipherContructor, key: Uint8Array) {
         const macKey = key.subarray(0, key.length / 2 | 0);
