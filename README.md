@@ -76,7 +76,8 @@ Packages implementing SIVChain are available for the following languages:
 
 ## AES-SIV
 
-The following is a more in-depth description of the core **AES-SIV** function:
+This section provides a more in-depth exploration of how the **AES-SIV**
+function operates.
 
 ### Encryption
 
