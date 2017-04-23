@@ -74,6 +74,31 @@ Packages implementing SIVChain are available for the following languages:
 [crate-shield]: https://img.shields.io/crates/v/sivchain.svg
 [crate-link]: https://crates.io/crates/sivchain
 
+## AES-SIV
+
+The following is a more in-depth description of the core **AES-SIV** function:
+
+### Encryption
+
+![AES-SIV Encryption Diagram](https://www.zcred.org/sivchain/images/siv-encryption.png)
+
+#### Inputs:
+
+* **AES-CMAC** and **AES-CTR** *keys*: *K<sub>1</sub>* and *K<sub>2</sub>*
+* Zero or more message *headers*: *H<sub>1</sub>* through *H<sub>m</sub>*
+* Plaintext *message*: *M*
+
+#### Outputs:
+
+* Initialization vector: *IV*
+* *Ciphertext* message: *C*
+
+#### Description:
+
+**AES-SIV** first computes **AES-CMAC** on the message headers and messages
+under *K<sub>1</sub>*, computing a *synthetic IV* (SIV). This IV is used to
+perform **AES-CTR** encryption under *K<sub>2</sub>*
+
 ## Copyright
 
 Copyright (c) 2017 [The Zcred Developers][AUTHORS].
