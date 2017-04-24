@@ -1,0 +1,26 @@
+{
+  "name": "@stablelib/ctr",
+  "version": "0.1.2",
+  "description": "Counter block cipher mode (CTR)",
+  "main": "./dist/ctr.js",
+  "typings": "./dist/ctr.d.ts",
+  "author": "Dmitry Chestnykh",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jasmine JASMINE_CONFIG_PATH=../../configs/jasmine.json",
+    "bench": "node ./dist/ctr.bench.js"
+  },
+  "dependencies": {
+    "@stablelib/blockcipher": "^0.1.2",
+    "@stablelib/wipe": "^0.0.1"
+  },
+  "devDependencies": {
+    "@stablelib/aes": "^0.1.2",
+    "@stablelib/benchmark": "^0.0.1",
+    "@stablelib/hex": "^0.0.1"
+  }
+}
