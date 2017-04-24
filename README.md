@@ -68,13 +68,23 @@ The following constructions are provided by **SIVChain**:
   These attacks are being addressed in newer drafts of the specification.
 
 ‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
-  For more information, see [draft-irtf-cfrg-gcmsiv].
+  For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
+
+When standardization work around [AES-GCM-SIV] is complete, it will seriously
+considered for inclusion in this library. **AES-GCM-SIV** has the advantage of
+the [GHASH] function being able to run in parallel, versus **AES-CMAC**'s
+sequential operation.
+
+**AES-SIV** has the advantage that it can be implemented using the AES
+function alone, making it a better choice for environments where a
+hardware accelerated version of the **GHASH** function is unavailable.
 
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
 [NIST SP 800-38D]: http://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
 [key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
-[draft-irtf-cfrg-gcmsiv]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
+[AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
+[GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
 ## Language Support
 
