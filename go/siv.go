@@ -10,13 +10,12 @@
 package sivchain
 
 import (
+	"github.com/zcred/sivchain/go/cmac"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/subtle"
 	"errors"
 	"hash"
-
-	"github.com/dchest/cmac"
 )
 
 const MaxAssociatedDataItems = 126 // maximum number of associated data items

@@ -1,4 +1,4 @@
-script: ./ci.sh
+script: . ./ci.sh
 
 branches:
   only:
