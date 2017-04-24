@@ -100,7 +100,7 @@ export class SIV {
         return result;
     }
 
-    _streamXOR(iv: Uint8Array, src: Uint8Array, dst: Uint8Array) {
+    private _streamXOR(iv: Uint8Array, src: Uint8Array, dst: Uint8Array) {
         if (!this._ctr) {
             this._ctr = new CTR(this._encCipher, iv);
         } else {
@@ -110,7 +110,7 @@ export class SIV {
         return dst;
     }
 
-    _s2v(s: Uint8Array[], sn: Uint8Array): Uint8Array {
+    private _s2v(s: Uint8Array[], sn: Uint8Array): Uint8Array {
         if (!s) {
             s = [];
         }
