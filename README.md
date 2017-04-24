@@ -22,7 +22,7 @@ messages or message streams.
 
 **SIVChain** is a set of interoperable libraries implemented in several
 languages providing a high-level API for hard-to-misuse symmetric encryption.
-Additionally, they provide streaming support, allowing large ciphertexts
+Additionally, it provides streaming support, allowing large messages
 to be incrementally encrypted/decrypted while still providing
 [authenticated encryption].
 
