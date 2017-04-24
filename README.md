@@ -39,7 +39,7 @@ The following constructions are provided by **SIVChain**:
   of an IV/nonce, something that would be catastrophic with a mode
   like **AES-GCM**. **AES-SIV** provides [nonce reuse misuse resistance],
   considered the gold standard in cryptography today.
- 
+
  * [CHAIN]: a construction which provides streaming [authenticated encryption]
    when used in conjunction with a cipher like **AES-SIV** that supports
    [nonce reuse misuse resistance]. Though not yet described in an RFC,

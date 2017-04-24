@@ -5,6 +5,7 @@ set -e
 case $SUITE in
 go)
     cd go
+    go vet ./...
     go test -v ./...
     ;;
 js)
@@ -18,7 +19,7 @@ js)
 python)
     cd python
     export PATH=$HOME/.local/bin:$PATH
-    pip install -r requirements.txt --user
+    pip install -r requirements.txt
     py.test
     ;;
 ruby)
