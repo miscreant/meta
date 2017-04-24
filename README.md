@@ -125,6 +125,17 @@ then authenticated by **AES-CMAC**. If the computed `IV’` does not match the
 original one supplied, the decryption operation is aborted. Otherwise, we've
 authenticated the original plaintext and can return it.
 
+## CHAIN
+
+The CHAIN construction, originally described in the paper
+[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance][CHAIN],
+provides a segmented [authentication encryption] scheme while still providing
+[nonce reuse misuse resistance]. This makes it suitable for use cases that
+require incremental processing, such as large file encryption, transport
+encryption, or other "streaming" use cases.
+
+![CHAIN Diagram](http://www.zcred.org/sivchain/images/chain.svg)
+
 ## Copyright
 
 Copyright (c) 2017 [The Zcred Developers][AUTHORS].
