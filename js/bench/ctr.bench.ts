@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { AES } from "@stablelib/aes";
-import { benchmark, report, byteSeq } from "@stablelib/benchmark";
-import { CTR } from "./ctr";
+import { AES } from "../src/aes";
+import { benchmark, report, byteSeq } from "./benchmark";
+import { CTR } from "../src/ctr";
 
 const buf8192 = byteSeq(8192);
 const buf1111 = byteSeq(1111);

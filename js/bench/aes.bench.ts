@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { AES } from "./aes";
-import { benchmark, report, byteSeq } from "@stablelib/benchmark";
+import { AES } from "../src/aes";
+import { benchmark, report, byteSeq } from "./benchmark";
 
 const key = byteSeq(32);
 const cipher = new AES(key);
