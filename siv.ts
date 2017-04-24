@@ -107,7 +107,6 @@ export class SIV {
             this._ctr.setCipher(this._encCipher, iv);
         }
         this._ctr.streamXOR(src, dst);
-        return dst;
     }
 
     private _s2v(s: Uint8Array[], sn: Uint8Array): Uint8Array {

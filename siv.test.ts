@@ -96,10 +96,10 @@ describe("SIV (AES)", () => {
 
     it("should correctly seal and open different plaintext under the same key", () => {
         const key = byteSeq(64);
-        const ad1 = [ byteSeq(32), byteSeq(10) ];
+        const ad1 = [byteSeq(32), byteSeq(10)];
         const pt1 = byteSeq(100);
 
-        const ad2 = [ byteSeq(32), byteSeq(10) ];
+        const ad2 = [byteSeq(32), byteSeq(10)];
         const pt2 = byteSeq(40, 100);
 
         const siv = new SIV(AES, key);
@@ -117,7 +117,6 @@ describe("SIV (AES)", () => {
         expect(() => siv.clean()).not.toThrow();
     });
 
-
     it("should not open with incorrect key", () => {
         vectors.forEach(v => {
             const badKey = dec(v.key);
@@ -132,7 +131,6 @@ describe("SIV (AES)", () => {
             expect(unsealed).toBeNull();
         });
     });
-
 
     it("should not open with incorrect associated data", () => {
         vectors.forEach(v => {
@@ -161,6 +159,5 @@ describe("SIV (AES)", () => {
             expect(unsealed).toBeNull();
         });
     });
-
 });
 
