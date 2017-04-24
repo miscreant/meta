@@ -2,7 +2,7 @@
 // MIT License. See LICENSE file for details.
 
 export type NumericArray = number[] | Uint8Array | Int8Array | Uint16Array
-    | Int16Array | Uint32Array | Int32Array | Float32Array | Float64Array;
+  | Int16Array | Uint32Array | Int32Array | Float32Array | Float64Array;
 
 /**
  * Sets all values in the given array to zero and returns it.
@@ -18,11 +18,11 @@ export type NumericArray = number[] | Uint8Array | Int8Array | Uint16Array
  * that everything will be okay and good will triumph over evil.
  */
 export function wipe(array: NumericArray): NumericArray {
-    // Right now it's similar to array.fill(0). If it turns
-    // out that runtimes optimize this call away, maybe
-    // we can try something else.
-    for (let i = 0; i < array.length; i++) {
-        array[i] = 0;
-    }
-    return array;
+  // Right now it's similar to array.fill(0). If it turns
+  // out that runtimes optimize this call away, maybe
+  // we can try something else.
+  for (let i = 0; i < array.length; i++) {
+    array[i] = 0;
+  }
+  return array;
 }

@@ -13,7 +13,7 @@
  * integers, they'll be converted to them with bitwise operations.
  */
 export function select(subject: number, resultIfOne: number, resultIfZero: number): number {
-    return (~(subject - 1) & resultIfOne) | ((subject - 1) & resultIfZero);
+  return (~(subject - 1) & resultIfOne) | ((subject - 1) & resultIfZero);
 }
 
 /**
@@ -21,7 +21,7 @@ export function select(subject: number, resultIfOne: number, resultIfZero: numbe
  * Arguments must be positive 32-bit integers less than or equal to 2^31 - 1.
  */
 export function lessOrEqual(a: number, b: number): number {
-    return (((a | 0) - (b | 0) - 1) >>> 31) & 1;
+  return (((a | 0) - (b | 0) - 1) >>> 31) & 1;
 }
 
 /**
@@ -32,14 +32,14 @@ export function lessOrEqual(a: number, b: number): number {
  * the same, so this function will return 1.
  */
 export function compare(a: Uint8Array, b: Uint8Array): number {
-    if (a.length !== b.length) {
-        return 0;
-    }
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-        result |= a[i] ^ b[i];
-    }
-    return (1 & ((result - 1) >>> 8));
+  if (a.length !== b.length) {
+    return 0;
+  }
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a[i] ^ b[i];
+  }
+  return (1 & ((result - 1) >>> 8));
 }
 
 /**
@@ -50,8 +50,8 @@ export function compare(a: Uint8Array, b: Uint8Array): number {
  * _not_ equal, so this function will return false.
  */
 export function equal(a: Uint8Array, b: Uint8Array): boolean {
-    if (a.length === 0 || b.length === 0) {
-        return false;
-    }
-    return compare(a, b) !== 0;
+  if (a.length === 0 || b.length === 0) {
+    return false;
+  }
+  return compare(a, b) !== 0;
 }

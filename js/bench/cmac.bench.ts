@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { CMAC } from "./cmac";
-import { AES } from "@stablelib/aes";
-import { benchmark, report, byteSeq } from "@stablelib/benchmark";
+import { CMAC } from "../src/cmac";
+import { AES } from "../src/aes";
+import { benchmark, report, byteSeq } from "./benchmark";
 
 const buf8192 = byteSeq(8192);
 const buf1024 = byteSeq(1024);
