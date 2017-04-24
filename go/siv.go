@@ -7,7 +7,7 @@
 
 // Package siv implements Synthetic Initialization Vector (SIV) authenticated
 // encryption using AES (RFC 5297).
-package siv
+package sivchain
 
 import (
 	"crypto/aes"
