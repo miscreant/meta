@@ -23,7 +23,7 @@
     "@stablelib/hex": "*"
 =======
   "name": "@stablelib/siv",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Synthetic Initialization Vector (SIV) authenticated encryption",
   "main": "./dist/siv.js",
   "typings": "./dist/siv.d.ts",
