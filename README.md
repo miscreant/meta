@@ -52,6 +52,30 @@ The following constructions are provided by **SIVChain**:
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 
+## Comparison with other symmetric encryption algorithms
+
+| Name              | [Authenticated Encryption] | [Nonce Reuse Misuse Resistance] | Standardization   |
+|-------------------|----------------------------|---------------------------------|-------------------|
+| AES-CBC           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
+| AES-CTR           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
+| AES-GCM           | :green_heart:              | :broken_heart:                  | [NIST SP 800-38D] |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | Forthcoming‡      |
+| AES-SIV           | :green_heart:              | :green_heart:                   | [RFC 5297]        |
+| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:                  | [RFC 7539]        |
+| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:                  | None              |
+
+† Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks]. 
+  These attacks are being addressed in newer drafts of the specification.
+
+‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
+  For more information, see [draft-irtf-cfrg-gcmsiv].
+
+[NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
+[NIST SP 800-38D]: http://dx.doi.org/10.6028/NIST.SP.800-38D
+[RFC 7539]: https://tools.ietf.org/html/rfc7539
+[key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
+[draft-irtf-cfrg-gcmsiv]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
+
 ## Language Support
 
 Packages implementing SIVChain are available for the following languages:
