@@ -1,20 +1,10 @@
 {
+    "extends": "../../configs/tsconfig",
     "compilerOptions": {
-        "target": "ES5",
-        "module": "commonjs",
-        "removeComments": false,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "declaration": true,
-        "pretty": true,
-        "alwaysStrict": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "noImplicitThis": true,
-        "noUnusedParameters": true,
-        "strictNullChecks": true,
-        "newLine": "LF"
-    }
+        "outDir": "dist"
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }
