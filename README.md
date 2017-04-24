@@ -129,7 +129,7 @@ authenticated the original plaintext and can return it.
 
 The CHAIN construction, originally described in the paper
 [Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance][CHAIN],
-provides a segmented [authentication encryption] scheme while still providing
+provides a segmented [authenticated encryption] scheme while still providing
 [nonce reuse misuse resistance]. This makes it suitable for use cases that
 require incremental processing, such as large file encryption, transport
 encryption, or other "streaming" use cases.
