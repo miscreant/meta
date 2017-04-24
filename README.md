@@ -32,7 +32,7 @@ The following constructions are provided by **SIVChain**:
   encryption with the [AES-CMAC] function for integrity. Unlike most
   [authenticated encryption] algorithms, **AES-SIV** uses a
   MAC-then-encrypt construction, first using **AES-CMAC** to derive an
-  IV from a MAC of zero or more "header" values and the message in
+  IV from a MAC of zero or more "header" values and the message
   plaintext, then encrypting the message under that derived IV.
   This approach provides not just the benefits of an authenticated
   encryption mode, but also makes it resistant to accidental reuse
