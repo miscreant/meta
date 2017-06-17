@@ -14,7 +14,7 @@ Advanced symmetric encryption using the [AES-SIV] ([RFC 5297]) and [CHAIN]
 constructions, providing easy-to-use (or rather, hard-to-misuse) encryption of
 individual messages or message streams.
 
-**AES-SIV** provides nonce reuse misuse resistance (NRMR): accidentally
+**AES-SIV** provides [nonce-reuse misuse-resistance] (NRMR): accidentally
 reusing a nonce with this construction is not a security catastrophe,
 unlike it is with more popular AES encryption modes like [AES-GCM].
 With **AES-SIV**, the worst outcome of reusing a nonce is an attacker
@@ -28,6 +28,7 @@ For more information, see the [toplevel README.md].
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
 [toplevel README.md]: https://github.com/zcred/sivchain/blob/master/README.md
