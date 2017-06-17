@@ -4,31 +4,7 @@
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { AES } from "../src/internal/polyfill/aes";
-import { encode, decode } from "../src/internal/hex";
-
-// TODO(dchest): add more AES test vectors.
-const testVectors = [
-  {
-    key: "2B7E151628AED2A6ABF7158809CF4F3C",
-    src: "3243F6A8885A308D313198A2E0370734",
-    dst: "3925841D02DC09FBDC118597196A0B32"
-  },
-  {
-    key: "000102030405060708090A0B0C0D0E0F",
-    src: "00112233445566778899AABBCCDDEEFF",
-    dst: "69C4E0D86A7B0430D8CDB78070B4C55A"
-  },
-  {
-    key: "000102030405060708090A0B0C0D0E0F1011121314151617",
-    src: "00112233445566778899AABBCCDDEEFF",
-    dst: "DDA97CA4864CDFE06EAF70A0EC0D7191"
-  },
-  {
-    key: "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F",
-    src: "00112233445566778899AABBCCDDEEFF",
-    dst: "8EA2B7CA516745BFEAFC49904B496089"
-  }
-];
+import { AesExample } from "./support/test_vectors";
 
 @suite class AESSpec {
   @test "should not accept wrong key length"() {
@@ -41,14 +17,20 @@ const testVectors = [
   }
 }
 
-@suite class AESEncryptBlockSSpec {
+@suite class AesEncryptBlockSpec {
+  static vectors: AesExample[];
+
+  static async before() {
+    this.vectors = await AesExample.loadAll();
+  }
+
   @test "should correctly encrypt block"() {
-    testVectors.forEach(v => {
-      const cipher = new AES(decode(v.key));
+    for (let v of AesEncryptBlockSpec.vectors) {
+      const cipher = new AES(v.key);
       const dst = new Uint8Array(16);
-      cipher.encryptBlock(decode(v.src), dst);
-      expect(encode(dst)).to.eq(v.dst);
-    });
+      cipher.encryptBlock(v.src, dst);
+      expect(dst).to.eql(v.dst);
+    }
   }
 
   @test "should correctly encrypt many blocks with different keys"() {
@@ -64,18 +46,26 @@ const testVectors = [
       newKey.set(block, 16); // fill the rest 16 bytes with block
       key.set(newKey);
     }
-    expect(encode(block)).to.eq("3A6FD932F608835F1F56D9DC1FCECFA3");
+
+    let expected = new Uint8Array([58, 111, 217, 50, 246, 8, 131, 95, 31, 86, 217, 220, 31, 206, 207, 163]);
+    expect(block).to.eql(expected);
   }
 }
 
-@suite class AESDecryptBlockSpec {
+@suite class AesDecryptBlockSpec {
+  static vectors: AesExample[];
+
+  static async before() {
+    this.vectors = await AesExample.loadAll();
+  }
+
   @test "should correctly decrypt block"() {
-    testVectors.forEach(v => {
-      const cipher = new AES(decode(v.key));
+    for (let v of AesDecryptBlockSpec.vectors) {
+      const cipher = new AES(v.key);
       const src = new Uint8Array(16);
-      cipher.decryptBlock(decode(v.dst), src);
-      expect(encode(src)).to.eq(v.src);
-    });
+      cipher.decryptBlock(v.dst, src);
+      expect(src).to.eql(v.src);
+    }
   }
 
   @test "should correctly decrypt many blocks with different keys"() {
@@ -91,6 +81,8 @@ const testVectors = [
       newKey.set(block, 16); // fill the rest 16 bytes with block
       key.set(newKey);
     }
-    expect(encode(block)).to.eq("551EC0EA8EA69F1FC4EF95E6420AD4B6");
+
+    let expected = new Uint8Array([85, 30, 192, 234, 142, 166, 159, 31, 196, 239, 149, 230, 66, 10, 212, 182]);
+    expect(block).to.eql(expected);
   }
 }
