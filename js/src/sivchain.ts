@@ -1,11 +1,11 @@
 // Copyright (C) 2017 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { AES } from "./aes";
-import { CMAC, dbl } from "./cmac";
-import { CTR } from "./ctr";
-import { wipe } from "./wipe";
-import { equal } from "./constant-time";
+import { AES } from "./internal/polyfill/aes";
+import { CMAC, dbl } from "./internal/polyfill/cmac";
+import { CTR } from "./internal/polyfill/ctr";
+import { wipe } from "./internal/wipe";
+import { equal } from "./internal/constant-time";
 
 /** Maximum number of associated data items */
 export const MAX_ASSOCIATED_DATA = 126;

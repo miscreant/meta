@@ -3,7 +3,7 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { select, lessOrEqual, compare, equal } from "../src/constant-time";
+import { select, lessOrEqual, compare, equal } from "../src/internal/constant-time";
 
 @suite class SelectSpec {
   @test "should select correct value"() {

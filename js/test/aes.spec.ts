@@ -3,8 +3,8 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AES } from "../src/aes";
-import { encode, decode } from "../src/hex";
+import { AES } from "../src/internal/polyfill/aes";
+import { encode, decode } from "../src/internal/hex";
 
 // TODO(dchest): add more AES test vectors.
 const testVectors = [

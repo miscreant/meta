@@ -4,8 +4,7 @@
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { SIV } from "../src/sivchain";
-import { AES } from "../src/aes";
-import { encode, decode } from "../src/hex";
+import { encode, decode } from "../src/internal/hex";
 
 // tslint:disable
 const vectors = [

@@ -11,7 +11,7 @@
 // by Vincent Rijmen, Antoon Bosselaers, Paulo Barreto
 // (rijndael-alg-fst.c, 3.0, December 2000)
 
-import { wipe } from "./wipe";
+import { wipe } from "../wipe";
 
 // Powers of x mod poly in GF(2).
 const POWX = new Uint8Array([

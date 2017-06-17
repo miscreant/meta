@@ -3,9 +3,9 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AES } from "../src/aes";
-import { encode, decode } from "../src/hex";
-import { CTR } from "../src/ctr";
+import { AES } from "../src/internal/polyfill/aes";
+import { encode, decode } from "../src/internal/hex";
+import { CTR } from "../src/internal/polyfill/ctr";
 
 @suite class AESCTRSpec {
   static readonly v = {
