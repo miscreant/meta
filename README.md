@@ -10,7 +10,7 @@
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Advanced symmetric encryption using the AES-SIV ([RFC 5297]) and [CHAIN] constructions,
+Advanced symmetric encryption using the [AES-SIV] ([RFC 5297]) and [CHAIN] constructions,
 providing easy-to-use (or rather, hard-to-misuse) encryption of individual
 messages or message streams.
 
@@ -88,7 +88,7 @@ hardware accelerated version of the **GHASH** function is unavailable.
 
 ## Language Support
 
-Packages implementing SIVChain are available for the following languages:
+Packages implementing **SIVChain** are available for the following languages:
 
 | Language               | Version                              |
 |------------------------|--------------------------------------|

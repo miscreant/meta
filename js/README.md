@@ -10,13 +10,14 @@
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
 JavaScript-compatible TypeScript implementation of **SIVChain**:
-Advanced symmetric encryption using the AES-SIV ([RFC 5297]) and [CHAIN]
+Advanced symmetric encryption using the [AES-SIV] ([RFC 5297]) and [CHAIN]
 constructions, providing easy-to-use (or rather, hard-to-misuse) encryption of
 individual messages or message streams.
 
 For more information, see the [toplevel README.md].
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
+[AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 [toplevel README.md]: https://github.com/zcred/sivchain/blob/master/README.md
