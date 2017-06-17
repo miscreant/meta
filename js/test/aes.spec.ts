@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { AES } from "../src/internal/polyfill/aes";
 import { AesExample } from "./support/test_vectors";
 
-@suite class AESSpec {
+@suite class AesSpec {
   @test "should not accept wrong key length"() {
     expect(() => new AES(new Uint8Array(10))).to.throw(/^AES/);
   }
