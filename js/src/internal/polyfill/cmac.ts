@@ -2,8 +2,8 @@
 // MIT License. See LICENSE file for details.
 
 import { AES } from "./aes";
-import { select } from "./constant-time";
-import { wipe } from "./wipe";
+import { select } from "../constant-time";
+import { wipe } from "../wipe";
 
 export class CMAC {
   readonly blockSize = 16;

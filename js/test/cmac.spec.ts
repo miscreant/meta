@@ -3,9 +3,9 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { CMAC } from "../src/cmac";
-import { AES } from "../src/aes";
-import { encode, decode } from "../src/hex";
+import { CMAC } from "../src/internal/polyfill/cmac";
+import { AES } from "../src/internal/polyfill/aes";
+import { encode, decode } from "../src/internal/hex";
 
 const key128 = "2B7E151628AED2A6ABF7158809CF4F3C";
 const key256 = "603DEB1015CA71BE2B73AEF0857D77811F352C073B6108D72D9810A30914DFF4";
