@@ -155,7 +155,7 @@ The **SIV.open()** method returns a [Promise] that, when fulfilled,
 returns a [Uint8Array] containing the decrypted plaintext.
 
 If the message has been tampered with or is otherwise corrupted, the promise
-will be rejected with a **IntegrityError**.
+will be rejected with an **IntegrityError**.
 
 #### Example
 
