@@ -68,7 +68,7 @@ var SIV = require("sivchain");
 
 ### SIV.importKey()
 
-The **SIV.importKey()** method creates a new instance of an AES-SIV
+The **SIV.importKey()** method creates a new instance of an **AES-SIV**
 encryptor/decryptor.
 
 #### Syntax
@@ -146,7 +146,7 @@ let ciphertext = await siv.seal([nonce], plaintext);
 
 ### SIV.open()
 
-The **SIV.open()** method decrypts a message which has been encrypted using AES-SIV.
+The **SIV.open()** method decrypts a message which has been encrypted using **AES-SIV**.
 
 #### Syntax
 
