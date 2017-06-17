@@ -294,7 +294,7 @@ function rotw(w: number): number {
   return (w << 8) | (w >>> 24);
 }
 
-function expandKey(key: Uint8Array, encKey: Uint32Array, decKey?: Uint8Array): void {
+function expandKey(key: Uint8Array, encKey: Uint32Array, decKey?: Uint32Array): void {
   const nk = key.length / 4 | 0;
   const n = encKey.length;
   for (let i = 0; i < nk; i++) {

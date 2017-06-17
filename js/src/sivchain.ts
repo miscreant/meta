@@ -4,13 +4,23 @@
 import { AES } from "./internal/polyfill/aes";
 import { CMAC, dbl } from "./internal/polyfill/cmac";
 import { CTR } from "./internal/polyfill/ctr";
-import { wipe } from "./internal/wipe";
 import { equal } from "./internal/constant-time";
+import { wipe } from "./internal/wipe";
+import { xor, zeroIVBits } from "./internal/util";
 
 /** Maximum number of associated data items */
 export const MAX_ASSOCIATED_DATA = 126;
 
-export class SIV {
+/** Thrown when ciphertext fails to verify as authentic */
+export class IntegrityError extends Error {
+  constructor(m: string) {
+    super(m);
+    Object.setPrototypeOf(this, IntegrityError.prototype);
+  }
+}
+
+/** The AES-SIV mode of authenticated encryption */
+export class AESSIV {
   private _mac: CMAC;
   private _ctr: CTR | undefined;
   private _macCipher: AES;
@@ -20,16 +30,20 @@ export class SIV {
 
   tagLength: number;
 
-  constructor(key: Uint8Array) {
+  static async importKey(key: Uint8Array): Promise<AESSIV> {
     const macKey = key.subarray(0, key.length / 2 | 0);
     const encKey = key.subarray(key.length / 2 | 0);
 
+    return Promise.resolve(new AESSIV(macKey, encKey));
+  }
+
+  constructor(macKey: Uint8Array, encKey: Uint8Array) {
     this._macCipher = new AES(macKey);
     this._encCipher = new AES(encKey);
     this._mac = new CMAC(this._macCipher);
 
     if (this._mac.digestLength !== this._mac.blockSize) {
-      throw new Error("SIV: this implementation needs CMAC block size to equal tag length");
+      throw new Error("AESSIV: this implementation needs CMAC block size to equal tag length");
     }
     this.tagLength = this._mac.digestLength;
 
@@ -37,22 +51,14 @@ export class SIV {
     this._tmp2 = new Uint8Array(this._mac.digestLength);
   }
 
-  seal(associatedData: Uint8Array[], plaintext: Uint8Array, dst?: Uint8Array): Uint8Array {
+  async seal(associatedData: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
-      throw new Error("SIV: too many associated data items");
+      throw new Error("AESSIV: too many associated data items");
     }
 
     // Allocate space for sealed ciphertext.
     const resultLength = this.tagLength + plaintext.length;
-    let result;
-    if (dst) {
-      if (dst.length !== resultLength) {
-        throw new Error("SIV: incorrect destination length");
-      }
-      result = dst;
-    } else {
-      result = new Uint8Array(resultLength);
-    }
+    let result = new Uint8Array(resultLength);
 
     // Authenticate.
     const iv = this._s2v(associatedData, plaintext);
@@ -64,25 +70,17 @@ export class SIV {
     return result;
   }
 
-  open(associatedData: Uint8Array[], sealed: Uint8Array, dst?: Uint8Array): Uint8Array | null {
+  async open(associatedData: Uint8Array[], sealed: Uint8Array): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
-      throw new Error("SIV: too many associated data items");
+      throw new Error("AESSIV: too many associated data items");
     }
     if (sealed.length < this.tagLength) {
-      return null;
+      throw new IntegrityError("AESSIV: ciphertext is truncated");
     }
 
     // Allocate space for decrypted plaintext.
     const resultLength = sealed.length - this.tagLength;
-    let result;
-    if (dst) {
-      if (dst.length !== resultLength) {
-        throw new Error("SIV: incorrect destination length");
-      }
-      result = dst;
-    } else {
-      result = new Uint8Array(resultLength);
-    }
+    let result = new Uint8Array(resultLength);
 
     // Decrypt.
     const tag = sealed.subarray(0, this.tagLength);
@@ -93,11 +91,13 @@ export class SIV {
 
     // Authenticate.
     const expectedTag = this._s2v(associatedData, result);
+
     if (!equal(expectedTag, tag)) {
       wipe(result);
-      return null;
+      throw new IntegrityError("AESSIV: ciphertext verification failure!");
     }
-    return result;
+
+    return Promise.resolve(result);
   }
 
   private _streamXOR(iv: Uint8Array, src: Uint8Array, dst: Uint8Array) {
@@ -161,18 +161,4 @@ export class SIV {
     this._macCipher.clean();
     this.tagLength = 0;
   }
-}
-
-function xor(a: Uint8Array, b: Uint8Array) {
-  for (let i = 0; i < b.length; i++) {
-    a[i] ^= b[i];
-  }
-}
-
-function zeroIVBits(iv: Uint8Array) {
-  // "We zero-out the top bit in each of the last two 32-bit words
-  // of the IV before assigning it to Ctr"
-  //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
-  iv[iv.length - 8] &= 0x7f;
-  iv[iv.length - 4] &= 0x7f;
 }

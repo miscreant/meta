@@ -2,9 +2,13 @@
 // MIT License. See LICENSE file for details.
 
 import { suite, test } from "mocha-typescript";
-import { expect } from "chai";
-import { SIV } from "../src/sivchain";
+import * as chai from "chai";
+import * as chaiAsPromised from "chai-as-promised";
+import { AESSIV, IntegrityError } from "../src/sivchain";
 import { encode, decode } from "../src/internal/hex";
+
+let expect = chai.expect;
+chai.use(chaiAsPromised);
 
 // tslint:disable
 const vectors = [
@@ -93,24 +97,24 @@ function dec(s: string): Uint8Array {
 }
 
 @suite class SIVSpec {
-  @test "should correctly seal and open"() {
-    vectors.forEach(v => {
+  @test async "should correctly seal and open"() {
+    for (let v of vectors) {
       const key = dec(v.key);
       const ad = v.ad.map(dec);
       const plaintext = dec(v.plaintext);
       const output = dec(v.output);
 
-      const siv = new SIV(key);
-      const sealed = siv.seal(ad, plaintext);
+      const siv = await AESSIV.importKey(key);
+      const sealed = await siv.seal(ad, plaintext);
       expect(encode(sealed)).to.eql(encode(output));
-      const unsealed = siv.open(ad, sealed);
+      const unsealed = await siv.open(ad, sealed);
       expect(unsealed).not.to.be.null;
       expect(encode(unsealed!)).to.eql(encode(plaintext));
       expect(() => siv.clean()).not.to.throw();
-    });
+    }
   }
 
-  @test "should correctly seal and open different plaintext under the same key"() {
+  @test async "should correctly seal and open different plaintext under the same key"() {
     const key = byteSeq(64);
     const ad1 = [byteSeq(32), byteSeq(10)];
     const pt1 = byteSeq(100);
@@ -118,23 +122,23 @@ function dec(s: string): Uint8Array {
     const ad2 = [byteSeq(32), byteSeq(10)];
     const pt2 = byteSeq(40, 100);
 
-    const siv = new SIV(key);
+    const siv = await AESSIV.importKey(key);
 
-    const sealed1 = siv.seal(ad1, pt1);
-    const opened1 = siv.open(ad1, sealed1);
+    const sealed1 = await siv.seal(ad1, pt1);
+    const opened1 = await siv.open(ad1, sealed1);
     expect(opened1).not.to.be.null;
     expect(encode(opened1!)).to.eql(encode(pt1));
 
-    const sealed2 = siv.seal(ad2, pt2);
-    const opened2 = siv.open(ad2, sealed2);
+    const sealed2 = await siv.seal(ad2, pt2);
+    const opened2 = await siv.open(ad2, sealed2);
     expect(opened2).not.to.be.null;
     expect(encode(opened2!)).to.eql(encode(pt2));
 
     expect(() => siv.clean()).not.to.throw();
   }
 
-  @test "should not open with incorrect key"() {
-    vectors.forEach(v => {
+  @test async "should not open with incorrect key"() {
+    for (let v of vectors) {
       const badKey = dec(v.key);
       badKey[0] ^= badKey[0];
       badKey[2] ^= badKey[2];
@@ -142,27 +146,25 @@ function dec(s: string): Uint8Array {
       const ad = v.ad.map(dec);
       const output = dec(v.output);
 
-      const siv = new SIV(badKey);
-      const unsealed = siv.open(ad, output);
-      expect(unsealed).to.be.null;
-    });
+      const siv = await AESSIV.importKey(badKey);
+      expect(siv.open(ad, output)).to.be.rejectedWith(IntegrityError);
+    }
   }
 
-  @test "should not open with incorrect associated data"() {
-    vectors.forEach(v => {
+  @test async "should not open with incorrect associated data"() {
+    for (let v of vectors) {
       const key = dec(v.key);
       const badAd = v.ad.map(dec);
       badAd.push(new Uint8Array(1));
       const output = dec(v.output);
 
-      const siv = new SIV(key);
-      const unsealed = siv.open(badAd, output);
-      expect(unsealed).to.be.null;
-    });
+      const siv = await AESSIV.importKey(key);
+      return expect(siv.open(badAd, output)).to.be.rejectedWith(IntegrityError);
+    }
   }
 
-  @test "should not open with incorrect ciphertext"() {
-    vectors.forEach(v => {
+  @test async "should not open with incorrect ciphertext"() {
+    for (let v of vectors) {
       const key = dec(v.key);
       const ad = v.ad.map(dec);
       const badOutput = dec(v.output);
@@ -170,10 +172,9 @@ function dec(s: string): Uint8Array {
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = new SIV(key);
-      const unsealed = siv.open(ad, badOutput);
-      expect(unsealed).to.be.null;
-    });
+      const siv = await AESSIV.importKey(key);
+      return expect(siv.open(ad, badOutput)).to.be.rejectedWith(IntegrityError);
+    }
   }
 }
 
