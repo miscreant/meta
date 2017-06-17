@@ -2,7 +2,7 @@
 // MIT License. See LICENSE file for details.
 
 import { AES } from "./aes";
-import { wipe } from "../wipe";
+import { wipe } from "../util";
 
 /**
  * CTR implements counter cipher mode.

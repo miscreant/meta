@@ -56,11 +56,11 @@ The following constructions are provided by **SIVChain**:
 
 | Name              | [Authenticated Encryption] | [Nonce Reuse Misuse Resistance] | Standardization   |
 |-------------------|----------------------------|---------------------------------|-------------------|
+| AES-SIV           | :green_heart:              | :green_heart:                   | [RFC 5297]        |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | Forthcoming‡      |
+| AES-GCM           | :green_heart:              | :broken_heart:                  | [NIST SP 800-38D] |
 | AES-CBC           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
 | AES-CTR           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
-| AES-GCM           | :green_heart:              | :broken_heart:                  | [NIST SP 800-38D] |
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | Forthcoming‡      |
-| AES-SIV           | :green_heart:              | :green_heart:                   | [RFC 5297]        |
 | ChaCha20+Poly1305 | :green_heart:              | :broken_heart:                  | [RFC 7539]        |
 | XSalsa20+Poly1305 | :green_heart:              | :broken_heart:                  | None              |
 

@@ -3,7 +3,7 @@
 
 import { AES } from "./aes";
 import { select } from "../constant-time";
-import { wipe } from "../wipe";
+import { wipe } from "../util";
 
 export class CMAC {
   readonly blockSize = 16;
