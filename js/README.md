@@ -192,4 +192,4 @@ Copyright (c) 2017 Dmitry Chestnykh, [The Zcred Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
 [AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/zcred/zser/blob/master/LICENSE.txt
+[LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/js/LICENSE.txt
