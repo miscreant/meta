@@ -1,11 +1,17 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { AES } from "./aes";
+import { AesPolyfill } from "./aes";
 import { select } from "../constant-time";
 import { wipe } from "../util";
 
-export class CMAC {
+/**
+ * Polyfill for the AES-CMAC message authentication code
+ *
+ * Uses a non-constant-time (lookup table-based) AES polyfill.
+ * See polyfill/aes.ts for more information on the security impact.
+ */
+export class AesCmacPolyfill {
   readonly blockSize = 16;
   readonly digestLength = 16;
 
@@ -17,9 +23,9 @@ export class CMAC {
 
   private _finished = false;
 
-  private _cipher: AES;
+  private _cipher: AesPolyfill;
 
-  constructor(cipher: AES) {
+  constructor(cipher: AesPolyfill) {
     this._cipher = cipher;
 
     // Allocate space.
@@ -44,6 +50,7 @@ export class CMAC {
     wipe(this._state);
     wipe(this._subkey1);
     wipe(this._subkey2);
+    this._cipher.clean();
     this._statePos = 0;
   }
 

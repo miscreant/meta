@@ -33,7 +33,7 @@
     "mocha-typescript": "^1.0.23",
     "tjson-js": "^0.1.2",
     "ts-node": "^3.0.2",
-    "typescript": "^2.2.1",
+    "typescript": "^2.3.0",
     "@types/chai": "^3.4.35",
     "@types/chai-as-promised": ">= 0.0.31",
     "@types/mocha": "^2.2.40",

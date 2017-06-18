@@ -3,8 +3,8 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { CMAC } from "../src/internal/polyfill/cmac";
-import { AES } from "../src/internal/polyfill/aes";
+import { AesCmacPolyfill } from "../src/internal/polyfill/aes_cmac";
+import { AesPolyfill } from "../src/internal/polyfill/aes";
 import { AesCmacExample } from "./support/test_vectors";
 
 @suite class AesCmacSpec {
@@ -16,7 +16,7 @@ import { AesCmacExample } from "./support/test_vectors";
 
   @test "should produce correct results for test vectors"() {
     for (let v of AesCmacSpec.vectors) {
-      const mac = new CMAC(new AES(v.key));
+      const mac = new AesCmacPolyfill(new AesPolyfill(v.key));
       mac.update(v.input);
       expect(mac.digest()).to.eql(v.result);
     }

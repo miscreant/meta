@@ -3,16 +3,16 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AES } from "../src/internal/polyfill/aes";
+import { AesPolyfill } from "../src/internal/polyfill/aes";
 import { AesExample } from "./support/test_vectors";
 
 @suite class AesSpec {
   @test "should not accept wrong key length"() {
-    expect(() => new AES(new Uint8Array(10))).to.throw(/^AES/);
+    expect(() => new AesPolyfill(new Uint8Array(10))).to.throw(/^AES/);
   }
 
   @test "should not accept different key in setKey()"() {
-    const cipher = new AES(new Uint8Array(32));
+    const cipher = new AesPolyfill(new Uint8Array(32));
     expect(() => cipher.setKey(new Uint8Array(16))).to.throw(/^AES/);
   }
 }
@@ -26,7 +26,7 @@ import { AesExample } from "./support/test_vectors";
 
   @test "should correctly encrypt block"() {
     for (let v of AesEncryptBlockSpec.vectors) {
-      const cipher = new AES(v.key);
+      const cipher = new AesPolyfill(v.key);
       const dst = new Uint8Array(16);
       cipher.encryptBlock(v.src, dst);
       expect(dst).to.eql(v.dst);
@@ -38,7 +38,7 @@ import { AesExample } from "./support/test_vectors";
     let block = new Uint8Array(16);
     const newKey = new Uint8Array(32);
     for (let i = 0; i < 100; i++) {
-      const cipher = new AES(key);
+      const cipher = new AesPolyfill(key);
       for (let j = 0; j < 100; j++) {
         cipher.encryptBlock(block, block);
       }
@@ -61,7 +61,7 @@ import { AesExample } from "./support/test_vectors";
 
   @test "should correctly decrypt block"() {
     for (let v of AesDecryptBlockSpec.vectors) {
-      const cipher = new AES(v.key);
+      const cipher = new AesPolyfill(v.key);
       const src = new Uint8Array(16);
       cipher.decryptBlock(v.dst, src);
       expect(src).to.eql(v.src);
@@ -73,7 +73,7 @@ import { AesExample } from "./support/test_vectors";
     let block = new Uint8Array(16);
     const newKey = new Uint8Array(32);
     for (let i = 0; i < 100; i++) {
-      const cipher = new AES(key);
+      const cipher = new AesPolyfill(key);
       for (let j = 0; j < 100; j++) {
         cipher.decryptBlock(block, block);
       }

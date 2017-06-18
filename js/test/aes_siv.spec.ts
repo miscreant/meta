@@ -20,7 +20,7 @@ chai.use(chaiAsPromised);
 
   @test async "should correctly seal and open"() {
     for (let v of AesSivSpec.vectors) {
-      const siv = await AesSiv.importKey(v.key);
+      const siv = await AesSiv.importKey(v.key, null);
       const sealed = await siv.seal(v.ad, v.plaintext);
       expect(sealed).to.eql(v.output);
       const unsealed = await siv.open(v.ad, sealed);
@@ -38,7 +38,7 @@ chai.use(chaiAsPromised);
     const ad2 = [byteSeq(32), byteSeq(10)];
     const pt2 = byteSeq(40, 100);
 
-    const siv = await AesSiv.importKey(key);
+    const siv = await AesSiv.importKey(key, null);
 
     const sealed1 = await siv.seal(ad1, pt1);
     const opened1 = await siv.open(ad1, sealed1);
@@ -60,7 +60,7 @@ chai.use(chaiAsPromised);
       badKey[2] ^= badKey[2];
       badKey[3] ^= badKey[8];
 
-      const siv = await AesSiv.importKey(badKey);
+      const siv = await AesSiv.importKey(badKey, null);
       expect(siv.open(v.ad, v.output)).to.be.rejectedWith(IntegrityError);
     }
   }
@@ -70,7 +70,7 @@ chai.use(chaiAsPromised);
       const badAd = v.ad;
       badAd.push(new Uint8Array(1));
 
-      const siv = await AesSiv.importKey(v.key);
+      const siv = await AesSiv.importKey(v.key, null);
       return expect(siv.open(badAd, v.output)).to.be.rejectedWith(IntegrityError);
     }
   }
@@ -82,7 +82,7 @@ chai.use(chaiAsPromised);
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = await AesSiv.importKey(v.key);
+      const siv = await AesSiv.importKey(v.key, null);
       return expect(siv.open(v.ad, badOutput)).to.be.rejectedWith(IntegrityError);
     }
   }

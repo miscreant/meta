@@ -51,8 +51,8 @@ export class AesCtrExample {
 
   public readonly key: Uint8Array;
   public readonly iv: Uint8Array;
-  public readonly src: Uint8Array[];
-  public readonly dst: Uint8Array[];
+  public readonly src: Uint8Array;
+  public readonly dst: Uint8Array;
 
   static async loadAll(): Promise<AesCtrExample[]> {
     return AesCtrExample.loadFromFile(AesCtrExample.DEFAULT_EXAMPLES_PATH);

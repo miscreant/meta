@@ -15,9 +15,10 @@ import { AesSivExample } from "./support/test_vectors";
 
   @test async "AES-SIV: should correctly seal and open"() {
     for (let v of SivSpec.vectors) {
-      const siv = await SIV.importKey(v.key, "AES-SIV");
+      const siv = await SIV.importKey(v.key, "AES-SIV", null);
       const sealed = await siv.seal(v.ad, v.plaintext);
       expect(sealed).to.eql(v.output);
+
       const unsealed = await siv.open(v.ad, sealed);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);

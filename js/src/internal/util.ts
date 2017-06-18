@@ -1,6 +1,25 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
+/**
+ * Autodetect and return the default cryptography provider for this environment.
+ *
+ * Cryptography providers returned by this function should implement
+ * cryptography natively and not rely on JavaScript polyfills.
+ */
+export function defaultCryptoProvider(): Crypto {
+  try {
+    return window.crypto;
+  } catch (e) {
+    // Handle the case where window is undefined because we're not in a browser
+    if (e instanceof ReferenceError) {
+      throw new Error("AES-SIV: no default crypto provider for this environment");
+    } else {
+      throw e;
+    }
+  }
+}
+
 export type NumericArray = number[] | Uint8Array | Int8Array | Uint16Array
   | Int16Array | Uint32Array | Int32Array | Float32Array | Float64Array;
 
