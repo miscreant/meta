@@ -121,6 +121,17 @@ as an alternative to the JavaScript crypto polyfills.
 The **SIV.importKey()** method returns a [Promise] that, when fulfilled,
 returns a SIV encryptor/decryptor.
 
+#### Exceptions
+
+The **SIV.importKey()** method will throw an error if it's attempting to use
+the default `window.crypto` provider either doesn't exist (e.g. `window` is
+not defined because we're on Node.js) or if that provider does not provide
+native implementations of the cryptographic primitives **AES-SIV** is built
+on top of.
+
+In these cases, pass `null` as the parameter to opt into a fully polyfill
+implementation. Be aware this may decrease security.
+
 #### Example
 
 ```
