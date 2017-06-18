@@ -44,6 +44,30 @@ Have questions? Want to suggest a feature or change?
 [Google Group]: https://groups.google.com/forum/#!forum/zcred
 [zcred+subscribe@googlegroups.com]: mailto:zcred+subscribe@googlegroups.com
 
+## Security Notice
+
+This library attempts to use the WebCrypto API when available, however it
+falls back on polyfills (i.e. pure JavaScript implementations) in the event
+the necessary WebCrypto primitives are not available.
+
+Presently there are no environments that support the full set of algorithms
+needed to rely on WebCrypto exclusively (AES-CMAC in particular is not
+supported in any environments). Therefore, all environments are relying on
+the polyfill implementation to implement part of the AES-SIV algorithm.
+
+The AES polyfill implementation uses table lookups and is therefore not
+constant time. This means there's potential that co-tenant or even remote
+attackers may be able to measure minute timing variations and use them
+to recover the AES key. The exact extent to which this is possible in
+practice has not yet been investigated.
+
+Though this library is written by cryptographic professionals, it has not
+undergone a thorough security audit, and cryptographic professionals are still
+humans that make mistakes. Use this library at your own risk.
+
+All of that said, there are many, many bad cryptography libraries in the
+JavaScript ecosystem. This one should hopefully be better than most.
+
 ## Installation
 
 Via [npm](https://www.npmjs.com/):
@@ -74,7 +98,7 @@ encryptor/decryptor.
 #### Syntax
 
 ```
-SIV.importKey(keyData, algorithm)
+SIV.importKey(keyData, algorithm[, crypto = window.crypto])
 ```
 
 #### Parameters
@@ -84,6 +108,13 @@ SIV.importKey(keyData, algorithm)
   SIV uses two distinct AES keys to perform its operations.
 * **algorithm**: a string describing the algorithm to use. The only algorithm
   presently supported is `"AES-SIV"`.
+* **crypto**: a cryptography provider that implements the WebCrypto API's
+  [Crypto] interface. If `null` is explicitly passed, pure JavaScript polyfills
+  will be substituted for native cryptography.
+
+On Node.js, consider using a native WebCrypto provider such as
+[node-webcrypto-ossl](https://github.com/PeculiarVentures/node-webcrypto-ossl)
+as an alternative to the JavaScript crypto polyfills.
 
 #### Return Value
 
@@ -192,6 +223,7 @@ var decrypted = await siv.open([nonce], ciphertext);
 
 [Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
+[Crypto]: https://developer.mozilla.org/en-US/docs/Web/API/Crypto
 
 ## Contributing
 

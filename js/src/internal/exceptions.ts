@@ -5,3 +5,11 @@ export class IntegrityError extends Error {
     Object.setPrototypeOf(this, IntegrityError.prototype);
   }
 }
+
+/** Thrown when we attempt to use an unsupported crypto algorithm via WebCrypto */
+export class NotImplementedError extends Error {
+  constructor(m: string) {
+    super(m);
+    Object.setPrototypeOf(this, IntegrityError.prototype);
+  }
+}

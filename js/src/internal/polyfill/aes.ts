@@ -149,7 +149,7 @@ function writeUint32BE(value: number, out = new Uint8Array(4), offset = 0): Uint
 }
 
 /**
- * AES block cipher.
+ * Polyfill for the AES block cipher.
  *
  * This implementation uses lookup tables, so it's susceptible to cache-timing
  * side-channel attacks. A constant-time version we tried was super slow (a few
@@ -157,7 +157,7 @@ function writeUint32BE(value: number, out = new Uint8Array(4), offset = 0): Uint
  *
  * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
  */
-export class AES {
+export class AesPolyfill {
   // AES block size in bytes.
   readonly blockSize = 16;
 
