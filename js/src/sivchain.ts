@@ -12,7 +12,7 @@ export class SIV {
     alg: string,
     crypto: Crypto | null = defaultCryptoProvider()
   ): Promise<SivLike> {
-    if (alg == "AES-SIV") {
+    if (alg === "AES-SIV") {
       return AesSiv.importKey(keyData, crypto);
     } else {
       throw new Error(`unsupport algorithm: ${alg}`);
