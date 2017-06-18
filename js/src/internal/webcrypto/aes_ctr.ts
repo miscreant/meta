@@ -5,7 +5,7 @@ import { defaultCryptoProvider } from "../util";
 export class AesCtrWebCrypto implements CtrLike {
   public static async importKey(keyData: Uint8Array, crypto = defaultCryptoProvider()): Promise<AesCtrWebCrypto> {
     // Only AES-128 and AES-256 supported. AES-192 is not.
-    if (keyData.length != 16 && keyData.length != 32) {
+    if (keyData.length !== 16 && keyData.length !== 32) {
       throw new Error(`invalid key ${keyData.length} (expected 16 or 32 bytes)`);
     }
 

@@ -25,7 +25,7 @@ export class AesSiv implements SivLike {
 
   static async importKey(keyData: Uint8Array, crypto: Crypto | null = defaultCryptoProvider()): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
-    if (keyData.length != 32 && keyData.length != 64) {
+    if (keyData.length !== 32 && keyData.length !== 64) {
       throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
     }
 
@@ -35,10 +35,10 @@ export class AesSiv implements SivLike {
     // TODO: use WebCrypto implementation of AES-CMAC if available
     const mac = new AesCmacPolyfill(new AesPolyfill(macKey));
 
-    var ctr;
     if (crypto !== null) {
       try {
-        ctr = await AesCtrWebCrypto.importKey(encKey, crypto);
+        let ctr = await AesCtrWebCrypto.importKey(encKey, crypto);
+        return new AesSiv(mac, ctr, crypto);
       } catch (e) {
         if (e.message.includes("unsupported")) {
           throw new NotImplementedError("AES-SIV: CTR unsupported by crypto backend. Pass null to use polyfill instead.");
@@ -47,10 +47,9 @@ export class AesSiv implements SivLike {
         }
       }
     } else {
-      ctr = new AesCtrPolyfill(new AesPolyfill(encKey));
+      let ctr = new AesCtrPolyfill(new AesPolyfill(encKey));
+      return new AesSiv(mac, ctr, null);
     }
-
-    return new AesSiv(mac, ctr, crypto);
   }
 
   constructor(mac: AesCmacPolyfill, ctr: CtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
