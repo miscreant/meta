@@ -10,10 +10,10 @@ matrix:
   - env: SUITE="go"
     language: go
     go: 1.8
-  - env: SUITE="js"
+  - env: SUITE="js" CXX=clang
     language: node_js
     node_js: 7
-  - env: SUITE="js"
+  - env: SUITE="js" CXX=clang
     language: node_js
     node_js: 8
   - env: SUITE="python"
@@ -37,3 +37,17 @@ matrix:
   - env: SUITE="rust"
     language: rust
     rust: nightly
+
+compiler: clang
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise-3.6
+    packages:
+      - g++-4.8
+      - llvm-3.6
+      - libstdc++-4.9-dev
+      - llvm-3.6-dev
+      - clang-3.6

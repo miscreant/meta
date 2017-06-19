@@ -7,6 +7,7 @@ import * as chaiAsPromised from "chai-as-promised";
 import { AesSiv } from "../src/internal/aes_siv";
 import { IntegrityError } from "../src/internal/exceptions";
 import { AesSivExample } from "./support/test_vectors";
+import WebCrypto = require("node-webcrypto-ossl");
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);
@@ -18,11 +19,25 @@ chai.use(chaiAsPromised);
     this.vectors = await AesSivExample.loadAll();
   }
 
-  @test async "should correctly seal and open"() {
+  @test async "should correctly seal and open with polyfill cipher implementations"() {
     for (let v of AesSivSpec.vectors) {
       const siv = await AesSiv.importKey(v.key, null);
       const sealed = await siv.seal(v.ad, v.plaintext);
       expect(sealed).to.eql(v.output);
+
+      const unsealed = await siv.open(v.ad, sealed);
+      expect(unsealed).not.to.be.null;
+      expect(unsealed!).to.eql(v.plaintext);
+      expect(() => siv.clean()).not.to.throw();
+    }
+  }
+
+  @test async "should correctly seal and open with WebCrypto cipher implementations"() {
+    for (let v of AesSivSpec.vectors) {
+      const siv = await AesSiv.importKey(v.key, new WebCrypto());
+      const sealed = await siv.seal(v.ad, v.plaintext);
+      expect(sealed).to.eql(v.output);
+
       const unsealed = await siv.open(v.ad, sealed);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
