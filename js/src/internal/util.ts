@@ -1,6 +1,21 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
+import { select } from "./constant-time";
+import NotImplementedError from "./exceptions/not_implemented_error";
+
+/** Perform the doubling operation described in the AES-SIV paper */
+export function dbl(src: Uint8Array, dst: Uint8Array) {
+  let carry = 0;
+  for (let i = src.length - 1; i >= 0; i--) {
+    const b = (src[i] >>> 7) & 0xff;
+    dst[i] = (src[i] << 1) | carry;
+    carry = b;
+  }
+  dst[dst.length - 1] ^= select(carry, 0x87, 0);
+  carry = 0;
+}
+
 /**
  * Autodetect and return the default cryptography provider for this environment.
  *
@@ -13,7 +28,7 @@ export function defaultCryptoProvider(): Crypto {
   } catch (e) {
     // Handle the case where window is undefined because we're not in a browser
     if (e instanceof ReferenceError) {
-      throw new Error("AES-SIV: no default crypto provider for this environment");
+      throw new NotImplementedError("AES-SIV: no default crypto provider for this environment. Use polyfill.");
     } else {
       throw e;
     }

@@ -87,7 +87,7 @@ yarn install sivchain
 Import **sivchain.js** into your project with:
 
 ```js
-var SIV = require("sivchain");
+import SIV from "sivchain";
 ```
 
 ## API

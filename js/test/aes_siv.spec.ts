@@ -4,10 +4,12 @@
 import { suite, test } from "mocha-typescript";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
-import { AesSiv } from "../src/internal/aes_siv";
-import { IntegrityError } from "../src/internal/exceptions";
 import { AesSivExample } from "./support/test_vectors";
+
 import WebCrypto = require("node-webcrypto-ossl");
+
+import AesSiv from "../src/internal/aes_siv";
+import IntegrityError from "../src/internal/exceptions/integrity_error";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);

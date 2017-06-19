@@ -3,11 +3,13 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AesPolyfill } from "../src/internal/polyfill/aes";
-import { AesCtrPolyfill } from "../src/internal/polyfill/aes_ctr";
-import { AesCtrWebCrypto } from "../src/internal/webcrypto/aes_ctr";
 import { AesCtrExample } from "./support/test_vectors";
+
 import WebCrypto = require("node-webcrypto-ossl");
+
+import AesPolyfill from "../src/internal/polyfill/aes";
+import AesCtrPolyfill from "../src/internal/polyfill/aes_ctr";
+import AesCtrWebCrypto from "../src/internal/webcrypto/aes_ctr";
 
 @suite class AesCtrSpec {
   static vectors: AesCtrExample[];

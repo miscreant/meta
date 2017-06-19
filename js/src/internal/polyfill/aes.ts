@@ -16,7 +16,7 @@ import { wipe } from "../util";
 // Powers of x mod poly in GF(2).
 const POWX = new Uint8Array([
   0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80,
-  0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f
+  0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f,
 ]);
 
 // FIPS-197 Figure 7. S-box substitution values in hexadecimal format.
@@ -36,7 +36,7 @@ const SBOX0 = new Uint8Array([
   0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,
   0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,
   0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
-  0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
+  0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
 ]);
 
 // FIPS-197 Figure 14.  Inverse S-box substitution values in hexadecimal format.
@@ -56,14 +56,21 @@ const SBOX1 = new Uint8Array([
   0x1f, 0xdd, 0xa8, 0x33, 0x88, 0x07, 0xc7, 0x31, 0xb1, 0x12, 0x10, 0x59, 0x27, 0x80, 0xec, 0x5f,
   0x60, 0x51, 0x7f, 0xa9, 0x19, 0xb5, 0x4a, 0x0d, 0x2d, 0xe5, 0x7a, 0x9f, 0x93, 0xc9, 0x9c, 0xef,
   0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,
-  0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
+  0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
 ]);
 
 // Encryption and decryption tables.
 // Will be computed by initialize() when the first AES instance is created.
 let isInitialized = false;
-let Te0: Uint32Array, Te1: Uint32Array, Te2: Uint32Array, Te3: Uint32Array;
-let Td0: Uint32Array, Td1: Uint32Array, Td2: Uint32Array, Td3: Uint32Array;
+
+let Te0: Uint32Array;
+let Te1: Uint32Array;
+let Te2: Uint32Array;
+let Te3: Uint32Array;
+let Td0: Uint32Array;
+let Td1: Uint32Array;
+let Td2: Uint32Array;
+let Td3: Uint32Array;
 
 // Initialize generates encryption and decryption tables.
 function initialize() {
@@ -157,9 +164,9 @@ function writeUint32BE(value: number, out = new Uint8Array(4), offset = 0): Uint
  *
  * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
  */
-export class AesPolyfill {
+export default class AesPolyfill {
   // AES block size in bytes.
-  readonly blockSize = 16;
+  public readonly blockSize = 16;
 
   // Key byte length.
   private _keyLen: number;
@@ -193,7 +200,7 @@ export class AesPolyfill {
    *
    * This is helpful to avoid allocations.
    */
-  setKey(key: Uint8Array, noDecryption = false): this {
+  public setKey(key: Uint8Array, noDecryption = false): this {
     if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
       throw new Error("AES: wrong key size (must be 16, 24 or 32)");
     }
@@ -222,7 +229,7 @@ export class AesPolyfill {
   /**
    * Cleans expanded keys from memory, setting them to zeros.
    */
-  clean(): this {
+  public clean(): this {
     if (this._encKey) {
       wipe(this._encKey);
     }
@@ -241,7 +248,7 @@ export class AesPolyfill {
    * cipher mode! It should only be used to implement a cipher mode.
    * This library uses it to implement AES-SIV.
    */
-  encryptBlock(src: Uint8Array, dst: Uint8Array): this {
+  public encryptBlock(src: Uint8Array, dst: Uint8Array): this {
     // Check block lengths.
     if (src.length < this.blockSize) {
       throw new Error("AES: source block too small");
@@ -316,7 +323,10 @@ function encryptBlock(xk: Uint32Array, src: Uint8Array, dst: Uint8Array): void {
   s2 ^= xk[2];
   s3 ^= xk[3];
 
-  let t0 = 0, t1 = 0, t2 = 0, t3 = 0;
+  let t0 = 0;
+  let t1 = 0;
+  let t2 = 0;
+  let t3 = 0;
 
   // Middle rounds shuffle using tables.
   // Number of rounds is set by length of expanded key.
@@ -379,7 +389,10 @@ function decryptBlock(xk: Uint32Array, src: Uint8Array, dst: Uint8Array): void {
   s2 ^= xk[2];
   s3 ^= xk[3];
 
-  let t0 = 0, t1 = 0, t2 = 0, t3 = 0;
+  let t0 = 0;
+  let t1 = 0;
+  let t2 = 0;
+  let t3 = 0;
 
   // Middle rounds shuffle using tables.
   // Number of rounds is set by length of expanded key.

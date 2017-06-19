@@ -3,9 +3,10 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AesCmacPolyfill } from "../src/internal/polyfill/aes_cmac";
-import { AesPolyfill } from "../src/internal/polyfill/aes";
 import { AesCmacExample } from "./support/test_vectors";
+
+import AesCmacPolyfill from "../src/internal/polyfill/aes_cmac";
+import AesPolyfill from "../src/internal/polyfill/aes";
 
 @suite class AesCmacSpec {
   static vectors: AesCmacExample[];
