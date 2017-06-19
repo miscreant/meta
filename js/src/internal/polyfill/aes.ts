@@ -239,6 +239,7 @@ export class AesPolyfill {
    *
    * This function should not be used to encrypt data without any
    * cipher mode! It should only be used to implement a cipher mode.
+   * This library uses it to implement AES-SIV.
    */
   encryptBlock(src: Uint8Array, dst: Uint8Array): this {
     // Check block lengths.
@@ -251,31 +252,6 @@ export class AesPolyfill {
 
     // Encrypt block.
     encryptBlock(this._encKey, src, dst);
-
-    return this;
-  }
-
-  /**
-   * Decrypt 16-byte block src into 16-byte block dst.
-   *
-   * This function should not be used to encrypt data without any
-   * cipher mode! It should only be used to implement a cipher mode.
-   */
-  decryptBlock(src: Uint8Array, dst: Uint8Array): this {
-    // Check block lengths.
-    if (src.length < this.blockSize) {
-      throw new Error("AES: source block too small");
-    }
-    if (dst.length < this.blockSize) {
-      throw new Error("AES: destination block too small");
-    }
-
-    // Check that we have decryption key.
-    if (!this._decKey) {
-      throw new Error("AES: decrypting with instance created with noDecryption option");
-    } else {
-      decryptBlock(this._decKey, src, dst);
-    }
 
     return this;
   }
