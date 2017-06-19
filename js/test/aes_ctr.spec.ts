@@ -5,7 +5,9 @@ import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { AesPolyfill } from "../src/internal/polyfill/aes";
 import { AesCtrPolyfill } from "../src/internal/polyfill/aes_ctr";
+import { AesCtrWebCrypto } from "../src/internal/webcrypto/aes_ctr";
 import { AesCtrExample } from "./support/test_vectors";
+import WebCrypto = require("node-webcrypto-ossl");
 
 @suite class AesCtrSpec {
   static vectors: AesCtrExample[];
@@ -14,11 +16,18 @@ import { AesCtrExample } from "./support/test_vectors";
     this.vectors = await AesCtrExample.loadAll();
   }
 
-  @test async "should correctly encrypt"() {
+  @test async "passes test vectors using the AES-CTR polyfill"() {
     for (let v of AesCtrSpec.vectors) {
-      // TODO: automated tests for WebCrypto AES-CTR
       const ctrPolyfill = new AesCtrPolyfill(new AesPolyfill(v.key));
       let ciphertext = await ctrPolyfill.encrypt(v.iv, v.src);
+      expect(ciphertext).to.eql(v.dst);
+    }
+  }
+
+  @test async "passes test vectors using the WebCrypto AES-CTR implementation"() {
+    for (let v of AesCtrSpec.vectors) {
+      const ctrNative = await AesCtrWebCrypto.importKey(v.key, new WebCrypto());
+      let ciphertext = await ctrNative.encrypt(v.iv, v.src);
       expect(ciphertext).to.eql(v.dst);
     }
   }

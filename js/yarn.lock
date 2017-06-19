@@ -806,9 +806,9 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-node-webcrypto-ossl@^1.0.25:
-  version "1.0.25"
-  resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.25.tgz#fcb48c25cea1f127b1efe9a2d7a2b847611b8c16"
+node-webcrypto-ossl@^1.0.26:
+  version "1.0.26"
+  resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.26.tgz#c5e48d1dc25c87efd394f6edbe6fc33fe6fd5aed"
   dependencies:
     "@types/mkdirp" "^0.3.29"
     "@types/node" "^6.0.45"
