@@ -72,14 +72,14 @@ The following constructions are provided by **SIVChain**:
 
 When standardization work around [AES-GCM-SIV] is complete, it will be seriously
 considered for inclusion in this library. **AES-GCM-SIV** has the advantage of
-the [GHASH] function being able to run in parallel, versus **AES-CMAC**'s
-sequential operation.
+the [GHASH] (technically **POLYVAL**) function being able to run in parallel,
+versus **AES-CMAC**'s sequential operation.
 
 **AES-SIV** has the advantage that it can be implemented using the AES
 function alone, making it a better choice for environments where a
-hardware accelerated version of the **GHASH** (technically **POLYVAL**)
-function is unavailable, such as low-powered mobile devices and so-called
-"Internet of Things" embedded use cases.
+hardware accelerated version of the **GHASH** function is unavailable,
+such as low-powered mobile devices and so-called "Internet of Things"
+embedded use cases.
 
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
 [NIST SP 800-38D]: http://dx.doi.org/10.6028/NIST.SP.800-38D
