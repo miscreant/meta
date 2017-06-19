@@ -3,8 +3,9 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { AesPolyfill } from "../src/internal/polyfill/aes";
 import { AesExample } from "./support/test_vectors";
+
+import AesPolyfill from "../src/internal/polyfill/aes";
 
 @suite class AesSpec {
   @test "should not accept wrong key length"() {

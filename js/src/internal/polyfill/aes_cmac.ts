@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { AesPolyfill } from "./aes";
-import { select } from "../constant-time";
-import { wipe } from "../util";
+import { dbl, wipe } from "../util";
+
+import AesPolyfill from "./aes";
 
 /**
  * Polyfill for the AES-CMAC message authentication code
@@ -11,9 +11,9 @@ import { wipe } from "../util";
  * Uses a non-constant-time (lookup table-based) AES polyfill.
  * See polyfill/aes.ts for more information on the security impact.
  */
-export class AesCmacPolyfill {
-  readonly blockSize = 16;
-  readonly digestLength = 16;
+export default class AesCmacPolyfill {
+  public readonly blockSize = 16;
+  public readonly digestLength = 16;
 
   private _subkey1: Uint8Array;
   private _subkey2: Uint8Array;
@@ -39,14 +39,14 @@ export class AesCmacPolyfill {
     dbl(this._subkey1, this._subkey2);
   }
 
-  reset(): this {
+  public reset(): this {
     wipe(this._state);
     this._statePos = 0;
     this._finished = false;
     return this;
   }
 
-  clean() {
+  public clean() {
     wipe(this._state);
     wipe(this._subkey1);
     wipe(this._subkey2);
@@ -54,7 +54,7 @@ export class AesCmacPolyfill {
     this._statePos = 0;
   }
 
-  update(data: Uint8Array): this {
+  public update(data: Uint8Array): this {
     const left = this.blockSize - this._statePos;
     let dataPos = 0;
     let dataLength = data.length;
@@ -84,7 +84,7 @@ export class AesCmacPolyfill {
     return this;
   }
 
-  finish(out: Uint8Array): this {
+  public finish(out: Uint8Array): this {
     if (!this._finished) {
       // Select which subkey to use.
       const key = (this._statePos < this.digestLength) ? this._subkey2 : this._subkey1;
@@ -112,21 +112,10 @@ export class AesCmacPolyfill {
   /**
    * Returns the final CMAC digest.
    */
-  digest(): Uint8Array {
+  public digest(): Uint8Array {
     const out = new Uint8Array(this.digestLength);
     this.finish(out);
     return out;
   }
 
-}
-
-export function dbl(src: Uint8Array, dst: Uint8Array) {
-  let carry = 0;
-  for (let i = src.length - 1; i >= 0; i--) {
-    const b = (src[i] >>> 7) & 0xff;
-    dst[i] = (src[i] << 1) | carry;
-    carry = b;
-  }
-  dst[dst.length - 1] ^= select(carry, 0x87, 0);
-  carry = 0;
 }

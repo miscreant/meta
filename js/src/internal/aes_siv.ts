@@ -1,29 +1,25 @@
 // Copyright (C) 2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import { AesPolyfill } from "./polyfill/aes";
-import { AesCmacPolyfill, dbl } from "./polyfill/aes_cmac";
-import { AesCtrPolyfill } from "./polyfill/aes_ctr";
-import { AesCtrWebCrypto } from "./webcrypto/aes_ctr";
-import { IntegrityError, NotImplementedError } from "./exceptions";
-import { CtrLike, SivLike } from "./interfaces";
 import { equal } from "./constant-time";
-import { defaultCryptoProvider, wipe, xor, zeroIVBits } from "./util";
+import { dbl, defaultCryptoProvider, wipe, xor, zeroIVBits } from "./util";
+
+import IntegrityError from "./exceptions/integrity_error";
+import NotImplementedError from "./exceptions/not_implemented_error";
+import { ICtrLike, ISivLike } from "./interfaces";
+
+import AesPolyfill from "./polyfill/aes";
+import AesCmacPolyfill from "./polyfill/aes_cmac";
+import AesCtrPolyfill from "./polyfill/aes_ctr";
+import AesCtrWebCrypto from "./webcrypto/aes_ctr";
+
+/** Maximum number of associated data items */
+const MAX_ASSOCIATED_DATA = 126;
 
 /** The AES-SIV mode of authenticated encryption */
-export class AesSiv implements SivLike {
-  /** Maximum number of associated data items */
-  public static readonly MAX_ASSOCIATED_DATA = 126;
-
-  private _mac: AesCmacPolyfill;
-  private _ctr: CtrLike;
-  private _tmp1: Uint8Array;
-  private _tmp2: Uint8Array;
-  private _crypto: Crypto | null;
-
-  tagLength: number;
-
-  static async importKey(keyData: Uint8Array, crypto: Crypto | null = defaultCryptoProvider()): Promise<AesSiv> {
+export default class AesSiv implements ISivLike {
+  /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
+  public static async importKey(keyData: Uint8Array, crypto: Crypto | null = defaultCryptoProvider()): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
       throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
@@ -37,22 +33,29 @@ export class AesSiv implements SivLike {
 
     if (crypto !== null) {
       try {
-        let ctr = await AesCtrWebCrypto.importKey(encKey, crypto);
+        const ctr = await AesCtrWebCrypto.importKey(encKey, crypto);
         return new AesSiv(mac, ctr, crypto);
       } catch (e) {
         if (e.message.includes("unsupported")) {
-          throw new NotImplementedError("AES-SIV: CTR unsupported by crypto backend. Pass null to use polyfill instead.");
+          throw new NotImplementedError("AES-SIV: unsupported crypto backend (CTR missing). Use polyfill.");
         } else {
           throw e;
         }
       }
     } else {
-      let ctr = new AesCtrPolyfill(new AesPolyfill(encKey));
+      const ctr = new AesCtrPolyfill(new AesPolyfill(encKey));
       return new AesSiv(mac, ctr, null);
     }
   }
 
-  constructor(mac: AesCmacPolyfill, ctr: CtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
+  public tagLength: number;
+  private _mac: AesCmacPolyfill;
+  private _ctr: ICtrLike;
+  private _tmp1: Uint8Array;
+  private _tmp2: Uint8Array;
+  private _crypto: Crypto | null;
+
+  constructor(mac: AesCmacPolyfill, ctr: ICtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
     this._mac = mac;
     this._ctr = ctr;
     this._crypto = crypto;
@@ -62,14 +65,15 @@ export class AesSiv implements SivLike {
     this.tagLength = this._mac.digestLength;
   }
 
-  async seal(associatedData: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
-    if (associatedData.length > AesSiv.MAX_ASSOCIATED_DATA) {
+  /** Encrypt and authenticate data using AES-SIV */
+  public async seal(associatedData: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
+    if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }
 
     // Allocate space for sealed ciphertext.
     const resultLength = this.tagLength + plaintext.length;
-    let result = new Uint8Array(resultLength);
+    const result = new Uint8Array(resultLength);
 
     // Authenticate.
     const iv = this._s2v(associatedData, plaintext);
@@ -81,8 +85,9 @@ export class AesSiv implements SivLike {
     return result;
   }
 
-  async open(associatedData: Uint8Array[], sealed: Uint8Array): Promise<Uint8Array> {
-    if (associatedData.length > AesSiv.MAX_ASSOCIATED_DATA) {
+  /** Decrypt and authenticate data using AES-SIV */
+  public async open(associatedData: Uint8Array[], sealed: Uint8Array): Promise<Uint8Array> {
+    if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }
 
@@ -96,7 +101,7 @@ export class AesSiv implements SivLike {
     iv.set(tag);
     zeroIVBits(iv);
 
-    let result = await this._ctr.decrypt(iv, sealed.subarray(this.tagLength));
+    const result = await this._ctr.decrypt(iv, sealed.subarray(this.tagLength));
 
     // Authenticate.
     const expectedTag = this._s2v(associatedData, result);
@@ -109,7 +114,8 @@ export class AesSiv implements SivLike {
     return result;
   }
 
-  clean(): this {
+  /** Make a best effort to wipe memory used by this AesSiv instance */
+  public clean(): this {
     wipe(this._tmp1);
     wipe(this._tmp2);
     this._ctr.clean();
@@ -135,8 +141,8 @@ export class AesSiv implements SivLike {
     this._mac.finish(this._tmp2);
     this._mac.reset();
 
-    for (let i = 0; i < s.length; i++) {
-      this._mac.update(s[i]);
+    for (const b of s) {
+      this._mac.update(b);
       this._mac.finish(this._tmp1);
       this._mac.reset();
       dbl(this._tmp2, this._tmp2);

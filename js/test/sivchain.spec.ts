@@ -3,8 +3,9 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { SIV } from "../src/sivchain";
 import { AesSivExample } from "./support/test_vectors";
+
+import SIV from "../src/sivchain";
 
 @suite class SivSpec {
   static vectors: AesSivExample[];
