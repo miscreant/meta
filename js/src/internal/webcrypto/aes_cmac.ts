@@ -75,6 +75,8 @@ export default class WebCryptoAesCmac implements ICmacLike {
       this._statePos = 0;
     }
 
+    // TODO: use AES-CBC with a span of multiple blocks instead of encryptBlock
+    // to encrypt many blocks in a single call to the WebCrypto API
     while (dataLength > AES_BLOCK_SIZE) {
       for (let i = 0; i < AES_BLOCK_SIZE; i++) {
         this._state[i] ^= data[dataPos + i];
