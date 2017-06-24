@@ -5,29 +5,27 @@ import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { AesExample } from "./support/test_vectors";
 
-import AesPolyfill from "../src/internal/polyfill/aes";
+import PolyfillAes from "../src/internal/polyfill/aes";
 
-@suite class AesSpec {
-  @test "should not accept wrong key length"() {
-    expect(() => new AesPolyfill(new Uint8Array(10))).to.throw(/^AES/);
-  }
-
-  @test "should not accept different key in setKey()"() {
-    const cipher = new AesPolyfill(new Uint8Array(32));
-    expect(() => cipher.setKey(new Uint8Array(16))).to.throw(/^AES/);
-  }
-}
-
-@suite class AesEncryptBlockSpec {
+@suite class PolyfillAesSpec {
   static vectors: AesExample[];
 
   static async before() {
     this.vectors = await AesExample.loadAll();
   }
 
+  @test "should not accept wrong key length"() {
+    expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(/^AES/);
+  }
+
+  @test "should not accept different key in setKey()"() {
+    const cipher = new PolyfillAes(new Uint8Array(32));
+    expect(() => cipher.setKey(new Uint8Array(16))).to.throw(/^AES/);
+  }
+
   @test "should correctly encrypt block"() {
-    for (let v of AesEncryptBlockSpec.vectors) {
-      const cipher = new AesPolyfill(v.key);
+    for (let v of PolyfillAesSpec.vectors) {
+      const cipher = new PolyfillAes(v.key);
       const dst = new Uint8Array(16);
       cipher.encryptBlock(v.src, dst);
       expect(dst).to.eql(v.dst);
@@ -39,7 +37,7 @@ import AesPolyfill from "../src/internal/polyfill/aes";
     let block = new Uint8Array(16);
     const newKey = new Uint8Array(32);
     for (let i = 0; i < 100; i++) {
-      const cipher = new AesPolyfill(key);
+      const cipher = new PolyfillAes(key);
       for (let j = 0; j < 100; j++) {
         cipher.encryptBlock(block, block);
       }

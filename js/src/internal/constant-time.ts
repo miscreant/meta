@@ -17,14 +17,6 @@ export function select(subject: number, resultIfOne: number, resultIfZero: numbe
 }
 
 /**
- * Returns 1 if a <= b, or 0 if not.
- * Arguments must be positive 32-bit integers less than or equal to 2^31 - 1.
- */
-export function lessOrEqual(a: number, b: number): number {
-  return (((a | 0) - (b | 0) - 1) >>> 31) & 1;
-}
-
-/**
  * Returns 1 if a and b are of equal length and their contents
  * are equal, or 0 otherwise.
  *

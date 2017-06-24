@@ -164,7 +164,7 @@ function writeUint32BE(value: number, out = new Uint8Array(4), offset = 0): Uint
  *
  * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
  */
-export default class AesPolyfill {
+export default class PolyfillAes {
   // AES block size in bytes.
   public readonly blockSize = 16;
 

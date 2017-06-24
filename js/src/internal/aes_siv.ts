@@ -6,12 +6,13 @@ import { dbl, defaultCryptoProvider, wipe, xor, zeroIVBits } from "./util";
 
 import IntegrityError from "./exceptions/integrity_error";
 import NotImplementedError from "./exceptions/not_implemented_error";
-import { ICtrLike, ISivLike } from "./interfaces";
+import { ICmacLike, ICtrLike, ISivLike } from "./interfaces";
 
-import AesPolyfill from "./polyfill/aes";
-import AesCmacPolyfill from "./polyfill/aes_cmac";
-import AesCtrPolyfill from "./polyfill/aes_ctr";
-import AesCtrWebCrypto from "./webcrypto/aes_ctr";
+import PolyfillAes from "./polyfill/aes";
+import PolyfillAesCmac from "./polyfill/aes_cmac";
+import PolyfillAesCtr from "./polyfill/aes_ctr";
+import WebCryptoAesCmac from "./webcrypto/aes_cmac";
+import WebCryptoAesCtr from "./webcrypto/aes_ctr";
 
 /** Maximum number of associated data items */
 const MAX_ASSOCIATED_DATA = 126;
@@ -28,12 +29,10 @@ export default class AesSiv implements ISivLike {
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
     const encKey = keyData.subarray(keyData.length / 2 | 0);
 
-    // TODO: use WebCrypto implementation of AES-CMAC if available
-    const mac = new AesCmacPolyfill(new AesPolyfill(macKey));
-
     if (crypto !== null) {
       try {
-        const ctr = await AesCtrWebCrypto.importKey(encKey, crypto);
+        const mac = await WebCryptoAesCmac.importKey(macKey, crypto);
+        const ctr = await WebCryptoAesCtr.importKey(encKey, crypto);
         return new AesSiv(mac, ctr, crypto);
       } catch (e) {
         if (e.message.includes("unsupported")) {
@@ -43,19 +42,20 @@ export default class AesSiv implements ISivLike {
         }
       }
     } else {
-      const ctr = new AesCtrPolyfill(new AesPolyfill(encKey));
+      const mac = new PolyfillAesCmac(new PolyfillAes(macKey));
+      const ctr = new PolyfillAesCtr(new PolyfillAes(encKey));
       return new AesSiv(mac, ctr, null);
     }
   }
 
   public tagLength: number;
-  private _mac: AesCmacPolyfill;
+  private _mac: ICmacLike;
   private _ctr: ICtrLike;
   private _tmp1: Uint8Array;
   private _tmp2: Uint8Array;
   private _crypto: Crypto | null;
 
-  constructor(mac: AesCmacPolyfill, ctr: ICtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
+  constructor(mac: ICmacLike, ctr: ICtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
     this._mac = mac;
     this._ctr = ctr;
     this._crypto = crypto;
@@ -76,7 +76,7 @@ export default class AesSiv implements ISivLike {
     const result = new Uint8Array(resultLength);
 
     // Authenticate.
-    const iv = this._s2v(associatedData, plaintext);
+    const iv = await this._s2v(associatedData, plaintext);
     result.set(iv);
 
     // Encrypt.
@@ -104,7 +104,7 @@ export default class AesSiv implements ISivLike {
     const result = await this._ctr.decrypt(iv, sealed.subarray(this.tagLength));
 
     // Authenticate.
-    const expectedTag = this._s2v(associatedData, result);
+    const expectedTag = await this._s2v(associatedData, result);
 
     if (!equal(expectedTag, tag)) {
       wipe(result);
@@ -125,7 +125,7 @@ export default class AesSiv implements ISivLike {
     return this;
   }
 
-  private _s2v(s: Uint8Array[], sn: Uint8Array): Uint8Array {
+  private async _s2v(s: Uint8Array[], sn: Uint8Array): Promise<Uint8Array> {
     if (!s) {
       s = [];
     }
@@ -137,13 +137,15 @@ export default class AesSiv implements ISivLike {
     // vectors is zero, however in SIV construction this case is never
     // triggered, since we always pass plaintext as the last vector (even
     // if it's zero-length), so we omit this case.
-    this._mac.update(this._tmp1);
-    this._mac.finish(this._tmp2);
+    await this._mac.update(this._tmp1);
+    wipe(this._tmp2);
+    this._tmp2 = await this._mac.finish();
     this._mac.reset();
 
     for (const b of s) {
-      this._mac.update(b);
-      this._mac.finish(this._tmp1);
+      await this._mac.update(b);
+      wipe(this._tmp1);
+      this._tmp1 = await this._mac.finish();
       this._mac.reset();
       dbl(this._tmp2, this._tmp2);
       xor(this._tmp2, this._tmp1);
@@ -154,15 +156,14 @@ export default class AesSiv implements ISivLike {
     if (sn.length >= this._mac.blockSize) {
       const n = sn.length - this._mac.blockSize;
       this._tmp1.set(sn.subarray(n));
-      this._mac.update(sn.subarray(0, n));
+      await this._mac.update(sn.subarray(0, n));
     } else {
       this._tmp1.set(sn);
       this._tmp1[sn.length] = 0x80;
       dbl(this._tmp2, this._tmp2);
     }
     xor(this._tmp1, this._tmp2);
-    this._mac.update(this._tmp1);
-    this._mac.finish(this._tmp1);
-    return this._tmp1;
+    await this._mac.update(this._tmp1);
+    return this._mac.finish();
   }
 }

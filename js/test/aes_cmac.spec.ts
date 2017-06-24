@@ -5,21 +5,40 @@ import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { AesCmacExample } from "./support/test_vectors";
 
-import AesCmacPolyfill from "../src/internal/polyfill/aes_cmac";
-import AesPolyfill from "../src/internal/polyfill/aes";
+import WebCrypto = require("node-webcrypto-ossl");
 
-@suite class AesCmacSpec {
+import PolyfillAes from "../src/internal/polyfill/aes";
+import PolyfillAesCmac from "../src/internal/polyfill/aes_cmac";
+import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
+
+@suite class PolyfillAesCmacSpec {
   static vectors: AesCmacExample[];
 
   static async before() {
     this.vectors = await AesCmacExample.loadAll();
   }
 
-  @test "should produce correct results for test vectors"() {
-    for (let v of AesCmacSpec.vectors) {
-      const mac = new AesCmacPolyfill(new AesPolyfill(v.key));
-      mac.update(v.input);
-      expect(mac.digest()).to.eql(v.result);
+  @test async "passes the AES-CMAC test vectors"() {
+    for (let v of PolyfillAesCmacSpec.vectors) {
+      const mac = new PolyfillAesCmac(new PolyfillAes(v.key));
+      await mac.update(v.input);
+      expect(await mac.finish()).to.eql(v.result);
+    }
+  }
+}
+
+@suite class WebCryptoAesCmacSpec {
+  static vectors: AesCmacExample[];
+
+  static async before() {
+    this.vectors = await AesCmacExample.loadAll();
+  }
+
+  @test async "passes the AES-CMAC test vectors"() {
+    for (let v of PolyfillAesCmacSpec.vectors) {
+      const mac = await WebCryptoAesCmac.importKey(v.key, new WebCrypto());
+      await mac.update(v.input);
+      expect(await mac.finish()).to.eql(v.result);
     }
   }
 }

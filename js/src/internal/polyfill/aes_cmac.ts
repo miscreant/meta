@@ -1,9 +1,9 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
+import { ICmacLike } from "../interfaces";
 import { dbl, wipe } from "../util";
-
-import AesPolyfill from "./aes";
+import PolyfillAes from "./aes";
 
 /**
  * Polyfill for the AES-CMAC message authentication code
@@ -11,7 +11,7 @@ import AesPolyfill from "./aes";
  * Uses a non-constant-time (lookup table-based) AES polyfill.
  * See polyfill/aes.ts for more information on the security impact.
  */
-export default class AesCmacPolyfill {
+export default class PolyfillAesCmac implements ICmacLike {
   public readonly blockSize = 16;
   public readonly digestLength = 16;
 
@@ -20,12 +20,11 @@ export default class AesCmacPolyfill {
 
   private _state: Uint8Array;
   private _statePos = 0;
-
   private _finished = false;
 
-  private _cipher: AesPolyfill;
+  private _cipher: PolyfillAes;
 
-  constructor(cipher: AesPolyfill) {
+  constructor(cipher: PolyfillAes) {
     this._cipher = cipher;
 
     // Allocate space.
@@ -54,7 +53,7 @@ export default class AesCmacPolyfill {
     this._statePos = 0;
   }
 
-  public update(data: Uint8Array): this {
+  public async update(data: Uint8Array): Promise<this> {
     const left = this.blockSize - this._statePos;
     let dataPos = 0;
     let dataLength = data.length;
@@ -81,10 +80,11 @@ export default class AesCmacPolyfill {
     for (let i = 0; i < dataLength; i++) {
       this._state[this._statePos++] ^= data[dataPos + i];
     }
+
     return this;
   }
 
-  public finish(out: Uint8Array): this {
+  public async finish(): Promise<Uint8Array> {
     if (!this._finished) {
       // Select which subkey to use.
       const key = (this._statePos < this.digestLength) ? this._subkey2 : this._subkey1;
@@ -105,17 +105,9 @@ export default class AesCmacPolyfill {
       // Set finished flag.
       this._finished = true;
     }
-    out.set(this._state);
-    return this;
-  }
 
-  /**
-   * Returns the final CMAC digest.
-   */
-  public digest(): Uint8Array {
     const out = new Uint8Array(this.digestLength);
-    this.finish(out);
+    out.set(this._state);
     return out;
   }
-
 }
