@@ -66,7 +66,7 @@ export default class AesSiv implements ISivLike {
   }
 
   /** Encrypt and authenticate data using AES-SIV */
-  public async seal(associatedData: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
+  public async seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }
@@ -86,7 +86,7 @@ export default class AesSiv implements ISivLike {
   }
 
   /** Decrypt and authenticate data using AES-SIV */
-  public async open(associatedData: Uint8Array[], sealed: Uint8Array): Promise<Uint8Array> {
+  public async open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }

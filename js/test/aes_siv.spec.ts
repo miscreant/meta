@@ -24,10 +24,10 @@ chai.use(chaiAsPromised);
   @test async "should correctly seal and open with polyfill cipher implementations"() {
     for (let v of AesSivSpec.vectors) {
       const siv = await AesSiv.importKey(v.key, null);
-      const sealed = await siv.seal(v.ad, v.plaintext);
+      const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.output);
 
-      const unsealed = await siv.open(v.ad, sealed);
+      const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clean()).not.to.throw();
@@ -37,10 +37,10 @@ chai.use(chaiAsPromised);
   @test async "should correctly seal and open with WebCrypto cipher implementations"() {
     for (let v of AesSivSpec.vectors) {
       const siv = await AesSiv.importKey(v.key, new WebCrypto());
-      const sealed = await siv.seal(v.ad, v.plaintext);
+      const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.output);
 
-      const unsealed = await siv.open(v.ad, sealed);
+      const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clean()).not.to.throw();
@@ -57,13 +57,13 @@ chai.use(chaiAsPromised);
 
     const siv = await AesSiv.importKey(key, null);
 
-    const sealed1 = await siv.seal(ad1, pt1);
-    const opened1 = await siv.open(ad1, sealed1);
+    const sealed1 = await siv.seal(pt1, ad1);
+    const opened1 = await siv.open(sealed1, ad1, );
     expect(opened1).not.to.be.null;
     expect(opened1!).to.eql(pt1);
 
-    const sealed2 = await siv.seal(ad2, pt2);
-    const opened2 = await siv.open(ad2, sealed2);
+    const sealed2 = await siv.seal(pt2, ad2);
+    const opened2 = await siv.open(sealed2, ad2);
     expect(opened2).not.to.be.null;
     expect(opened2!).to.eql(pt2);
 
@@ -78,7 +78,7 @@ chai.use(chaiAsPromised);
       badKey[3] ^= badKey[8];
 
       const siv = await AesSiv.importKey(badKey, null);
-      expect(siv.open(v.ad, v.output)).to.be.rejectedWith(IntegrityError);
+      expect(siv.open(v.output, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -88,7 +88,7 @@ chai.use(chaiAsPromised);
       badAd.push(new Uint8Array(1));
 
       const siv = await AesSiv.importKey(v.key, null);
-      return expect(siv.open(badAd, v.output)).to.be.rejectedWith(IntegrityError);
+      return expect(siv.open(v.output, badAd)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -100,7 +100,7 @@ chai.use(chaiAsPromised);
       badOutput[3] ^= badOutput[8];
 
       const siv = await AesSiv.importKey(v.key, null);
-      return expect(siv.open(v.ad, badOutput)).to.be.rejectedWith(IntegrityError);
+      return expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 }
