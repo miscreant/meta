@@ -4,7 +4,7 @@
 import { ICtrLike } from "../interfaces";
 import { wipe } from "../util";
 
-import AesPolyfill from "./aes";
+import PolyfillAes from "./aes";
 
 /**
  * Polyfill for the AES-CTR (counter) mode of operation.
@@ -15,12 +15,12 @@ import AesPolyfill from "./aes";
  * Note that CTR mode is malleable and generally should not be used without
  * authentication. Instead, use an authenticated encryption mode, like AES-SIV!
  */
-export default class AesCtrPolyfill implements ICtrLike {
+export default class PolyfillAesCtr implements ICtrLike {
   private _counter: Uint8Array;
   private _buffer: Uint8Array;
-  private _cipher: AesPolyfill;
+  private _cipher: PolyfillAes;
 
-  constructor(cipher: AesPolyfill) {
+  constructor(cipher: PolyfillAes) {
     // Set cipher.
     this._cipher = cipher;
 

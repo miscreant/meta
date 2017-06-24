@@ -3,7 +3,7 @@
 
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { select, lessOrEqual, compare, equal } from "../src/internal/constant-time";
+import { select, compare, equal } from "../src/internal/constant-time";
 
 @suite class SelectSpec {
   @test "should select correct value"() {
@@ -11,17 +11,6 @@ import { select, lessOrEqual, compare, equal } from "../src/internal/constant-ti
     expect(select(1, 3, 2)).to.eq(3);
     expect(select(0, 2, 3)).to.eq(3);
     expect(select(0, 3, 2)).to.eq(2);
-  }
-}
-
-@suite class lessOrEqualSpec {
-  @test "should return correct result"() {
-    expect(lessOrEqual(0, 0)).to.eq(1);
-    expect(lessOrEqual(0, Math.pow(2, 31) - 1)).to.eq(1);
-    expect(lessOrEqual(2, 3)).to.eq(1);
-    expect(lessOrEqual(3, 3)).to.eq(1);
-    expect(lessOrEqual(4, 3)).to.eq(0);
-    expect(lessOrEqual(5, 3)).to.eq(0);
   }
 }
 

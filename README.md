@@ -76,7 +76,7 @@ the [GHASH] (technically **POLYVAL**) function being able to run in parallel,
 versus **AES-CMAC**'s sequential operation.
 
 **AES-SIV** has the advantage that it can be implemented using the AES
-function alone, making it a better choice for environments where a
+encryption function alone, making it a better choice for environments where a
 hardware accelerated version of the **GHASH** function is unavailable,
 such as low-powered mobile devices and so-called "Internet of Things"
 embedded use cases.

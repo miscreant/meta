@@ -13,3 +13,13 @@ export interface ICtrLike {
   decrypt(iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array>;
   clean(): this;
 }
+
+/** An implementation of the CMAC message authentication code */
+export interface ICmacLike {
+  blockSize: number;
+  digestLength: number;
+  reset(): this;
+  clean(): void;
+  update(data: Uint8Array): Promise<this>;
+  finish(): Promise<Uint8Array>;
+}
