@@ -17,10 +17,10 @@ import SIV from "../src/sivchain";
   @test async "AES-SIV: should correctly seal and open"() {
     for (let v of SivSpec.vectors) {
       const siv = await SIV.importKey(v.key, "AES-SIV", null);
-      const sealed = await siv.seal(v.ad, v.plaintext);
+      const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.output);
 
-      const unsealed = await siv.open(v.ad, sealed);
+      const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clean()).not.to.throw();

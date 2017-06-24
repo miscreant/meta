@@ -2,8 +2,8 @@
 
 /** A cipher which provides a SIV-like interface and properties */
 export interface ISivLike {
-  seal(associatedData: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array>;
-  open(associatedData: Uint8Array[], sealed: Uint8Array): Promise<Uint8Array>;
+  seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
+  open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
   clean(): this;
 }
 
