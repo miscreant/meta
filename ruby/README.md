@@ -1,9 +1,11 @@
-# sivchain.rb [![Latest Version][gem-shield]][gem-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link]
+# sivchain.rb [![Latest Version][gem-shield]][gem-link] [![Build Status][build-image]][build-link] [![Code Climate][codeclimate-image]][codeclimate-link] [![MIT licensed][license-image]][license-link]
 
 [gem-shield]: https://badge.fury.io/rb/sivchain.svg
 [gem-link]: https://rubygems.org/gems/sivchain
 [build-image]: https://secure.travis-ci.org/zcred/sivchain.svg?branch=master
 [build-link]: http://travis-ci.org/zcred/sivchain
+[codeclimate-image]: https://codeclimate.com/github/zcred/sivchain/badges/gpa.svg
+[codeclimate-link]: https://codeclimate.com/github/zcred/sivchain
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
 
@@ -36,7 +38,7 @@ For more information, see the [toplevel README.md].
 
 Have questions? Want to suggest a feature or change?
 
-* [Gitter]: web-based chat about zcred projects including **sivchain.js**
+* [Gitter]: web-based chat about zcred projects including **sivchain.rb**
 * [Google Group]: join via web or email ([zcred+subscribe@googlegroups.com])
 
 [Gitter]: https://gitter.im/zcred/Lobby
