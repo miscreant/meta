@@ -255,7 +255,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/zcred/
 
 ## Copyright
 
-Copyright (c) 2017 Dmitry Chestnykh, [The Zcred Developers][AUTHORS].
+Copyright (c) 2016-2017 Dmitry Chestnykh, [The Zcred Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
 [AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md

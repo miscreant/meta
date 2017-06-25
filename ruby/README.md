@@ -135,5 +135,8 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/zcred/
 
 ## Copyright
 
-Copyright (c) 2017 [The Zcred Developers][AUTHORS].
+Copyright (c) 2013-2017 John Downey, [The Zcred Developers][AUTHORS].
 See [LICENSE.txt] for further details.
+
+[AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
+[LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/ruby/LICENSE.txt
