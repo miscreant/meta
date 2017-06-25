@@ -24,7 +24,7 @@ matrix:
     python: 3.6
   - env: SUITE="ruby"
     language: ruby
-    rvm: 2.4.0
+    rvm: 2.4.1
   - env: SUITE="ruby"
     language: ruby
     rvm: 2.3.3

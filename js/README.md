@@ -158,8 +158,8 @@ let siv = await SIV.importKey(key, "AES-SIV");
 
 ### SIV.seal()
 
-The **SIV.seal()** method encrypts a set of *associated data* message
-headers along with a message.
+The **SIV.seal()** method encrypts a message along with a set of
+*associated data* message headers.
 
 #### Syntax
 

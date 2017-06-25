@@ -47,4 +47,93 @@ Have questions? Want to suggest a feature or change?
 
 ## Security Notice
 
-Work in progress. Don't use this.
+Though this library is written by cryptographic professionals, it has not
+undergone a thorough security audit, and cryptographic professionals are still
+humans that make mistakes. Use this library at your own risk.
+
+## Requirements
+
+This library is tested against the following MRI versions:
+
+- 2.2
+- 2.3
+- 2.4
+
+Other Ruby versions may work, but are not officially supported.
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem "sivchain"
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install zser
+
+## API
+
+### SIVChain::AES::SIV
+
+The `SIVChain::AES::SIV` class provides the main interface to the **AES-SIV**
+misuse resistant authenticated encryption function.
+
+To make a new instance, pass in a 32-byte or 64-byte key. Note that these
+options are twice the size of what you might be expecting (AES-SIV uses two
+AES keys).
+
+You can generate a random key using the `generate_key` method (default 32 bytes):
+
+```ruby
+key = SIVChain::AES::SIV.generate_key
+siv = SIVChain::AES::SIV.new(key)
+# => #<SIVChain::AES::SIV:0x007fe0109e85e8>
+```
+
+#### Encryption (SIVChain::AES::SIV#seal)
+
+The `SIVChain::AES::SIV#seal` method encrypts a message along with a set of
+*associated data* message headers.
+
+It's recommended to include a unique "nonce" value with each message. This
+prevents those who may be observing your ciphertexts from being able to tell
+if you encrypted the same message twice. However, unlike other cryptographic
+algorithms where using a nonce has catastrophic security implications such as
+key recovery, reusing a nonce with AES-SIV only leaks repeated ciphertexts to
+attackers.
+
+Example:
+
+```ruby
+message = "Hello, world!"
+nonce = SecureRandom.random_bytes(16)
+ciphertext = siv.seal(message, nonce)
+```
+
+#### Decryption (SIVChain::AES::SIV#open)
+
+The `SIVChain::AES::SIV#open` method decrypts a ciphertext with the given key.
+
+Example:
+
+```ruby
+message = "Hello, world!"
+nonce = SecureRandom.random_bytes(16)
+ciphertext = siv.seal(message, nonce)
+plaintext = siv.open(message, nonce)
+```
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/zcred/zser
+
+## Copyright
+
+Copyright (c) 2017 [The Zcred Developers][AUTHORS].
+See [LICENSE.txt] for further details.

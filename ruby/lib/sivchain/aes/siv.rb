@@ -5,6 +5,16 @@ module SIVChain
   module AES
     # The AES-SIV misuse resistant authenticated encryption cipher
     class SIV
+      # Generate a new random AES-SIV key of the given size
+      #
+      # @param size [Integer] size of key in bytes (32 or 64)
+      #
+      # @return [String] newly generated AES-SIV key
+      def self.generate_key(size = 32)
+        raise ArgumentError, "key size must be 32 or 64 bytes" unless [32, 64].include?(size)
+        SecureRandom.random_bytes(size)
+      end
+
       def initialize(key)
         raise TypeError, "expected String, got #{key.class}" unless key.is_a?(String)
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY
@@ -16,15 +26,17 @@ module SIVChain
         @key2 = key.slice(length..-1)
       end
 
-      alias inspect to_s
+      def inspect
+        to_s
+      end
 
-      def encrypt(plaintext, associated_data = [])
+      def seal(plaintext, associated_data = [])
         v = _s2v(plaintext, associated_data)
         ciphertext = _transform(v, plaintext)
         v + ciphertext
       end
 
-      def decrypt(ciphertext, associated_data = [])
+      def open(ciphertext, associated_data = [])
         v = ciphertext.slice(0, AES::BLOCK_SIZE)
         ciphertext = ciphertext.slice(AES::BLOCK_SIZE..-1)
         plaintext = _transform(v, ciphertext)

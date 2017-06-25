@@ -23,7 +23,9 @@ module SIVChain
         @key1, @key2 = _generate_subkeys
       end
 
-      alias inspect to_s
+      def inspect
+        to_s
+      end
 
       def digest(message)
         message = message.b
