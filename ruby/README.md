@@ -96,7 +96,7 @@ siv = SIVChain::AES::SIV.new(key)
 # => #<SIVChain::AES::SIV:0x007fe0109e85e8>
 ```
 
-#### Encryption (SIVChain::AES::SIV#seal)
+#### Encryption (#seal)
 
 The `SIVChain::AES::SIV#seal` method encrypts a message along with a set of
 *associated data* message headers.
@@ -116,7 +116,7 @@ nonce = SecureRandom.random_bytes(16)
 ciphertext = siv.seal(message, nonce)
 ```
 
-#### Decryption (SIVChain::AES::SIV#open)
+#### Decryption (#open)
 
 The `SIVChain::AES::SIV#open` method decrypts a ciphertext with the given key.
 
