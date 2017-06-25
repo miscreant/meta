@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 module SIVChain
-  # The Advanced Encryption Standard Block Cipher
   module AES
     # The AES-SIV misuse resistant authenticated encryption cipher
     class SIV
@@ -20,26 +19,18 @@ module SIVChain
       alias inspect to_s
 
       def encrypt(plaintext, associated_data = [])
-        inputs = []
-        inputs.concat(Array(associated_data))
-        inputs << plaintext
-
-        v = _s2v(inputs)
+        v = _s2v(plaintext, associated_data)
         ciphertext = _transform(v, plaintext)
         v + ciphertext
       end
 
       def decrypt(ciphertext, associated_data = [])
-        v = ciphertext.slice(0, 16)
-        ciphertext = ciphertext.slice(16..-1)
+        v = ciphertext.slice(0, AES::BLOCK_SIZE)
+        ciphertext = ciphertext.slice(AES::BLOCK_SIZE..-1)
         plaintext = _transform(v, ciphertext)
 
-        inputs = []
-        inputs.concat(Array(associated_data))
-        inputs << plaintext
-        t = _s2v(inputs)
-
-        raise "bad encrypt" unless Util.ct_equal(t, v)
+        t = _s2v(plaintext, associated_data)
+        raise IntegrityError, "ciphertext verification failure!" unless Util.ct_equal(t, v)
 
         plaintext
       end
@@ -66,16 +57,19 @@ module SIVChain
         cipher.update(data) + cipher.final
       end
 
-      def _s2v(inputs)
-        inputs = Array(inputs)
+      def _s2v(plaintext, associated_data = [])
+        inputs = []
+        inputs.concat(Array(associated_data))
+        inputs << plaintext
+
         cmac = CMAC.new(@key1)
 
         if inputs.empty?
-          data = ("\0" * 15) + "\x01"
+          data = AES::ZERO_BLOCK[0, AES::BLOCK_SIZE - 1] + "\x01"
           return cmac.digest(data)
         end
 
-        d = cmac.digest("\0" * 16)
+        d = cmac.digest(AES::ZERO_BLOCK)
 
         inputs.each_with_index do |input, index|
           break if index == inputs.size - 1
@@ -87,7 +81,7 @@ module SIVChain
 
         input = inputs.last
 
-        if input.bytesize >= 16
+        if input.bytesize >= AES::BLOCK_SIZE
           d = _xorend(input, d)
         else
           d = Util.double(d)
