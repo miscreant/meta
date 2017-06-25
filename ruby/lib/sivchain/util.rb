@@ -4,25 +4,28 @@
 module SIVChain
   # Utility functions
   module Util
-    DOUBLE_CONSTANT = (("\x0" * 15) + "\x87").freeze
-
     module_function
+
+    # Perform a constant time(-ish) branch operation
+    def select(subject, result_if_one, result_if_zero)
+      (~(subject - 1) & result_if_one) | ((subject - 1) & result_if_zero)
+    end
 
     # Perform a doubling operation as described in the CMAC and SIV papers
     def double(value)
       overflow = 0
       words = value.unpack("N4").reverse
+
       words = words.map do |word|
         new_word = (word << 1) & 0xFFFFFFFF
         new_word |= overflow
         overflow = (word & 0x80000000) >= 0x80000000 ? 1 : 0
         new_word
       end
-      result = words.reverse.pack("N4")
 
-      # TODO: not constant time!
-      return result if value[0].ord < 0x80
-      xor(result, DOUBLE_CONSTANT)
+      result = words.reverse.pack("N4")
+      result[-1] = (result[-1].ord ^ select(overflow, 0x87, 0)).chr
+      result
     end
 
     # Perform an xor on arbitrary bytestrings
