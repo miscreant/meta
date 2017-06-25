@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SIVChain::AES::CMAC do
-  let(:example_key) { "\x01" * 16 }
+  let(:example_key) { ("\x01" * 16).b }
 
   describe "inspect" do
     it "does not contain instance variable values" do
