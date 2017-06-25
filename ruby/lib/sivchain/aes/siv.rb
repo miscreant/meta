@@ -6,8 +6,6 @@ module SIVChain
   module AES
     # The AES-SIV misuse resistant authenticated encryption cipher
     class SIV
-      DOUBLE_CONSTANT = ("\x0" * 15) + "\x87"
-
       def initialize(key)
         raise TypeError, "expected String, got #{key.class}" unless key.is_a?(String)
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY
@@ -41,13 +39,18 @@ module SIVChain
         inputs << plaintext
         t = _s2v(inputs)
 
-        # TODO: not constant time
-        raise "bad encrypt" unless t == v
+        raise "bad encrypt" unless Util.ct_equal(t, v)
 
         plaintext
       end
 
       private
+
+      def _pad(value)
+        difference = 15 - value.length
+        pad = "\x80" + ("\0" * difference)
+        value + pad
+      end
 
       def _transform(v, data)
         return "".b if data.empty?
@@ -77,9 +80,9 @@ module SIVChain
         inputs.each_with_index do |input, index|
           break if index == inputs.size - 1
 
-          d = _double(d)
+          d = Util.double(d)
           block = cmac.digest(input)
-          d = _xor(d, block)
+          d = Util.xor(d, block)
         end
 
         input = inputs.last
@@ -87,51 +90,18 @@ module SIVChain
         if input.bytesize >= 16
           d = _xorend(input, d)
         else
-          d = _double(d)
-          d = _xor(d, _pad(input))
+          d = Util.double(d)
+          d = Util.xor(d, _pad(input))
         end
 
         cmac.digest(d)
-      end
-
-      def _pad(value)
-        difference = 15 - value.length
-        pad = "\x80" + ("\0" * difference)
-        value + pad
-      end
-
-      def _double(value)
-        # TODO: not constant time
-        return _leftshift(value) if value[0].ord < 0x80
-        _xor(_leftshift(value), DOUBLE_CONSTANT)
-      end
-
-      def _leftshift(input)
-        overflow = 0
-        words = input.unpack("N4").reverse
-        words = words.map do |word|
-          new_word = (word << 1) & 0xFFFFFFFF
-          new_word |= overflow
-          overflow = (word & 0x80000000) >= 0x80000000 ? 1 : 0
-          new_word
-        end
-        words.reverse.pack("N4")
-      end
-
-      def _xor(a, b)
-        length = [a.length, b.length].min
-        output = "\0" * length
-        length.times do |i|
-          output[i] = (a[i].ord ^ b[i].ord).chr
-        end
-        output
       end
 
       def _xorend(a, b)
         difference = a.length - b.length
         left = a.slice(0, difference)
         right = a.slice(difference..-1)
-        left + _xor(right, b)
+        left + Util.xor(right, b)
       end
     end
   end

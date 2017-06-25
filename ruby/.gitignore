@@ -1,5 +1,6 @@
 /.bundle/
 /.yardoc
+/.rakeTasks
 /Gemfile.lock
 /_yardoc/
 /coverage/

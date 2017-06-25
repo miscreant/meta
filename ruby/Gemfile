@@ -9,6 +9,6 @@ group :development, :test do
   gem "guard-rspec"
   gem "rake"
   gem "rspec", "~> 3.5"
-  gem "rubocop", "0.48.1"
+  gem "rubocop", "0.49.1"
   gem "tjson", "~> 0.5"
 end
