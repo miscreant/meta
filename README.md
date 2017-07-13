@@ -82,6 +82,7 @@ hardware accelerated version of the **GHASH** function is unavailable,
 such as low-powered mobile devices and so-called "Internet of Things"
 embedded use cases.
 
+[Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
 [NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
