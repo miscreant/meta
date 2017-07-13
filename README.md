@@ -54,15 +54,16 @@ The following constructions are provided by **SIVChain**:
 
 ## Comparison with other symmetric encryption algorithms
 
-| Name              | [Authenticated Encryption] | [Nonce Reuse Misuse Resistance] | Passes | Standardization   |
-|-------------------|----------------------------|---------------------------------|--------|-------------------|
-| AES-SIV           | :green_heart:              | :green_heart:                   | 2      | [RFC 5297]        |
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | 2      | Forthcoming‡      |
-| AES-GCM           | :green_heart:              | :broken_heart:                  | 2      | [NIST SP 800-38D] |
-| AES-CBC           | :broken_heart:             | :broken_heart:                  | 1      | [NIST SP 800-38A] |
-| AES-CTR           | :broken_heart:             | :broken_heart:                  | 1      | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:                  | 2      | [RFC 7539]        |
-| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:                  | 2      | None              |
+| Name              | [Authenticated Encryption] | [Misuse Resistance] | Passes | Standardization   |
+|-------------------|----------------------------|---------------------|--------|-------------------|
+| AES-SIV           | :green_heart:              | :green_heart:       | 2      | [RFC 5297]        |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | 2      | Forthcoming‡      |
+| AES-GCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38D] |
+| AES-CCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38C] |
+| AES-CBC           | :broken_heart:             | :broken_heart:      | 1      | [NIST SP 800-38A] |
+| AES-CTR           | :broken_heart:             | :broken_heart:      | 1      | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | [RFC 7539]        |
+| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | None              |
 
 † Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks]. 
   These attacks are being addressed in newer drafts of the specification.
@@ -82,7 +83,8 @@ such as low-powered mobile devices and so-called "Internet of Things"
 embedded use cases.
 
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
-[NIST SP 800-38D]: http://dx.doi.org/10.6028/NIST.SP.800-38D
+[NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C
+[NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
 [key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
 [AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
