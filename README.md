@@ -54,15 +54,15 @@ The following constructions are provided by **SIVChain**:
 
 ## Comparison with other symmetric encryption algorithms
 
-| Name              | [Authenticated Encryption] | [Nonce Reuse Misuse Resistance] | Standardization   |
-|-------------------|----------------------------|---------------------------------|-------------------|
-| AES-SIV           | :green_heart:              | :green_heart:                   | [RFC 5297]        |
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | Forthcoming‡      |
-| AES-GCM           | :green_heart:              | :broken_heart:                  | [NIST SP 800-38D] |
-| AES-CBC           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
-| AES-CTR           | :broken_heart:             | :broken_heart:                  | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:                  | [RFC 7539]        |
-| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:                  | None              |
+| Name              | [Authenticated Encryption] | [Nonce Reuse Misuse Resistance] | Passes | Standardization   |
+|-------------------|----------------------------|---------------------------------|--------|-------------------|
+| AES-SIV           | :green_heart:              | :green_heart:                   | 2      | [RFC 5297]        |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†                  | 2      | Forthcoming‡      |
+| AES-GCM           | :green_heart:              | :broken_heart:                  | 2      | [NIST SP 800-38D] |
+| AES-CBC           | :broken_heart:             | :broken_heart:                  | 1      | [NIST SP 800-38A] |
+| AES-CTR           | :broken_heart:             | :broken_heart:                  | 1      | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:                  | 2      | [RFC 7539]        |
+| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:                  | 2      | None              |
 
 † Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks]. 
   These attacks are being addressed in newer drafts of the specification.
