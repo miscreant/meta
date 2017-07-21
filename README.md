@@ -78,11 +78,11 @@ considered for inclusion in this library. **AES-GCM-SIV** has the advantage of
 the [GHASH] (technically **POLYVAL**) function being able to run in parallel,
 versus **AES-CMAC**'s sequential operation.
 
-**AES-SIV** has the advantage that it can be implemented using the AES
-encryption function alone, making it a better choice for environments where a
-hardware accelerated version of the **GHASH** function is unavailable,
-such as low-powered mobile devices and so-called "Internet of Things"
-embedded use cases.
+**AES-SIV** has the advantages of stronger security guarantees, simplicity,
+and that it can be implemented using the AES encryption function alone, making
+it a better choice for environments where a hardware accelerated version of the
+**GHASH** function is unavailable, such as low-powered mobile devices and
+so-called "Internet of Things" embedded use cases.
 
 [Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
