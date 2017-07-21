@@ -91,7 +91,7 @@ embedded use cases.
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
 [key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
-[According to the authors]: https://www.ietf.org/mail-archive/web/cfrg/current/msg08921.html
+[According to the authors]: https://mailarchive.ietf.org/arch/msg/cfrg/CVfp8_sy2sNIj_LXCwQ1vbdhpqQ
 [AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
