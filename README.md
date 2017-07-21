@@ -29,8 +29,8 @@ to be incrementally encrypted/decrypted while still providing
 The following constructions are provided by **SIVChain**:
 
 * [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR] mode of
-  encryption with the [AES-CMAC] function for integrity. Unlike most
-  [authenticated encryption] algorithms, **AES-SIV** uses a
+  encryption with the [AES-CMAC] ([NIST SP 800-38B]) function for integrity.
+  Unlike most [authenticated encryption] algorithms, **AES-SIV** uses a
   MAC-then-encrypt construction, first using **AES-CMAC** to derive an
   IV from a MAC of zero or more "header" values and the message
   plaintext, then encrypting the message under that derived IV.
@@ -85,6 +85,7 @@ embedded use cases.
 
 [Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
+[NIST SP 800-38B]: https://dx.doi.org/10.6028/NIST.SP.800-38B
 [NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
