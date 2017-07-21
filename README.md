@@ -28,8 +28,9 @@ to be incrementally encrypted/decrypted while still providing
 
 The following constructions are provided by **SIVChain**:
 
-* [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR] mode of
-  encryption with the [AES-CMAC] ([NIST SP 800-38B]) function for integrity.
+* [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR]
+  ([NIST SP 800-38A]) mode of encryption with the [AES-CMAC]
+  ([NIST SP 800-38B]) function for integrity.
   Unlike most [authenticated encryption] algorithms, **AES-SIV** uses a
   MAC-then-encrypt construction, first using **AES-CMAC** to derive an
   IV from a MAC of zero or more "header" values and the message
