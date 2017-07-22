@@ -125,11 +125,13 @@ export default class AesSiv implements ISivLike {
     return this;
   }
 
-  private async _s2v(s: Uint8Array[], sn: Uint8Array): Promise<Uint8Array> {
-    if (!s) {
-      s = [];
-    }
-
+  /**
+   * The S2V operation consists of the doubling and XORing of the outputs
+   * of the pseudo-random function CMAC.
+   *
+   * See Section 2.4 of RFC 5297 for more information
+   */
+  private async _s2v(associated_data: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
     this._mac.reset();
     wipe(this._tmp1);
 
@@ -142,8 +144,8 @@ export default class AesSiv implements ISivLike {
     this._tmp2 = await this._mac.finish();
     this._mac.reset();
 
-    for (const b of s) {
-      await this._mac.update(b);
+    for (const ad of associated_data) {
+      await this._mac.update(ad);
       wipe(this._tmp1);
       this._tmp1 = await this._mac.finish();
       this._mac.reset();
@@ -153,13 +155,13 @@ export default class AesSiv implements ISivLike {
 
     wipe(this._tmp1);
 
-    if (sn.length >= this._mac.blockSize) {
-      const n = sn.length - this._mac.blockSize;
-      this._tmp1.set(sn.subarray(n));
-      await this._mac.update(sn.subarray(0, n));
+    if (plaintext.length >= this._mac.blockSize) {
+      const n = plaintext.length - this._mac.blockSize;
+      this._tmp1.set(plaintext.subarray(n));
+      await this._mac.update(plaintext.subarray(0, n));
     } else {
-      this._tmp1.set(sn);
-      this._tmp1[sn.length] = 0x80;
+      this._tmp1.set(plaintext);
+      this._tmp1[plaintext.length] = 0x80;
       dbl(this._tmp2, this._tmp2);
     }
     xor(this._tmp1, this._tmp2);

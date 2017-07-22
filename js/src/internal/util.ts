@@ -61,12 +61,14 @@ export function wipe(array: NumericArray): NumericArray {
   return array;
 }
 
+/** Perform an in-place bitwise XOR operation on two bytestrings */
 export function xor(a: Uint8Array, b: Uint8Array) {
   for (let i = 0; i < b.length; i++) {
     a[i] ^= b[i];
   }
 }
 
+/** Zero out the top bits in the last 32-bit words of the IV */
 export function zeroIVBits(iv: Uint8Array) {
   // "We zero-out the top bit in each of the last two 32-bit words
   // of the IV before assigning it to Ctr"

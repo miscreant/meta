@@ -31,7 +31,7 @@ module SIVChain
       end
 
       def seal(plaintext, associated_data = [])
-        v = _s2v(plaintext, associated_data)
+        v = _s2v(associated_data, plaintext)
         ciphertext = _transform(v, plaintext)
         v + ciphertext
       end
@@ -41,7 +41,7 @@ module SIVChain
         ciphertext = ciphertext.slice(AES::BLOCK_SIZE..-1)
         plaintext = _transform(v, ciphertext)
 
-        t = _s2v(plaintext, associated_data)
+        t = _s2v(associated_data, plaintext)
         raise IntegrityError, "ciphertext verification failure!" unless Util.ct_equal(t, v)
 
         plaintext
@@ -52,18 +52,18 @@ module SIVChain
       def _transform(v, data)
         return "".b if data.empty?
 
-        counter = v.dup
-        counter[8] = (counter[8].ord & 0x7f).chr
-        counter[12] = (counter[12].ord & 0x7f).chr
-
         cipher = OpenSSL::Cipher::AES.new(@mac_key.length * 8, :CTR)
         cipher.encrypt
-        cipher.iv = counter
+        cipher.iv = Util.zero_iv_bits(v)
         cipher.key = @enc_key
         cipher.update(data) + cipher.final
       end
 
-      def _s2v(plaintext, associated_data = [])
+      # The S2V operation consists of the doubling and XORing of the outputs
+      # of the pseudo-random function CMAC.
+      #
+      # See Section 2.4 of RFC 5297 for more information
+      def _s2v(associated_data, plaintext)
         # Note: the standalone S2V returns CMAC(1) if the number of passed
         # vectors is zero, however in SIV construction this case is never
         # triggered, since we always pass plaintext as the last vector (even
@@ -71,9 +71,9 @@ module SIVChain
         cmac = CMAC.new(@mac_key)
         d = cmac.digest(AES::ZERO_BLOCK)
 
-        associated_data.each do |msg|
+        associated_data.each do |ad|
           d = Util.dbl(d)
-          d = Util.xor(d, cmac.digest(msg))
+          d = Util.xor(d, cmac.digest(ad))
         end
 
         if plaintext.bytesize >= AES::BLOCK_SIZE

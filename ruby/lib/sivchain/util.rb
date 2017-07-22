@@ -6,11 +6,6 @@ module SIVChain
   module Util
     module_function
 
-    # Perform a constant time(-ish) branch operation
-    def select(subject, result_if_one, result_if_zero)
-      (~(subject - 1) & result_if_one) | ((subject - 1) & result_if_zero)
-    end
-
     # Perform a doubling operation as described in the CMAC and SIV papers
     def dbl(value)
       overflow = 0
@@ -26,6 +21,17 @@ module SIVChain
       result = words.reverse.pack("N4")
       result[-1] = (result[-1].ord ^ select(overflow, 0x87, 0)).chr
       result
+    end
+
+    # Pad a value up to the given length
+    def pad(value, length)
+      difference = length - value.length - 1
+      value + "\x80" << ("\0" * difference)
+    end
+
+    # Perform a constant time(-ish) branch operation
+    def select(subject, result_if_one, result_if_zero)
+      (~(subject - 1) & result_if_one) | ((subject - 1) & result_if_zero)
     end
 
     # Perform an xor on arbitrary bytestrings
@@ -48,10 +54,15 @@ module SIVChain
       left + xor(right, b)
     end
 
-    # Pad a value up to the given length
-    def pad(value, length)
-      difference = length - value.length - 1
-      value + "\x80" << ("\0" * difference)
+    # Zero out the top bits in the last 32-bit words of the IV
+    def zero_iv_bits(iv)
+      # "We zero-out the top bit in each of the last two 32-bit words
+      # of the IV before assigning it to Ctr"
+      # -- http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
+      iv = iv.dup
+      iv[8] = (iv[8].ord & 0x7f).chr
+      iv[12] = (iv[12].ord & 0x7f).chr
+      iv
     end
 
     # Perform a constant time-ish comparison of two bytestrings
