@@ -51,3 +51,25 @@ class SIVChain::AES::SIV::Example
     @output = attrs.fetch("output")
   end
 end
+
+class SIVChain::Util::DblExample
+  attr_reader :input, :output
+
+  # Error parsing the example file
+  ParseError = Class.new(StandardError)
+
+  # Default file to load examples from
+  DEFAULT_EXAMPLES = File.expand_path("../../../../vectors/dbl.tjson", __FILE__)
+
+  def self.load_file(filename = DEFAULT_EXAMPLES)
+    examples = TJSON.load_file(filename).fetch("examples")
+    raise ParseError, "expected a toplevel array of examples" unless examples.is_a?(Array)
+
+    examples.map { |example| new(example) }
+  end
+
+  def initialize(attrs)
+    @input = attrs.fetch("input")
+    @output = attrs.fetch("output")
+  end
+end

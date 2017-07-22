@@ -22,8 +22,8 @@ module SIVChain
 
         length = key.length / 2
 
-        @key1 = key.slice(0, length)
-        @key2 = key.slice(length..-1)
+        @mac_key = key.slice(0, length)
+        @enc_key = key.slice(length..-1)
       end
 
       def inspect
@@ -49,12 +49,6 @@ module SIVChain
 
       private
 
-      def _pad(value)
-        difference = 15 - value.length
-        pad = "\x80" + ("\0" * difference)
-        value + pad
-      end
-
       def _transform(v, data)
         return "".b if data.empty?
 
@@ -62,52 +56,34 @@ module SIVChain
         counter[8] = (counter[8].ord & 0x7f).chr
         counter[12] = (counter[12].ord & 0x7f).chr
 
-        cipher = OpenSSL::Cipher::AES.new(@key1.length * 8, :CTR)
+        cipher = OpenSSL::Cipher::AES.new(@mac_key.length * 8, :CTR)
         cipher.encrypt
         cipher.iv = counter
-        cipher.key = @key2
+        cipher.key = @enc_key
         cipher.update(data) + cipher.final
       end
 
       def _s2v(plaintext, associated_data = [])
-        inputs = []
-        inputs.concat(Array(associated_data))
-        inputs << plaintext
-
-        cmac = CMAC.new(@key1)
-
-        if inputs.empty?
-          data = AES::ZERO_BLOCK[0, AES::BLOCK_SIZE - 1] + "\x01"
-          return cmac.digest(data)
-        end
-
+        # Note: the standalone S2V returns CMAC(1) if the number of passed
+        # vectors is zero, however in SIV construction this case is never
+        # triggered, since we always pass plaintext as the last vector (even
+        # if it's zero-length), so we omit this case.
+        cmac = CMAC.new(@mac_key)
         d = cmac.digest(AES::ZERO_BLOCK)
 
-        inputs.each_with_index do |input, index|
-          break if index == inputs.size - 1
-
-          d = Util.double(d)
-          block = cmac.digest(input)
-          d = Util.xor(d, block)
+        associated_data.each do |msg|
+          d = Util.dbl(d)
+          d = Util.xor(d, cmac.digest(msg))
         end
 
-        input = inputs.last
-
-        if input.bytesize >= AES::BLOCK_SIZE
-          d = _xorend(input, d)
+        if plaintext.bytesize >= AES::BLOCK_SIZE
+          d = Util.xorend(plaintext, d)
         else
-          d = Util.double(d)
-          d = Util.xor(d, _pad(input))
+          d = Util.dbl(d)
+          d = Util.xor(d, Util.pad(plaintext, AES::BLOCK_SIZE))
         end
 
         cmac.digest(d)
-      end
-
-      def _xorend(a, b)
-        difference = a.length - b.length
-        left = a.slice(0, difference)
-        right = a.slice(difference..-1)
-        left + Util.xor(right, b)
       end
     end
   end

@@ -23,9 +23,7 @@
         {
             "name:s":"Empty Authenticated Data And Plaintext Example",
             "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
-            "ad:A<d16>":[
-
-            ],
+            "ad:A<d16>":[],
             "plaintext:d16":"",
             "output:d16":"f2007a5beb2b8900c588a7adf599f172"
         },

@@ -64,8 +64,8 @@ module SIVChain
 
       def _generate_subkeys
         key0 = _encrypt_block(AES::ZERO_BLOCK)
-        key1 = Util.double(key0)
-        key2 = Util.double(key1)
+        key1 = Util.dbl(key0)
+        key2 = Util.dbl(key1)
         [key1, key2]
       end
     end

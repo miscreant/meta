@@ -87,3 +87,23 @@ export class AesCmacExample {
     });
   }
 }
+
+/** dbl() test vectors */
+export class DblExample {
+  static readonly DEFAULT_EXAMPLES_PATH = "../vectors/dbl.tjson";
+
+  public readonly input: Uint8Array;
+  public readonly output: Uint8Array;
+
+  static async loadAll(): Promise<DblExample[]> {
+    return DblExample.loadFromFile(DblExample.DEFAULT_EXAMPLES_PATH);
+  }
+
+  static async loadFromFile(filename: string): Promise<DblExample[]> {
+    let tjson = TJSON.parse(await fs.readFile(filename, "utf8"));
+    return tjson["examples"].map((ex: any) => {
+      let obj = Object.create(DblExample.prototype);
+      return Object.assign(obj, ex);
+    });
+  }
+}

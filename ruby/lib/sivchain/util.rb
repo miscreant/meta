@@ -12,11 +12,11 @@ module SIVChain
     end
 
     # Perform a doubling operation as described in the CMAC and SIV papers
-    def double(value)
+    def dbl(value)
       overflow = 0
       words = value.unpack("N4").reverse
 
-      words = words.map do |word|
+      words.map! do |word|
         new_word = (word << 1) & 0xFFFFFFFF
         new_word |= overflow
         overflow = (word & 0x80000000) >= 0x80000000 ? 1 : 0
@@ -36,6 +36,22 @@ module SIVChain
         output[i] = (a[i].ord ^ b[i].ord).chr
       end
       output
+    end
+
+    # XOR the second value into the end of the first
+    def xorend(a, b)
+      difference = a.length - b.length
+
+      left  = a.slice(0, difference)
+      right = a.slice(difference..-1)
+
+      left + xor(right, b)
+    end
+
+    # Pad a value up to the given length
+    def pad(value, length)
+      difference = length - value.length - 1
+      value + "\x80" << ("\0" * difference)
     end
 
     # Perform a constant time-ish comparison of two bytestrings
