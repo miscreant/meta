@@ -3,9 +3,6 @@
 
 from setuptools import setup
 
-requirements = []
-test_requirements = []
-
 setup(
     name="sivchain",
     version="0.0.0",
@@ -17,7 +14,7 @@ setup(
     packages=["sivchain"],
     package_dir={"sivchain": "sivchain"},
     include_package_data=True,
-    install_requires=[],
+    install_requires=["cryptography>=2.0"],
     license="MIT license",
     zip_safe=False,
     keywords=["cryptography", "encryption", "security", "streaming"],
