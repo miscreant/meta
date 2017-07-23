@@ -18,6 +18,7 @@ messages or message streams.
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 
+
 ## What is SIVChain?
 
 **SIVChain** is a set of interoperable libraries implemented in several
@@ -52,6 +53,7 @@ The following constructions are provided by **SIVChain**:
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
+
 
 ## Comparison with other symmetric encryption algorithms
 
@@ -95,6 +97,7 @@ so-called "Internet of Things" embedded use cases.
 [AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
+
 ## Language Support
 
 Packages implementing **SIVChain** are available for the following languages:
@@ -116,6 +119,7 @@ Packages implementing **SIVChain** are available for the following languages:
 [gem-link]: https://rubygems.org/gems/sivchain
 [crate-shield]: https://img.shields.io/crates/v/sivchain.svg
 [crate-link]: https://crates.io/crates/sivchain
+
 
 ## AES-SIV
 
@@ -179,10 +183,153 @@ encryption, or other "streaming" use cases.
 
 ![CHAIN Diagram](http://www.zcred.org/sivchain/images/chain.svg)
 
+
+## Frequently Asked Questions (FAQ)
+
+#### Q: If AES-SIV is so great, why have I never heard of it?
+
+A: Good question! It's an underappreciated gem in cryptography.
+
+#### Q: What's the tl;dr for why I should use this?
+
+A: It provides stronger security properties at the cost of a small performance
+hit as compared to **AES-GCM**. We hope to have benchmarks soon so we can show
+exactly how much performance is lost, however the scheme is still amenable to
+full hardware acceleration and should still remain very fast.
+
+The **CHAIN** construction provides the only "streaming" misuse resistant
+authentication encryption scheme with a rigorous security proof.
+
+There are other libraries that try to solve this problem, such as [saltpack],
+however these libraries do not provide constructions with security proofs,
+nor do they provide misuse resistant authenticated encryption. In particular
+[saltpack] is a rather complicated amateur construction which does many
+repitious and redundant HMAC operations with little justification as to why
+or if all relevant data is actually cryptographically bound, much less a
+rigorous security proof.
+
+[saltpack]: https://saltpack.org/
+
+#### Q: I saw this has "chain" in the name. Is it a cryptocurrency?
+
+A: No.
+
+#### Q: When is your ICO and how do I buy into it?
+
+A: Go away!
+
+#### Q: Are there any disadvantages to AES-SIV?
+
+A: Using the AES function as a MAC (i.e. **AES-CMAC**) is more expensive than
+faster hardware accelerated functions such as **GHASH** and **POLYVAL** (which
+use _CLMUL_ instructions on Intel CPUs). Additionally **AES-CMAC** relies on
+chaining and therefore cannot run in parallel. This makes **AES-SIV** slower
+than **AES-GCM-SIV** on Intel systems, however **AES-SIV** provides better
+security guarantees and will be faster on systems that do not have hardware
+acceleration for **GHASH**. We hope to post benchmark numbers soon.
+
+Due to the 128-bit size of the AES block function, **AES-SIV** can only be
+safely used to encrypt up to approximately 2<sup>64</sup> messages under the
+same key before the "birthday bound" is hit and repeated IVs become probable
+enough to be a security concern. Though this number is relatively large, it is
+not outside the realm of possibility.
+
+#### Q: Are there any disadvantages to the SIV approach in general?
+
+A: SIV encryption requires making a complete pass over the input in order to
+calculate the IV. This is less cache efficient than modes which are able
+to operate on the plaintext block-by-block, performing encryption and
+authentication at the same time. This makes SIV encryption slightly slower
+than non-SIV encryption.
+
+However, this does not apply to SIV decryption: since the IV is (allegedly)
+known in advance, SIV decryption and authentication can be performed
+block-by-block, making it just as fast as the corresponding non-SIV mode
+(which for **AES-SIV** would be **AES-EAX** mode).
+
+#### Q: Isn't MAC-then-encrypt bad? Shouldn't you use encrypt-then-MAC?
+
+A: Though SIV modes run the MAC operation first, then the encryption function
+second, they are a bit different from what is typically referred to as
+"MAC-then-encrypt". SIV modes cryptographically bind the encryption and
+authentication together by using the authentication tag as an input to the
+encryption cipher, making them provably secure for all the same classes of
+attacks as encrypt-then-MAC modes.
+
+Another common source of problems with MAC-then-encrypt is padding oracles,
+which are commonly seen with CBC modes. **AES-SIV** is based on CTR mode, which
+is a stream cipher and therefore doesn't need padding, making it immune to
+padding oracles by design.
+
+Authenticating the decrypted data does involve decrypting it, however. This
+means decrypted data is, at one point in time, in memory before it is
+authenticated. This increases the risk that attacker-controlled plaintext
+might wind up being used due to authentication bugs.
+
+These libraries attempt to ensure unauthenticated plaintext is never exposed.
+Furthermore some libraries will perform the **AES-CTR** portion of **AES-GCM**
+decryption without checking the GCM tag, so encrypt-then-MAC is not a
+bulletproof solution to preventing exposure of unauthenticated plaintexts.
+To some degree you will always be trusting the implementation quality of a
+particular library to ensure 
+
+#### Q: Is this algorithm NIST approved / FIPS compliant?
+
+A: **AES-SIV** is the combination of two NIST approved algorithms:
+**AES-CTR** encryption as described in [NIST SP 800-38A], and
+**AES-CMAC** authentication as described in [NIST SP 800-38B].
+
+However, while **AES-SIV** was [submitted to NIST] as a [proposed mode],
+it has never received official approval from NIST.
+
+If you are considering using this software in a FIPS 140-2 environment, please
+check with your FIPS auditor before proceeding. It may be possible to justify
+the use of **AES-SIV** based on its NIST approved components, but we are not
+FIPS auditors and cannot give prescriptive advice here.
+
+[submitted to NIST]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/siv.pdf
+[proposed mode]: http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html
+
+#### Q: Are there any patent concerns around AES-SIV mode?
+
+A: No, there are [no IP rights concerns] with **AES-SIV** mode. To the best of
+our knowledge, the algorithm is entirely in the public domain. 
+
+[no IP rights concerns]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/ip.pdf
+
+#### Q: Why not wait for the winner of the CAESAR competition to be announced?
+
+A: The CAESAR competition (to select a next generation authentication encryption
+cipher) seems to be taking much longer than was originally expected. Even when
+it concludes, it will be some time before relevant standards are written as to
+the usage and deployment of its winner.
+
+Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
+organic usage. While not entirely optimal by the metrics of the CAESAR
+competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
+
+#### Q: Do you plan on supporting HS1-SIV in this library?
+
+A: Maybe! [HS1-SIV] is an interesting SIV mode authenticated encryption cipher.
+We are certainly keeping an eye on its development.
+
+[HS1-SIV]: https://competitions.cr.yp.to/round2/hs1sivv2.pdf
+
+#### Q: This project mentions security proofs several times. Where do I find them?
+
+A: Please see the paper
+[Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem](http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf).
+
+
 ## Copyright
 
 Copyright (c) 2017 [The Zcred Developers][AUTHORS].
-See [LICENSE.txt] for further details.
+Distributed under the MIT license. See [LICENSE.txt] for further details.
+
+Some language-specific subprojects include sources from other authors with more
+specific licensing requirements, though all projects are MIT licensed.
+Please see the respective **LICENSE.txt** files in each project for more
+information.
 
 [AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
 [LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
