@@ -6,7 +6,7 @@ import binascii
 import json
 from collections import namedtuple
 
-class SIVExample(namedtuple("SIVExample", ["name", "key", "ad", "plaintext", "output"])):
+class SIVExample(namedtuple("SIVExample", ["name", "key", "ad", "plaintext", "ciphertext"])):
     @staticmethod
     def load():
         """Load message examples from vectors/aes_siv.tjson"""
@@ -29,7 +29,7 @@ class SIVExample(namedtuple("SIVExample", ["name", "key", "ad", "plaintext", "ou
                 key=binascii.unhexlify(example[u"key:d16"]),
                 ad=[binascii.unhexlify(ad) for ad in example[u"ad:A<d16>"]],
                 plaintext=binascii.unhexlify(example[u"plaintext:d16"]),
-                output=binascii.unhexlify(example[u"output:d16"])
+                ciphertext=binascii.unhexlify(example[u"ciphertext:d16"])
             ))
 
         return result

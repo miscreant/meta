@@ -9,7 +9,7 @@ export class AesSivExample {
   public readonly key: Uint8Array;
   public readonly ad: Uint8Array[];
   public readonly plaintext: Uint8Array;
-  public readonly output: Uint8Array;
+  public readonly ciphertext: Uint8Array;
 
   static async loadAll(): Promise<AesSivExample[]> {
     return AesSivExample.loadFromFile(AesSivExample.DEFAULT_EXAMPLES_PATH);

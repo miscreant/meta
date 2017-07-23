@@ -28,7 +28,7 @@ class SIVChain::AES::CMAC::Example
 end
 
 class SIVChain::AES::SIV::Example
-  attr_reader :name, :key, :ad, :plaintext, :output
+  attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
   # Error parsing the example file
   ParseError = Class.new(StandardError)
@@ -48,7 +48,7 @@ class SIVChain::AES::SIV::Example
     @key = attrs.fetch("key")
     @ad = attrs.fetch("ad")
     @plaintext = attrs.fetch("plaintext")
-    @output = attrs.fetch("output")
+    @ciphertext = attrs.fetch("ciphertext")
   end
 end
 

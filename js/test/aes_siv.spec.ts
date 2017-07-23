@@ -25,7 +25,7 @@ chai.use(chaiAsPromised);
     for (let v of AesSivSpec.vectors) {
       const siv = await AesSiv.importKey(v.key, null);
       const sealed = await siv.seal(v.plaintext, v.ad);
-      expect(sealed).to.eql(v.output);
+      expect(sealed).to.eql(v.ciphertext);
 
       const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
@@ -38,7 +38,7 @@ chai.use(chaiAsPromised);
     for (let v of AesSivSpec.vectors) {
       const siv = await AesSiv.importKey(v.key, new WebCrypto());
       const sealed = await siv.seal(v.plaintext, v.ad);
-      expect(sealed).to.eql(v.output);
+      expect(sealed).to.eql(v.ciphertext);
 
       const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
@@ -78,7 +78,7 @@ chai.use(chaiAsPromised);
       badKey[3] ^= badKey[8];
 
       const siv = await AesSiv.importKey(badKey, null);
-      expect(siv.open(v.output, v.ad)).to.be.rejectedWith(IntegrityError);
+      expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -88,13 +88,13 @@ chai.use(chaiAsPromised);
       badAd.push(new Uint8Array(1));
 
       const siv = await AesSiv.importKey(v.key, null);
-      return expect(siv.open(v.output, badAd)).to.be.rejectedWith(IntegrityError);
+      return expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
     }
   }
 
   @test async "should not open with incorrect ciphertext"() {
     for (let v of AesSivSpec.vectors) {
-      const badOutput = v.output;
+      const badOutput = v.ciphertext;
       badOutput[0] ^= badOutput[0];
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
