@@ -9,6 +9,7 @@ import { AesSivExample } from "./support/test_vectors";
 import WebCrypto = require("node-webcrypto-ossl");
 
 import AesSiv from "../src/internal/aes_siv";
+import PolyfillCrypto from "../src/internal/polyfill";
 import IntegrityError from "../src/internal/exceptions/integrity_error";
 
 let expect = chai.expect;
@@ -23,7 +24,7 @@ chai.use(chaiAsPromised);
 
   @test async "should correctly seal and open with polyfill cipher implementations"() {
     for (let v of AesSivSpec.vectors) {
-      const siv = await AesSiv.importKey(v.key, null);
+      const siv = await AesSiv.importKey(v.key, new PolyfillCrypto());
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -55,7 +56,7 @@ chai.use(chaiAsPromised);
     const ad2 = [byteSeq(32), byteSeq(10)];
     const pt2 = byteSeq(40, 100);
 
-    const siv = await AesSiv.importKey(key, null);
+    const siv = await AesSiv.importKey(key, new PolyfillCrypto());
 
     const sealed1 = await siv.seal(pt1, ad1);
     const opened1 = await siv.open(sealed1, ad1, );
@@ -77,7 +78,7 @@ chai.use(chaiAsPromised);
       badKey[2] ^= badKey[2];
       badKey[3] ^= badKey[8];
 
-      const siv = await AesSiv.importKey(badKey, null);
+      const siv = await AesSiv.importKey(badKey, new PolyfillCrypto());
       expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
@@ -87,7 +88,7 @@ chai.use(chaiAsPromised);
       const badAd = v.ad;
       badAd.push(new Uint8Array(1));
 
-      const siv = await AesSiv.importKey(v.key, null);
+      const siv = await AesSiv.importKey(v.key, new PolyfillCrypto());
       return expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
     }
   }
@@ -99,7 +100,7 @@ chai.use(chaiAsPromised);
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = await AesSiv.importKey(v.key, null);
+      const siv = await AesSiv.importKey(v.key, new PolyfillCrypto());
       return expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }

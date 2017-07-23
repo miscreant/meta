@@ -126,8 +126,7 @@ SIV.importKey(keyData, algorithm[, crypto = window.crypto])
 * **algorithm**: a string describing the algorithm to use. The only algorithm
   presently supported is `"AES-SIV"`.
 * **crypto**: a cryptography provider that implements the WebCrypto API's
-  [Crypto] interface. If `null` is explicitly passed, pure JavaScript polyfills
-  will be substituted for native cryptography.
+  [Crypto] interface.
 
 #### Return Value
 
@@ -142,8 +141,8 @@ not defined because we're on Node.js) or if that provider does not provide
 native implementations of the cryptographic primitives **AES-SIV** is built
 on top of.
 
-In these cases, pass `null` as the parameter to opt into a fully polyfill
-implementation. Be aware this may decrease security.
+In these cases, you may choose to use `PolyfillCrypto`, but be aware this may
+decrease security.
 
 #### Example
 
@@ -248,6 +247,40 @@ var decrypted = await siv.open([nonce], ciphertext);
 [Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 [Crypto]: https://developer.mozilla.org/en-US/docs/Web/API/Crypto
+
+## Polyfill Support
+
+**WARNING:** The polyfill implementation is not constant time! Please read
+the [Polyfill Security Warning](#polyfill-security-warning) before proceeding!
+
+By default, this library uses a WebCrypto-based implementation of **AES-SIV** and
+will throw an exception if WebCrypto is unavailable.
+
+However, this library also contains a `PolyfillCrypto` implementation which
+can be passed as the second parameter to `SIV.importKey()`. This implementation
+uses pure JavaScript, however is not provided by default because there are
+security concerns around its implementation.
+
+This implementation should only be used in environments which have no support
+for WebCrypto whatsoever. WebCrypto should be available on most modern browsers.
+On Node.js, we would suggest you consider [node-webcrypto-ossl] before using
+the polyfill implementations, although please see that project's security
+warning before using it.
+
+If you have already read the [Polyfill Security Warning](#polyfill-security-warning),
+understand the security concerns, and would like to use it anyway, call the
+following to obtain a `PolyfillCrypto` instance:
+
+```
+SIV.getCryptoProvider("polyfill")
+```
+
+You can pass it to `SIV.importKey()` like so:
+
+```
+const polyfillCrypto = SIV.getCryptoProvider("polyfill");
+const siv = SIV.importKey(keyData, "AES-SIV", polyfillCrypto);
+```
 
 ## Contributing
 

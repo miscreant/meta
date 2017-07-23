@@ -5,6 +5,8 @@ import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
 import { AesSivExample } from "./support/test_vectors";
 
+import WebCrypto = require("node-webcrypto-ossl");
+
 import SIV from "../src/sivchain";
 
 @suite class SivSpec {
@@ -14,9 +16,22 @@ import SIV from "../src/sivchain";
     this.vectors = await AesSivExample.loadAll();
   }
 
-  @test async "AES-SIV: should correctly seal and open"() {
+  @test async "AES-SIV: should correctly seal and open with WebCrypto"() {
     for (let v of SivSpec.vectors) {
-      const siv = await SIV.importKey(v.key, "AES-SIV", null);
+      const siv = await SIV.importKey(v.key, "AES-SIV", new WebCrypto());
+      const sealed = await siv.seal(v.plaintext, v.ad);
+      expect(sealed).to.eql(v.ciphertext);
+
+      const unsealed = await siv.open(sealed, v.ad);
+      expect(unsealed).not.to.be.null;
+      expect(unsealed!).to.eql(v.plaintext);
+      expect(() => siv.clean()).not.to.throw();
+    }
+  }
+
+  @test async "AES-SIV: should correctly seal and open with PolyfillCrypto"() {
+    for (let v of SivSpec.vectors) {
+      const siv = await SIV.importKey(v.key, "AES-SIV", SIV.getCryptoProvider("polyfill"));
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 

@@ -8,6 +8,7 @@ import IntegrityError from "./exceptions/integrity_error";
 import NotImplementedError from "./exceptions/not_implemented_error";
 import { ICmacLike, ICtrLike, ISivLike } from "./interfaces";
 
+import PolyfillCrypto from "./polyfill";
 import PolyfillAes from "./polyfill/aes";
 import PolyfillAesCmac from "./polyfill/aes_cmac";
 import PolyfillAesCtr from "./polyfill/aes_ctr";
@@ -20,7 +21,10 @@ const MAX_ASSOCIATED_DATA = 126;
 /** The AES-SIV mode of authenticated encryption */
 export default class AesSiv implements ISivLike {
   /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
-  public static async importKey(keyData: Uint8Array, crypto: Crypto | null = defaultCryptoProvider()): Promise<AesSiv> {
+  public static async importKey(
+    keyData: Uint8Array,
+    crypto: Crypto | PolyfillCrypto = defaultCryptoProvider(),
+  ): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
       throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
@@ -29,22 +33,23 @@ export default class AesSiv implements ISivLike {
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
     const encKey = keyData.subarray(keyData.length / 2 | 0);
 
-    if (crypto !== null) {
+    if (crypto instanceof PolyfillCrypto) {
+      const mac = new PolyfillAesCmac(new PolyfillAes(macKey));
+      const ctr = new PolyfillAesCtr(new PolyfillAes(encKey));
+      return new AesSiv(mac, ctr, null);
+    } else {
+      const mac = await WebCryptoAesCmac.importKey(macKey, crypto);
+
       try {
-        const mac = await WebCryptoAesCmac.importKey(macKey, crypto);
         const ctr = await WebCryptoAesCtr.importKey(encKey, crypto);
         return new AesSiv(mac, ctr, crypto);
       } catch (e) {
         if (e.message.includes("unsupported")) {
-          throw new NotImplementedError("AES-SIV: unsupported crypto backend (CTR missing). Use polyfill.");
+          throw new NotImplementedError("AES-SIV: unsupported crypto backend (CTR missing). Use PolyfillCrypto.");
         } else {
           throw e;
         }
       }
-    } else {
-      const mac = new PolyfillAesCmac(new PolyfillAes(macKey));
-      const ctr = new PolyfillAesCtr(new PolyfillAes(encKey));
-      return new AesSiv(mac, ctr, null);
     }
   }
 
