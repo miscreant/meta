@@ -186,11 +186,11 @@ encryption, or other "streaming" use cases.
 
 ## Frequently Asked Questions (FAQ)
 
-#### Q: If AES-SIV is so great, why have I never heard of it?
+### Q: If AES-SIV is so great, why have I never heard of it?
 
 A: Good question! It's an underappreciated gem in cryptography.
 
-#### Q: What does "SIV" stand for?
+### Q: What does "SIV" stand for?
 
 A: SIV stands for "synthetic initialization vector" and refers to the process
 of deriving/"synthesizing" the initialization vector (i.e. the starting counter)
@@ -200,7 +200,7 @@ Where other schemes might have you randomly generate an IV, SIV modes
 pseudorandomly "synthesize" one from the key, plaintext, and additional message
 headers including optional associated data and nonce.
 
-#### Q: What's the tl;dr for why I should use this?
+### Q: What's the tl;dr for why I should use this?
 
 A: It provides stronger security properties at the cost of a small performance
 hit as compared to **AES-GCM**. We hope to have benchmarks soon so we can show
@@ -220,15 +220,15 @@ rigorous security proof.
 
 [saltpack]: https://saltpack.org/
 
-#### Q: I saw this has "chain" in the name. Is it a cryptocurrency?
+### Q: I saw this has "chain" in the name. Is it a cryptocurrency?
 
 A: No.
 
-#### Q: When is your ICO and how do I buy into it?
+### Q: When is your ICO and how do I buy into it?
 
 A: Go away!
 
-#### Q: Are there any disadvantages to AES-SIV?
+### Q: Are there any disadvantages to AES-SIV?
 
 A: Using the AES function as a MAC (i.e. **AES-CMAC**) is more expensive than
 faster hardware accelerated functions such as **GHASH** and **POLYVAL** (which
@@ -244,7 +244,7 @@ same key before the "birthday bound" is hit and repeated IVs become probable
 enough to be a security concern. Though this number is relatively large, it is
 not outside the realm of possibility.
 
-#### Q: Are there any disadvantages to the SIV approach in general?
+### Q: Are there any disadvantages to the SIV approach in general?
 
 A: SIV encryption requires making a complete pass over the input in order to
 calculate the IV. This is less cache efficient than modes which are able
@@ -257,7 +257,7 @@ known in advance, SIV decryption and authentication can be performed
 block-by-block, making it just as fast as the corresponding non-SIV mode
 (which for **AES-SIV** would be **AES-EAX** mode).
 
-#### Q: Isn't MAC-then-encrypt bad? Shouldn't you use encrypt-then-MAC?
+### Q: Isn't MAC-then-encrypt bad? Shouldn't you use encrypt-then-MAC?
 
 A: Though SIV modes run the MAC operation first, then the encryption function
 second, they are a bit different from what is typically referred to as
@@ -283,7 +283,7 @@ bulletproof solution to preventing exposure of unauthenticated plaintexts.
 To some degree you will always be trusting the implementation quality of a
 particular library to ensure it operates in a secure manner.
 
-#### Q: Is this algorithm NIST approved / FIPS compliant?
+### Q: Is this algorithm NIST approved / FIPS compliant?
 
 A: **AES-SIV** is the combination of two NIST approved algorithms:
 **AES-CTR** encryption as described in [NIST SP 800-38A], and
@@ -300,14 +300,14 @@ FIPS auditors and cannot give prescriptive advice here.
 [submitted to NIST]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/siv.pdf
 [proposed mode]: http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html
 
-#### Q: Are there any patent concerns around AES-SIV mode?
+### Q: Are there any patent concerns around AES-SIV mode?
 
 A: No, there are [no IP rights concerns] with **AES-SIV** mode. To the best of
 our knowledge, the algorithm is entirely in the public domain. 
 
 [no IP rights concerns]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/ip.pdf
 
-#### Q: Why not wait for the winner of the CAESAR competition to be announced?
+### Q: Why not wait for the winner of the CAESAR competition to be announced?
 
 A: The CAESAR competition (to select a next generation authentication encryption
 cipher) seems to be taking much longer than was originally expected. Even when
@@ -318,14 +318,14 @@ Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
 organic usage. While not entirely optimal by the metrics of the CAESAR
 competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
 
-#### Q: Do you plan on supporting HS1-SIV in this library?
+### Q: Do you plan on supporting HS1-SIV in this library?
 
 A: Maybe! [HS1-SIV] is an interesting SIV mode authenticated encryption cipher.
 We are certainly keeping an eye on its development.
 
 [HS1-SIV]: https://competitions.cr.yp.to/round2/hs1sivv2.pdf
 
-#### Q: This project mentions security proofs several times. Where do I find them?
+### Q: This project mentions security proofs several times. Where do I find them?
 
 A: Please see the paper
 [Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem](http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf).
