@@ -184,7 +184,7 @@ encryption, or other "streaming" use cases.
 ![CHAIN Diagram](http://www.zcred.org/sivchain/images/chain.svg)
 
 _NOTE:_ **CHAIN** support is forthcoming! None of the libraries in this
-project presently implement CHAIN, but they will soon.
+project presently implement **CHAIN**, but they will soon.
 
 ## Frequently Asked Questions (FAQ)
 
