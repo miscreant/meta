@@ -15,6 +15,7 @@ module SIVChain
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY
         raise ArgumentError, "key must be 32 or 64 bytes" unless [16, 32].include?(key.length)
 
+        # The only valid use of ECB mode: constructing higher-level cryptographic primitives
         @cipher = OpenSSL::Cipher.new("AES-#{key.length * 8}-ECB")
         @cipher.encrypt
         @cipher.padding = 0
