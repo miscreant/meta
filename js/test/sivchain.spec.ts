@@ -18,7 +18,7 @@ import SIV from "../src/sivchain";
     for (let v of SivSpec.vectors) {
       const siv = await SIV.importKey(v.key, "AES-SIV", null);
       const sealed = await siv.seal(v.plaintext, v.ad);
-      expect(sealed).to.eql(v.output);
+      expect(sealed).to.eql(v.ciphertext);
 
       const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;

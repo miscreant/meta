@@ -25,13 +25,13 @@ class TestAesSiv(unittest.TestCase):
         for ex in SIVExample.load():
             siv = SIV(ex.key)
             ciphertext = siv.seal(ex.plaintext, ex.ad)
-            self.assertEqual(ciphertext, ex.output)
+            self.assertEqual(ciphertext, ex.ciphertext)
 
     # Ensure open passes all AES-SIV test vectors
     def test_open(self):
         for ex in SIVExample.load():
             siv = SIV(ex.key)
-            plaintext = siv.open(ex.output, ex.ad)
+            plaintext = siv.open(ex.ciphertext, ex.ad)
             self.assertEqual(plaintext, ex.plaintext)
 
     # Ensure open raises IntegrityError if wrong key is given
@@ -41,7 +41,7 @@ class TestAesSiv(unittest.TestCase):
 
         for ex in SIVExample.load():
             with self.assertRaises(IntegrityError):
-                siv.open(ex.output, ex.ad)
+                siv.open(ex.ciphertext, ex.ad)
 
     # Ensure open raises IntegrityError if wrong associated data is given
     def test_open_with_wrong_associated_data(self):
@@ -49,4 +49,4 @@ class TestAesSiv(unittest.TestCase):
         for ex in SIVExample.load():
             siv = SIV(ex.key)
             with self.assertRaises(IntegrityError):
-                siv.open(ex.output, bad_ad)
+                siv.open(ex.ciphertext, bad_ad)

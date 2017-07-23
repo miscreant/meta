@@ -7,7 +7,7 @@
                 "101112131415161718191a1b1c1d1e1f2021222324252627"
             ],
             "plaintext:d16":"112233445566778899aabbccddee",
-            "output:d16":"85632d07c6e8f37f950acd320a2ecc9340c02b9690c4dc04daef7f6afe5c"
+            "ciphertext:d16":"85632d07c6e8f37f950acd320a2ecc9340c02b9690c4dc04daef7f6afe5c"
         },
         {
             "name:s":"Nonce-Based Authenticated Encryption Example",
@@ -18,14 +18,14 @@
                 "09f911029d74e35bd84156c5635688c0"
             ],
             "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
-            "output:d16":"7bdb6e3b432667eb06f4d14bff2fbd0fcb900f2fddbe404326601965c889bf17dba77ceb094fa663b7a3f748ba8af829ea64ad544a272e9c485b62a3fd5c0d"
+            "ciphertext:d16":"7bdb6e3b432667eb06f4d14bff2fbd0fcb900f2fddbe404326601965c889bf17dba77ceb094fa663b7a3f748ba8af829ea64ad544a272e9c485b62a3fd5c0d"
         },
         {
             "name:s":"Empty Authenticated Data And Plaintext Example",
             "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
             "ad:A<d16>":[],
             "plaintext:d16":"",
-            "output:d16":"f2007a5beb2b8900c588a7adf599f172"
+            "ciphertext:d16":"f2007a5beb2b8900c588a7adf599f172"
         },
         {
             "name:s":"NIST SIV test vectors (256-bit subkeys #1)",
@@ -34,7 +34,7 @@
                 "101112131415161718191a1b1c1d1e1f2021222324252627"
             ],
             "plaintext:d16":"112233445566778899aabbccddee",
-            "output:d16":"f125274c598065cfc26b0e71575029088b035217e380cac8919ee800c126"
+            "ciphertext:d16":"f125274c598065cfc26b0e71575029088b035217e380cac8919ee800c126"
         },
         {
             "name:s":"NIST SIV test vectors (256-bit subkeys #2)",
@@ -45,7 +45,7 @@
                 "09f911029d74e35bd84156c5635688c0"
             ],
             "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
-            "output:d16":"85b8167310038db7dc4692c0281ca35868181b2762f3c24f2efa5fb80cb143516ce6c434b898a6fd8eb98a418842f51f66fc67de43ac185a66dd72475bbb08"
+            "ciphertext:d16":"85b8167310038db7dc4692c0281ca35868181b2762f3c24f2efa5fb80cb143516ce6c434b898a6fd8eb98a418842f51f66fc67de43ac185a66dd72475bbb08"
         }
     ]
 }
