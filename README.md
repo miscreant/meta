@@ -190,6 +190,16 @@ encryption, or other "streaming" use cases.
 
 A: Good question! It's an underappreciated gem in cryptography.
 
+#### Q: What does "SIV" stand for?
+
+A: SIV stands for "synthetic initialization vector" and refers to the process
+of deriving/"synthesizing" the initialization vector (i.e. the starting counter)
+for AES-CTR encryption from the given message headers and plaintext message.
+
+Where other schemes might have you randomly generate an IV, SIV modes
+pseudorandomly "synthesize" one from the key, plaintext, and additional message
+headers including optional associated data and nonce.
+
 #### Q: What's the tl;dr for why I should use this?
 
 A: It provides stronger security properties at the cost of a small performance
