@@ -320,6 +320,14 @@ Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
 organic usage. While not entirely optimal by the metrics of the CAESAR
 competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
 
+### Q: Do you plan on supporting AEZ in this library?
+
+A: Maybe! [AEZ] is a newer, faster, parallelizable alternative to **AES-SIV**
+with improved security properties, co-designed by [Phil Rogaway] who also
+designed **AES-SIV**.
+
+[AEZ]: http://web.cs.ucdavis.edu/~rogaway/aez/
+
 ### Q: Do you plan on supporting HS1-SIV in this library?
 
 A: Maybe! [HS1-SIV] is an interesting SIV mode authenticated encryption cipher.
