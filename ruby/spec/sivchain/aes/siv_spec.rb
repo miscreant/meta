@@ -2,7 +2,7 @@
 
 RSpec.describe SIVChain::AES::SIV do
   let(:example_key) { "\x01".b * 32 }
-  let(:example_ad) { ["XXX"] }
+  let(:example_ad) { ["INVALID".b] }
   let(:test_vectors) { described_class::Example.load_file }
 
   describe "inspect" do

@@ -15,6 +15,11 @@ module SIVChain
         SecureRandom.random_bytes(size)
       end
 
+      # Create a new AES-SIV instance
+      #
+      # @param key [String] 32-byte or 64-byte Encoding::BINARY cryptographic key
+      #
+      # @return [SIVChain::AES::SIV] new AES-SIV instance
       def initialize(key)
         raise TypeError, "expected String, got #{key.class}" unless key.is_a?(String)
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY
@@ -26,17 +31,39 @@ module SIVChain
         @enc_key = key.slice(length..-1)
       end
 
+      # Inspect this AES-SIV instance
+      #
+      # @return [String] description of this instance
       def inspect
         to_s
       end
 
+      # Encrypt a message using AES-SIV, authenticating it along with the associated data
+      #
+      # @param plaintext [String] an Encoding::BINARY string to encrypt
+      # @param associated_data [Array<String>] optional array of message headers to authenticate
+      #
+      # @return [String] encrypted ciphertext
       def seal(plaintext, associated_data = [])
+        raise TypeError, "expected String, got #{plaintext.class}" unless plaintext.is_a?(String)
+        raise ArgumentError, "plaintext must be Encoding::BINARY" unless plaintext.encoding == Encoding::BINARY
+
         v = _s2v(associated_data, plaintext)
         ciphertext = _transform(v, plaintext)
         v + ciphertext
       end
 
+      # Verify and decrypt an AES-SIV ciphertext, authenticating it along with the associated data
+      #
+      # @param ciphertext [String] an Encoding::BINARY string to decrypt
+      # @param associated_data [Array<String>] optional array of message headers to authenticate
+      #
+      # @raise [SIVChain::IntegrityError] ciphertext and/or associated data are corrupt or tampered with
+      # @return [String] decrypted plaintext
       def open(ciphertext, associated_data = [])
+        raise TypeError, "expected String, got #{ciphertext.class}" unless ciphertext.is_a?(String)
+        raise ArgumentError, "ciphertext must be Encoding::BINARY" unless ciphertext.encoding == Encoding::BINARY
+
         v = ciphertext.slice(0, AES::BLOCK_SIZE)
         ciphertext = ciphertext.slice(AES::BLOCK_SIZE..-1)
         plaintext = _transform(v, ciphertext)
@@ -49,6 +76,7 @@ module SIVChain
 
       private
 
+      # Performs raw unauthenticted encryption or decryption of the message
       def _transform(v, data)
         return "".b if data.empty?
 
