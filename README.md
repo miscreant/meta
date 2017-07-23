@@ -174,7 +174,7 @@ authenticated the original plaintext and can return it.
 
 ## CHAIN
 
-The CHAIN construction, originally described in the paper
+The **CHAIN** construction, originally described in the paper
 [Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance][CHAIN],
 provides a segmented [authenticated encryption] scheme while still providing
 [nonce reuse misuse resistance]. This makes it suitable for use cases that
@@ -183,6 +183,8 @@ encryption, or other "streaming" use cases.
 
 ![CHAIN Diagram](http://www.zcred.org/sivchain/images/chain.svg)
 
+_NOTE:_ **CHAIN** support is forthcoming! None of the libraries in this
+project presently implement CHAIN, but they will soon.
 
 ## Frequently Asked Questions (FAQ)
 
