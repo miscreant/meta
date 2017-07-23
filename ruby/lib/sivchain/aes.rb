@@ -8,6 +8,6 @@ module SIVChain
     BLOCK_SIZE = 16
 
     # A bytestring of all zeroes, the same length as an AES block
-    ZERO_BLOCK = ("\0" * BLOCK_SIZE).b.freeze
+    ZERO_BLOCK = ("\0" * BLOCK_SIZE).freeze
   end
 end

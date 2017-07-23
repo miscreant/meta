@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module SIVChain
-  # Utility functions
+  # Internal utility functions
   module Util
     module_function
 
@@ -23,10 +23,11 @@ module SIVChain
       result
     end
 
-    # Pad a value up to the given length
-    def pad(value, length)
-      difference = length - value.length - 1
-      value + "\x80" << ("\0" * difference)
+    # Pad value with a 0x80 value and zeroes up to the given length
+    def pad(message, length)
+      padded_length = message.length + length - (message.length % length)
+      message += "\x80"
+      message.ljust(padded_length, "\0")
     end
 
     # Perform a constant time(-ish) branch operation
@@ -74,7 +75,6 @@ module SIVChain
       i = -1
 
       b.each_byte { |v| r |= v ^ l[i += 1] }
-
       r.zero?
     end
   end
