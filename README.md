@@ -271,7 +271,7 @@ Furthermore some libraries will perform the **AES-CTR** portion of **AES-GCM**
 decryption without checking the GCM tag, so encrypt-then-MAC is not a
 bulletproof solution to preventing exposure of unauthenticated plaintexts.
 To some degree you will always be trusting the implementation quality of a
-particular library to ensure 
+particular library to ensure it operates in a secure manner.
 
 #### Q: Is this algorithm NIST approved / FIPS compliant?
 
