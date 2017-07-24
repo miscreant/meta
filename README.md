@@ -61,7 +61,7 @@ The following constructions are provided by **Miscreant**:
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Passes | Standardization   |
 |-------------------|----------------------------|---------------------|--------|-------------------|
 | AES-SIV           | :green_heart:              | :green_heart:       | 2      | [RFC 5297]        |
-| AES-GCM-SIV       | :green_heart:              | :yellow_heart:†     | 2      | Forthcoming‡      |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | 2      | Forthcoming‡      |
 | AES-GCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38D] |
 | AES-CCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38C] |
 | AES-CBC           | :broken_heart:             | :broken_heart:      | 1      | [NIST SP 800-38A] |
@@ -69,9 +69,8 @@ The following constructions are provided by **Miscreant**:
 | ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | [RFC 7539]        |
 | XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | None              |
 
-† [According to the authors] of the AES-GCM-SIV specification, it does not have
-  the actual properties of nonce reuse misuse resistance, although it does
-  provide improvements over other AES modes of operation.
+† Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks].
+  These attacks are being addressed in newer drafts of the specification.
 
 ‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
@@ -94,7 +93,6 @@ so-called "Internet of Things" embedded use cases.
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
 [key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
-[According to the authors]: https://mailarchive.ietf.org/arch/msg/cfrg/CVfp8_sy2sNIj_LXCwQ1vbdhpqQ
 [AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
