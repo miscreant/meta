@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SIVChain::AES::SIV do
+RSpec.describe Miscreant::AES::SIV do
   let(:example_key) { "\x01".b * 32 }
   let(:example_ad) { ["INVALID".b] }
   let(:test_vectors) { described_class::Example.load_file }
@@ -8,7 +8,7 @@ RSpec.describe SIVChain::AES::SIV do
   describe "inspect" do
     it "does not contain instance variable values" do
       cmac = described_class.new(example_key)
-      expect(cmac.inspect).to match(/\A#<SIVChain::AES::SIV:0[xX][0-9a-fA-F]+>\z/)
+      expect(cmac.inspect).to match(/\A#<Miscreant::AES::SIV:0[xX][0-9a-fA-F]+>\z/)
     end
   end
 
@@ -34,14 +34,14 @@ RSpec.describe SIVChain::AES::SIV do
     it "should raise IntegrityError if wrong key is given" do
       test_vectors.each do |ex|
         siv = described_class.new(example_key)
-        expect { siv.open(ex.ciphertext, ex.ad) }.to raise_error(SIVChain::IntegrityError)
+        expect { siv.open(ex.ciphertext, ex.ad) }.to raise_error(Miscreant::IntegrityError)
       end
     end
 
     it "should raise IntegrityError if wrong associated data is given" do
       test_vectors.each do |ex|
         siv = described_class.new(ex.key)
-        expect { siv.open(ex.ciphertext, example_ad) }.to raise_error(SIVChain::IntegrityError)
+        expect { siv.open(ex.ciphertext, example_ad) }.to raise_error(Miscreant::IntegrityError)
       end
     end
   end

@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-module SIVChain
+module Miscreant
   # Internal utility functions
   module Util
     module_function

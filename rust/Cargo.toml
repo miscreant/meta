@@ -1,11 +1,11 @@
 [package]
-name        = "sivchain"
-description = "Advanced symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions"
+name        = "miscreant"
+description = "Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions"
 version     = "0.0.0"
 license     = "MIT"
 authors     = ["Tony Arcieri <bascule@gmail.com>"]
-homepage    = "https://sivchain.org"
-repository  = "https://github.com/zcred/sivchain/tree/master/rust"
+homepage    = "https://miscreant.org"
+repository  = "https://github.com/miscreant/miscreant/tree/master/rust"
 readme      = "README.md"
 categories  = ["cryptography"]
 keywords    = ["cryptography", "encryption", "security", "streaming"]

@@ -1,15 +1,15 @@
-# sivchain.py [![Latest Version][pypi-shield]][pypi-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link]
+# miscreant.py [![Latest Version][pypi-shield]][pypi-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link]
 
-[pypi-shield]: https://img.shields.io/pypi/v/sivchain.svg
-[pypi-link]: https://pypi.python.org/pypi/sivchain/
-[build-image]: https://secure.travis-ci.org/zcred/sivchain.svg?branch=master
-[build-link]: http://travis-ci.org/zcred/sivchain
+[pypi-shield]: https://img.shields.io/pypi/v/miscreant.svg
+[pypi-link]: https://pypi.python.org/pypi/miscreant/
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
+[build-link]: http://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-link]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
+[license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Python implementation of **SIVChain**: Advanced symmetric encryption using the
+Python implementation of **Miscreant**: Advanced symmetric encryption using the
 AES-SIV ([RFC 5297]) and [CHAIN] constructions, providing easy-to-use (or
 rather, hard-to-misuse) encryption of individual messages or message streams.
 
@@ -30,18 +30,18 @@ For more information, see the [toplevel README.md].
 [nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
-[toplevel README.md]: https://github.com/zcred/sivchain/blob/master/README.md
+[toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md
 
 ## Help and Discussion
 
 Have questions? Want to suggest a feature or change?
 
-* [Gitter]: web-based chat about zcred projects including **sivchain.rb**
-* [Google Group]: join via web or email ([zcred+subscribe@googlegroups.com])
+* [Gitter]: web-based chat about miscreant projects including **miscreant.py**
+* [Google Group]: join via web or email ([miscreant+subscribe@googlegroups.com])
 
-[Gitter]: https://gitter.im/zcred/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/zcred
-[zcred+subscribe@googlegroups.com]: mailto:zcred+subscribe@googlegroups.com
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant
+[miscreant+subscribe@googlegroups.com]: mailto:miscreant+subscribe@googlegroups.com
 
 ## Security Notice
 
@@ -60,18 +60,18 @@ https://cryptography.io/en/latest/installation/
 
 ## Installation
 
-Install **SIVChain** with pip using:
+Install **Miscreant** with pip using:
 
 ```
-$ pip install sivchain
+$ pip install miscreant
 ```
 
 ## API
 
-Import the `SIV` class from `sivchain.aes.siv` using:
+Import the `SIV` class from `miscreant.aes.siv` using:
 
 ```python
-from sivchain.aes.siv import SIV
+from miscreant.aes.siv import SIV
 ```
 
 The `SIV` class provides the main interface to the **AES-SIV** misuse resistant
@@ -104,7 +104,7 @@ Example:
 
 ```python
 import os
-from sivchain.aes.siv import SIV
+from miscreant.aes.siv import SIV
 
 key = SIV.generate_key()
 siv = SIV.new(key)
@@ -122,7 +122,7 @@ Example:
 
 ```python
 import os
-from sivchain.aes.siv import SIV
+from miscreant.aes.siv import SIV
 
 key = SIV.generate_key()
 siv = SIV.new(key)
@@ -136,12 +136,12 @@ plaintext = siv.open(message, [nonce])
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/zcred/zser
+Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
 
 ## Copyright
 
-Copyright (c) 2017 [The Zcred Developers][AUTHORS].
+Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
-[AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
+[AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
+[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt

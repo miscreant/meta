@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-module SIVChain
+module Miscreant
   module AES
     # The AES-SIV misuse resistant authenticated encryption cipher
     class SIV
@@ -19,7 +19,7 @@ module SIVChain
       #
       # @param key [String] 32-byte or 64-byte Encoding::BINARY cryptographic key
       #
-      # @return [SIVChain::AES::SIV] new AES-SIV instance
+      # @return [Miscreant::AES::SIV] new AES-SIV instance
       def initialize(key)
         raise TypeError, "expected String, got #{key.class}" unless key.is_a?(String)
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY
@@ -58,7 +58,7 @@ module SIVChain
       # @param ciphertext [String] an Encoding::BINARY string to decrypt
       # @param associated_data [Array<String>] optional array of message headers to authenticate
       #
-      # @raise [SIVChain::IntegrityError] ciphertext and/or associated data are corrupt or tampered with
+      # @raise [Miscreant::IntegrityError] ciphertext and/or associated data are corrupt or tampered with
       # @return [String] decrypted plaintext
       def open(ciphertext, associated_data = [])
         raise TypeError, "expected String, got #{ciphertext.class}" unless ciphertext.is_a?(String)

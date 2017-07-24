@@ -5,12 +5,13 @@
 // worldwide. This software is distributed without any warranty.
 // http://creativecommons.org/publicdomain/zero/1.0/
 
-// Package siv implements Synthetic Initialization Vector (SIV) authenticated
+// Miscreant implements Synthetic Initialization Vector (SIV) authenticated
 // encryption using AES (RFC 5297).
-package sivchain
+
+package miscreant
 
 import (
-	"github.com/zcred/sivchain/go/cmac"
+	"github.com/miscreant/miscreant/go/cmac"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/subtle"

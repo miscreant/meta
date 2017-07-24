@@ -4,7 +4,7 @@
 
 require "tjson"
 
-class SIVChain::AES::CMAC::Example
+class Miscreant::AES::CMAC::Example
   attr_reader :key, :input, :result
 
   # Error parsing the example file
@@ -27,7 +27,7 @@ class SIVChain::AES::CMAC::Example
   end
 end
 
-class SIVChain::AES::SIV::Example
+class Miscreant::AES::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
   # Error parsing the example file
@@ -52,7 +52,7 @@ class SIVChain::AES::SIV::Example
   end
 end
 
-class SIVChain::Util::DblExample
+class Miscreant::Util::DblExample
   attr_reader :input, :output
 
   # Error parsing the example file

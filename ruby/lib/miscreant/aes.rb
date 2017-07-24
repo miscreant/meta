@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-module SIVChain
+module Miscreant
   # The Advanced Encryption Standard Block Cipher
   module AES
     # Size of an AES block (i.e. input/output from the AES function)

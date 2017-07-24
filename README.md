@@ -1,33 +1,34 @@
-# SIVChain
+# Miscreant
 
 [![Build Status][build-image]][build-link]
 [![MIT licensed][license-image]][license-link]
 
-[build-image]: https://secure.travis-ci.org/zcred/sivchain.svg?branch=master
-[build-link]: http://travis-ci.org/zcred/sivchain
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
+[build-link]: http://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-link]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
+[license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Advanced symmetric encryption using the [AES-SIV] ([RFC 5297]) and [CHAIN] constructions,
-providing easy-to-use (or rather, hard-to-misuse) encryption of individual
-messages or message streams.
+A misuse resistant symmetric encryption library designed to support
+authenticated encryption of individual messages, encryption keys,
+message streams, or large files using the [AES-SIV] ([RFC 5297]) and
+[CHAIN] constructions.
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 
 
-## What is SIVChain?
+## What is Miscreant?
 
-**SIVChain** is a set of interoperable libraries implemented in several
-languages providing a high-level API for hard-to-misuse symmetric encryption.
+**Miscreant** is a set of interoperable libraries implemented in several
+languages providing a high-level API for misuse-resistant symmetric encryption.
 Additionally, it provides streaming support, allowing large messages
 to be incrementally encrypted/decrypted while still providing
 [authenticated encryption].
 
-The following constructions are provided by **SIVChain**:
+The following constructions are provided by **Miscreant**:
 
 * [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR]
   ([NIST SP 800-38A]) mode of encryption with the [AES-CMAC]
@@ -42,11 +43,11 @@ The following constructions are provided by **SIVChain**:
   like **AES-GCM**. **AES-SIV** provides [nonce reuse misuse resistance],
   considered the gold standard in cryptography today.
 
- * [CHAIN]: a construction which provides streaming [authenticated encryption]
-   when used in conjunction with a cipher like **AES-SIV** that supports
-   [nonce reuse misuse resistance]. Though not yet described in an RFC,
-   **CHAIN** was designed by Phil Rogaway (who also created **AES-SIV**)
-   and the paper contains a rigorous security analysis proving it secure.
+* [CHAIN]: a construction which provides streaming [authenticated encryption]
+  when used in conjunction with a cipher like **AES-SIV** that supports
+  [nonce reuse misuse resistance]. Though not yet described in an RFC,
+  **CHAIN** was designed by Phil Rogaway (who also created **AES-SIV**)
+  and the paper contains a rigorous security analysis proving it secure.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
@@ -100,7 +101,7 @@ so-called "Internet of Things" embedded use cases.
 
 ## Language Support
 
-Packages implementing **SIVChain** are available for the following languages:
+**Miscreant** libraries are available for the following languages:
 
 | Language               | Version                              |
 |------------------------|--------------------------------------|
@@ -110,15 +111,15 @@ Packages implementing **SIVChain** are available for the following languages:
 | [Ruby][gem-link]       | [![gem][gem-shield]][gem-link]       |
 | [Rust][crate-link]     | [![crate][crate-shield]][crate-link] |
 
-[go-link]: https://github.com/zcred/sivchain/tree/master/go
-[npm-shield]: https://img.shields.io/npm/v/sivchain.svg
-[npm-link]: https://www.npmjs.com/package/sivchain
-[pypi-shield]: https://img.shields.io/pypi/v/sivchain.svg
-[pypi-link]: https://pypi.python.org/pypi/sivchain/
-[gem-shield]: https://badge.fury.io/rb/sivchain.svg
-[gem-link]: https://rubygems.org/gems/sivchain
-[crate-shield]: https://img.shields.io/crates/v/sivchain.svg
-[crate-link]: https://crates.io/crates/sivchain
+[go-link]: https://github.com/miscreant/miscreant/tree/master/go
+[npm-shield]: https://img.shields.io/npm/v/miscreant.svg
+[npm-link]: https://www.npmjs.com/package/miscreant
+[pypi-shield]: https://img.shields.io/pypi/v/miscreant.svg
+[pypi-link]: https://pypi.python.org/pypi/miscreant/
+[gem-shield]: https://badge.fury.io/rb/miscreant.svg
+[gem-link]: https://rubygems.org/gems/miscreant
+[crate-shield]: https://img.shields.io/crates/v/miscreant.svg
+[crate-link]: https://crates.io/crates/miscreant
 
 
 ## AES-SIV
@@ -128,7 +129,7 @@ function operates.
 
 ### Encryption
 
-<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://www.zcred.org/sivchain/images/siv-encrypt.svg" width="410px" height="300px">
+<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://www.miscreant.org/miscreant/images/siv-encrypt.svg" width="410px" height="300px">
 
 #### Inputs:
 
@@ -150,7 +151,7 @@ through *H<sub>m</sub>* and messages under *K<sub>1</sub>*, computing a
 
 ### Decryption
 
-<img src="https://camo.githubusercontent.com/b2b2da0d26fccb4397e30b7555c7a0ace9df7737/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d646563727970742e737667" data-canonical-src="https://www.zcred.org/sivchain/images/siv-decrypt.svg" width="410px" height="368px">
+<img src="https://camo.githubusercontent.com/b2b2da0d26fccb4397e30b7555c7a0ace9df7737/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d646563727970742e737667" data-canonical-src="https://www.miscreant.org/miscreant/images/siv-decrypt.svg" width="410px" height="368px">
 
 #### Inputs:
 
@@ -181,7 +182,7 @@ provides a segmented [authenticated encryption] scheme while still providing
 require incremental processing, such as large file encryption, transport
 encryption, or other "streaming" use cases.
 
-![CHAIN Diagram](http://www.zcred.org/sivchain/images/chain.svg)
+![CHAIN Diagram](http://www.miscreant.org/miscreant/images/chain.svg)
 
 _NOTE:_ **CHAIN** support is forthcoming! None of the libraries in this
 project presently implement **CHAIN**, but they will soon.
@@ -343,7 +344,7 @@ A: Please see the paper
 
 ## Copyright
 
-Copyright (c) 2017 [The Zcred Developers][AUTHORS].
+Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
 Distributed under the MIT license. See [LICENSE.txt] for further details.
 
 Some language-specific subprojects include sources from other authors with more
@@ -351,5 +352,5 @@ specific licensing requirements, though all projects are MIT licensed.
 Please see the respective **LICENSE.txt** files in each project for more
 information.
 
-[AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
+[AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
+[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt

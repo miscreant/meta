@@ -1,14 +1,14 @@
 {
-  "name": "sivchain",
+  "name": "miscreant",
   "version": "0.0.0",
-  "description": "Symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions",
-  "homepage": "https://github.com/zcred/sivchain/tree/master/js/",
+  "description": "Misuse resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions",
+  "homepage": "https://github.com/miscreant/miscreant/tree/master/js/",
   "main": "index.js",
   "author": "Tony Arcieri",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zcred/sivchain.git"
+    "url": "git+https://github.com/miscreant/miscreant.git"
   },
   "keywords": [
     "cryptography",
@@ -17,7 +17,7 @@
     "security"
   ],
   "bugs": {
-    "url": "https://github.com/zcred/sivchain/issues"
+    "url": "https://github.com/miscreant/miscreant/issues"
   },
   "directories": {
     "test": "test"
@@ -26,18 +26,21 @@
     "test": "mocha --require ts-node/register test/**/*.spec.ts"
   },
   "devDependencies": {
+    "@types/chai": "^3.4.35",
+    "@types/chai-as-promised": ">= 0.0.31",
+    "@types/mocha": "^2.2.40",
+    "@types/node": "^7.0.13",
     "async-file": "^2.0.2",
     "chai": "^3.5.0",
     "chai-as-promised": "^7.0.0",
-    "mocha": "^3.2.0",
+    "mocha": "^3.4.2",
     "mocha-typescript": "^1.0.23",
     "node-webcrypto-ossl": "^1.0.26",
     "tjson-js": "^0.1.2",
     "ts-node": "^3.0.2",
-    "typescript": "^2.3.0",
-    "@types/chai": "^3.4.35",
-    "@types/chai-as-promised": ">= 0.0.31",
-    "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.13"
+    "typescript": "^2.3.0"
+  },
+  "dependencies": {
+    "global": "^4.3.2"
   }
 }

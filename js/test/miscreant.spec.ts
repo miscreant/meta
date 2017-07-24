@@ -7,7 +7,7 @@ import { AesSivExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
 
-import SIV from "../src/sivchain";
+import Miscreant from "../src/miscreant";
 
 @suite class SivSpec {
   static vectors: AesSivExample[];
@@ -18,7 +18,7 @@ import SIV from "../src/sivchain";
 
   @test async "AES-SIV: should correctly seal and open with WebCrypto"() {
     for (let v of SivSpec.vectors) {
-      const siv = await SIV.importKey(v.key, "AES-SIV", new WebCrypto());
+      const siv = await Miscreant.importKey(v.key, "AES-SIV", new WebCrypto());
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -31,7 +31,7 @@ import SIV from "../src/sivchain";
 
   @test async "AES-SIV: should correctly seal and open with PolyfillCrypto"() {
     for (let v of SivSpec.vectors) {
-      const siv = await SIV.importKey(v.key, "AES-SIV", SIV.getCryptoProvider("polyfill"));
+      const siv = await Miscreant.importKey(v.key, "AES-SIV", Miscreant.getCryptoProvider("polyfill"));
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 

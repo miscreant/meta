@@ -4,13 +4,13 @@
 test_aes_siv
 ----------
 
-Tests for the `sivchain.aes.siv` module.
+Tests for the `miscreant.aes.siv` module.
 """
 
 import unittest
 
-from sivchain.aes.siv import SIV
-from sivchain.exceptions import IntegrityError
+from miscreant.aes.siv import SIV
+from miscreant.exceptions import IntegrityError
 
 from .support.test_vectors import SIVExample
 
