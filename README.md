@@ -173,19 +173,6 @@ then authenticated by **AES-CMAC**. If the computed `IV’` does not match the
 original one supplied, the decryption operation is aborted. Otherwise, we've
 authenticated the original plaintext and can return it.
 
-## CHAIN
-
-The **CHAIN** construction, originally described in the paper
-[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance][CHAIN],
-provides a segmented [authenticated encryption] scheme while still providing
-[nonce reuse misuse resistance]. This makes it suitable for use cases that
-require incremental processing, such as large file encryption, transport
-encryption, or other "streaming" use cases.
-
-![CHAIN Diagram](http://www.miscreant.org/miscreant/images/chain.svg)
-
-_NOTE:_ **CHAIN** support is forthcoming! None of the libraries in this
-project presently implement **CHAIN**, but they will soon.
 
 ## Frequently Asked Questions (FAQ)
 
@@ -222,14 +209,6 @@ or if all relevant data is actually cryptographically bound, much less a
 rigorous security proof.
 
 [saltpack]: https://saltpack.org/
-
-### Q: I saw this has "chain" in the name. Is it a cryptocurrency?
-
-A: No.
-
-### Q: When is your ICO and how do I buy into it?
-
-A: Go away!
 
 ### Q: Are there any disadvantages to AES-SIV?
 
