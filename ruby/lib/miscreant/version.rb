@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module SIVChain
+module Miscreant
   VERSION = "0.0.0"
 end

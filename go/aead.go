@@ -5,7 +5,7 @@
 // worldwide. This software is distributed without any warranty.
 // http://creativecommons.org/publicdomain/zero/1.0/
 
-package sivchain
+package miscreant
 
 import "crypto/cipher"
 

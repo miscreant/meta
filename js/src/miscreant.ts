@@ -1,4 +1,4 @@
-/** sivchain.ts: The AES-SIV encryption mode and CHAIN chaining mode */
+/** miscreant.ts: The AES-SIV encryption mode and CHAIN chaining mode */
 
 import { ISivLike } from "./internal/interfaces";
 import { defaultCryptoProvider } from "./internal/util";
@@ -7,7 +7,7 @@ import AesSiv from "./internal/aes_siv";
 import PolyfillCrypto from "./internal/polyfill";
 
 /** Common interface to AES-SIV algorithms */
-export default class SIV {
+export default class Miscreant {
   /** Import a key for the given algorithm. Valid algorithms: "AES-SIV" */
   public static async importKey(
     keyData: Uint8Array,

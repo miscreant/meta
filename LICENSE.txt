@@ -1,7 +1,7 @@
-Copyright (c) 2017 The Zcred Developers. The canonical list of project
+Copyright (c) 2017 The Miscreant Developers. The canonical list of project
 contributors who hold copyright over the project can be found at:
 
-https://github.com/zcred/zcred/blob/master/AUTHORS.md
+https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
 
 MIT License
 

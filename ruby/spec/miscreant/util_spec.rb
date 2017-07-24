@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SIVChain::Util do
+RSpec.describe Miscreant::Util do
   describe "dbl" do
     let(:test_vectors) { described_class::DblExample.load_file }
 

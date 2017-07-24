@@ -1,17 +1,17 @@
-# sivchain.js [![Latest Version][npm-shield]][npm-link] [![Build Status][build-image]][build-link] [![Known Vulnerabilities][snyk-image]][snyk-link] [![MIT licensed][license-image]][license-link]
+# miscreant.js [![Latest Version][npm-shield]][npm-link] [![Build Status][build-image]][build-link] [![Known Vulnerabilities][snyk-image]][snyk-link] [![MIT licensed][license-image]][license-link]
 
-[npm-shield]: https://img.shields.io/npm/v/sivchain.svg
-[npm-link]: https://www.npmjs.com/package/sivchain
-[build-image]: https://secure.travis-ci.org/zcred/sivchain.svg?branch=master
-[build-link]: http://travis-ci.org/zcred/sivchain
-[snyk-image]: https://snyk.io/test/github/zcred/sivchain/badge.svg?targetFile=js%2Fpackage.json
-[snyk-link]: https://snyk.io/test/github/zcred/sivchain?targetFile=js%2Fpackage.json
+[npm-shield]: https://img.shields.io/npm/v/miscreant.svg
+[npm-link]: https://www.npmjs.com/package/miscreant
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
+[build-link]: http://travis-ci.org/miscreant/miscreant
+[snyk-image]: https://snyk.io/test/github/miscreant/miscreant/badge.svg?targetFile=js%2Fpackage.json
+[snyk-link]: https://snyk.io/test/github/miscreant/miscreant?targetFile=js%2Fpackage.json
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
-[license-link]: https://github.com/zcred/sivchain/blob/master/LICENSE.txt
+[license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-JavaScript-compatible TypeScript implementation of **SIVChain**:
+JavaScript-compatible TypeScript implementation of **Miscreant**:
 Advanced symmetric encryption using the [AES-SIV] ([RFC 5297]) and [CHAIN]
 constructions, providing easy-to-use (or rather, hard-to-misuse) encryption of
 individual messages or message streams.
@@ -33,18 +33,18 @@ For more information, see the [toplevel README.md].
 [nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
-[toplevel README.md]: https://github.com/zcred/sivchain/blob/master/README.md
+[toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md
 
 ## Help and Discussion
 
 Have questions? Want to suggest a feature or change?
 
-* [Gitter]: web-based chat about zcred projects including **sivchain.js**
-* [Google Group]: join via web or email ([zcred+subscribe@googlegroups.com])
+* [Gitter]: web-based chat about miscreant projects including **miscreant.js**
+* [Google Group]: join via web or email ([miscreant+subscribe@googlegroups.com])
 
-[Gitter]: https://gitter.im/zcred/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/zcred
-[zcred+subscribe@googlegroups.com]: mailto:zcred+subscribe@googlegroups.com
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant
+[miscreant+subscribe@googlegroups.com]: mailto:miscreant+subscribe@googlegroups.com
 
 ## Security Notice
 
@@ -90,32 +90,32 @@ If at all possible, use the Web Crypto implementation instead of the polyfills.
 Via [npm](https://www.npmjs.com/):
 
 ```bash
-npm install sivchain
+npm install miscreant
 ```
 
 Via [Yarn](https://yarnpkg.com/):
 
 ```bash
-yarn install sivchain
+yarn install miscreant
 ```
 
-Import **sivchain.js** into your project with:
+Import **miscreant.js** into your project with:
 
 ```js
-import SIV from "sivchain";
+import Miscreant from "miscreant";
 ```
 
 ## API
 
-### SIV.importKey()
+### Miscreant.importKey()
 
-The **SIV.importKey()** method creates a new instance of an **AES-SIV**
+The **Miscreant.importKey()** method creates a new instance of an **AES-SIV**
 encryptor/decryptor.
 
 #### Syntax
 
 ```
-SIV.importKey(keyData, algorithm[, crypto = window.crypto])
+Miscreant.importKey(keyData, algorithm[, crypto = window.crypto])
 ```
 
 #### Parameters
@@ -130,12 +130,12 @@ SIV.importKey(keyData, algorithm[, crypto = window.crypto])
 
 #### Return Value
 
-The **SIV.importKey()** method returns a [Promise] that, when fulfilled,
+The **Miscreant.importKey()** method returns a [Promise] that, when fulfilled,
 returns a SIV encryptor/decryptor.
 
 #### Exceptions
 
-The **SIV.importKey()** method will throw an error if it's attempting to use
+The **Miscreant.importKey()** method will throw an error if it's attempting to use
 the default `window.crypto` provider either doesn't exist (e.g. `window` is
 not defined because we're on Node.js) or if that provider does not provide
 native implementations of the cryptographic primitives **AES-SIV** is built
@@ -149,21 +149,21 @@ decrease security.
 ```
 // Assuming window.crypto.getRandomValues is available
 
-let key = new Uint32Array(32);
-window.crypto.getRandomValues(key);
+let keyData = new Uint32Array(32);
+window.crypto.getRandomValues(keyData);
 
-let siv = await SIV.importKey(key, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-SIV");
 ```
 
-### SIV.seal()
+### seal()
 
-The **SIV.seal()** method encrypts a message along with a set of
-*associated data* message headers.
+The **seal()** method encrypts a message along with a set of message headers
+known as *associated data*.
 
 #### Syntax
 
 ```
-sivObj.seal(associatedData, plaintext)
+key.seal(associatedData, plaintext)
 ```
 
 #### Parameters
@@ -176,18 +176,18 @@ sivObj.seal(associatedData, plaintext)
 
 #### Return Value
 
-The **SIV.seal()** method returns a [Promise] that, when fulfilled,
-returns a [Uint8Array] containing the resulting ciphertext.
+The **seal()** method returns a [Promise] that, when fulfilled, returns a
+[Uint8Array] containing the resulting ciphertext.
 
 #### Example
 
 ```
 // Assuming window.crypto.getRandomValues is available
 
-let key = new Uint8Array(32);
-window.crypto.getRandomValues(key);
+let keyData = new Uint8Array(32);
+window.crypto.getRandomValues(keyData);
 
-let siv = await SIV.importKey(key, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-SIV");
 
 // Encrypt plaintext
 
@@ -195,17 +195,17 @@ let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
 let nonce = new Uint8Array(16);
 window.crypto.getRandomValues(nonce);
 
-let ciphertext = await siv.seal([nonce], plaintext);
+let ciphertext = await key.seal([nonce], plaintext);
 ```
 
-### SIV.open()
+### open()
 
-The **SIV.open()** method decrypts a message which has been encrypted using **AES-SIV**.
+The **open()** method decrypts a message which has been encrypted using **AES-SIV**.
 
 #### Syntax
 
 ```
-sivObj.open(associatedData, ciphertext)
+key.open(associatedData, ciphertext)
 ```
 
 #### Parameters
@@ -216,7 +216,7 @@ sivObj.open(associatedData, ciphertext)
 
 #### Return Value
 
-The **SIV.open()** method returns a [Promise] that, when fulfilled,
+The **open()** method returns a [Promise] that, when fulfilled,
 returns a [Uint8Array] containing the decrypted plaintext.
 
 If the message has been tampered with or is otherwise corrupted, the promise
@@ -227,10 +227,10 @@ will be rejected with an **IntegrityError**.
 ```
 // Assuming window.crypto.getRandomValues is available
 
-let key = new Uint8Array(32);
-window.crypto.getRandomValues(key);
+let keyData = new Uint8Array(32);
+window.crypto.getRandomValues(keyData);
 
-let siv = await SIV.importKey(key, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-SIV");
 
 // Encrypt plaintext
 
@@ -238,10 +238,10 @@ let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
 let nonce = new Uint8Array(16);
 window.crypto.getRandomValues(nonce);
 
-let ciphertext = await siv.seal([nonce], plaintext);
+let ciphertext = await key.seal([nonce], plaintext);
 
 // Decrypt ciphertext
-var decrypted = await siv.open([nonce], ciphertext);
+var decrypted = await key.open([nonce], ciphertext);
 ```
 
 [Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -257,7 +257,7 @@ By default, this library uses a WebCrypto-based implementation of **AES-SIV** an
 will throw an exception if WebCrypto is unavailable.
 
 However, this library also contains a `PolyfillCrypto` implementation which
-can be passed as the second parameter to `SIV.importKey()`. This implementation
+can be passed as the second parameter to `Miscreant.importKey()`. This implementation
 uses pure JavaScript, however is not provided by default because there are
 security concerns around its implementation.
 
@@ -272,24 +272,24 @@ understand the security concerns, and would like to use it anyway, call the
 following to obtain a `PolyfillCrypto` instance:
 
 ```
-SIV.getCryptoProvider("polyfill")
+Miscreant.getCryptoProvider("polyfill")
 ```
 
-You can pass it to `SIV.importKey()` like so:
+You can pass it to `Miscreant.importKey()` like so:
 
 ```
-const polyfillCrypto = SIV.getCryptoProvider("polyfill");
-const siv = SIV.importKey(keyData, "AES-SIV", polyfillCrypto);
+const polyfillCrypto = Miscreant.getCryptoProvider("polyfill");
+const key = Miscreant.importKey(keyData, "AES-SIV", polyfillCrypto);
 ```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/zcred/sivchain
+Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
 
 ## Copyright
 
-Copyright (c) 2016-2017 Dmitry Chestnykh, [The Zcred Developers][AUTHORS].
+Copyright (c) 2016-2017 Dmitry Chestnykh, [The Miscreant Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
-[AUTHORS]: https://github.com/zcred/zcred/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/zcred/sivchain/blob/master/js/LICENSE.txt
+[AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
+[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/js/LICENSE.txt

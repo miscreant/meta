@@ -3,15 +3,15 @@
 require "openssl"
 require "securerandom"
 
-require "sivchain/version"
+require "miscreant/version"
 
-require "sivchain/aes"
-require "sivchain/aes/siv"
-require "sivchain/aes/cmac"
-require "sivchain/util"
+require "miscreant/aes"
+require "miscreant/aes/siv"
+require "miscreant/aes/cmac"
+require "miscreant/util"
 
-# Advanced symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions
-module SIVChain
+# Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions
+module Miscreant
   # Parent of all cryptography-related errors
   CryptoError = Class.new(StandardError)
 

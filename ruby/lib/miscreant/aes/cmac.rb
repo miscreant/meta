@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-module SIVChain
+module Miscreant
   module AES
     # The AES-CMAC message authentication code
     class CMAC
@@ -9,7 +9,7 @@ module SIVChain
       #
       # @param key [String] 16-byte or 32-byte Encoding::BINARY cryptographic key
       #
-      # @return [SIVChain::AES::CMAC] new AES-CMAC instance
+      # @return [Miscreant::AES::CMAC] new AES-CMAC instance
       def initialize(key)
         raise TypeError, "expected String, got #{key.class}" unless key.is_a?(String)
         raise ArgumentError, "key must be Encoding::BINARY" unless key.encoding == Encoding::BINARY

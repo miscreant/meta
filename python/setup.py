@@ -4,15 +4,15 @@
 from setuptools import setup
 
 setup(
-    name="sivchain",
+    name="miscreant",
     version="0.0.0",
-    description="AES-SIV and CHAIN symmetric encryption",
-    long_description="Advanced symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions",
+    description="Misuse-resistant authenticated symmetric encryption",
+    long_description="Misuse resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions",
     author="Tony Arcieri",
     author_email="bascule@gmail.com",
-    url="https://github.com/zcred/sivchain/tree/master/python/",
-    packages=["sivchain"],
-    package_dir={"sivchain": "sivchain"},
+    url="https://github.com/miscreant/miscreant/tree/master/python/",
+    packages=["miscreant"],
+    package_dir={"miscreant": "miscreant"},
     include_package_data=True,
     install_requires=["cryptography>=2.0"],
     license="MIT license",

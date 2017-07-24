@@ -1,4 +1,4 @@
-"""exceptions.py: Custom exceptions used by SIVChain"""
+"""exceptions.py: Custom exceptions used by Miscreant"""
 
 
 class CryptoError(Exception):

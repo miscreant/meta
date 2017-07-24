@@ -1,9 +1,10 @@
 // Copyright (C) 2017 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { SIV } from "../src/sivchain";
-import { AES } from "../src/aes";
 import { benchmark, report, byteSeq } from "./benchmark";
+
+import AES from "../src/internal/polyfill/aes";
+import SIV from "../src/internal/aes_siv";
 
 const buf8192 = byteSeq(8192);
 const buf1111 = byteSeq(1111);

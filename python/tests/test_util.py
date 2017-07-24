@@ -4,12 +4,12 @@
 test_util
 ----------
 
-Tests for the `sivchain.util` module.
+Tests for the `miscreant.util` module.
 """
 
 import unittest
 
-from sivchain.util import dbl
+from miscreant.util import dbl
 
 from .support.test_vectors import DblExample
 
