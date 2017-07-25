@@ -1,4 +1,4 @@
-# Miscreant
+# <img alt="miscreant." src="https://miscreant.io/images/miscreant.svg">
 
 [![Build Status][build-image]][build-link]
 [![MIT licensed][license-image]][license-link]
@@ -127,7 +127,7 @@ function operates.
 
 ### Encryption
 
-<img src="https://camo.githubusercontent.com/3c23577a845b2ce86554dfc69b18cbbd691fd7cb/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d656e63727970742e737667" data-canonical-src="https://www.miscreant.org/miscreant/images/siv-encrypt.svg" width="410px" height="300px">
+<img src="https://miscreant.io/images/siv-encrypt.svg" width="410px" height="300px">
 
 #### Inputs:
 
@@ -149,7 +149,7 @@ through *H<sub>m</sub>* and messages under *K<sub>1</sub>*, computing a
 
 ### Decryption
 
-<img src="https://camo.githubusercontent.com/b2b2da0d26fccb4397e30b7555c7a0ace9df7737/68747470733a2f2f7777772e7a637265642e6f72672f736976636861696e2f696d616765732f7369762d646563727970742e737667" data-canonical-src="https://www.miscreant.org/miscreant/images/siv-decrypt.svg" width="410px" height="368px">
+<img src="https://miscreant.io/images/siv-decrypt.svg" width="410px" height="368px">
 
 #### Inputs:
 
