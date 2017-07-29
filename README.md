@@ -25,10 +25,10 @@ Miscreant is available for several programming languages, including
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 [Go]: https://github.com/miscreant/miscreant/tree/master/go
+[JavaScript]: https://github.com/miscreant/miscreant/tree/master/js
 [Python]: https://github.com/miscreant/miscreant/tree/master/python
 [Ruby]: https://github.com/miscreant/miscreant/tree/master/ruby
 [Rust]: https://github.com/miscreant/miscreant/tree/master/rust
-[TypeScript]: https://github.com/miscreant/miscreant/tree/master/js
 
 ## What is Miscreant?
 
