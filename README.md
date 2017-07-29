@@ -77,10 +77,11 @@ The following constructions are provided by **Miscreant**:
 ‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
 
-When standardization work around [AES-GCM-SIV] is complete, it will be seriously
-considered for inclusion in this library. **AES-GCM-SIV** has the advantage of
-the [GHASH] (technically **POLYVAL**) function being able to run in parallel,
-versus **AES-CMAC**'s sequential operation.
+When standardization work around [AES-GCM-SIV] is complete, it will be
+[seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/31).
+**AES-GCM-SIV** has the advantage of the [GHASH] (technically **POLYVAL**)
+function being able to run in parallel, versus **AES-CMAC**'s sequential
+operation.
 
 **AES-SIV** has the advantages of stronger security guarantees, simplicity,
 and that it can be implemented using the AES encryption function alone, making
