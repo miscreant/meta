@@ -343,6 +343,12 @@ A: Please see the paper
 A: The many claims of support in the READMEs are actually lies! They are not implemented yet.
 Support is forthcoming, sorry!
 
+Please see the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
+to follow progress on adding support.
+
+[CHAIN support (OAE2)]: https://github.com/miscreant/miscreant/issues/33
+[STREAM support (Nonce-based OAE)]: https://github.com/miscreant/miscreant/issues/32
+
 ## Copyright
 
 Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
