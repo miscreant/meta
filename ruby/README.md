@@ -137,8 +137,8 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/miscre
 
 ## Copyright
 
-Copyright (c) 2013-2017 John Downey, [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
 [AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/ruby/LICENSE.txt
+[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
