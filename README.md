@@ -239,11 +239,13 @@ hit as compared to **AES-GCM**. We hope to have benchmarks soon so we can show
 exactly how much performance is lost, however the scheme is still amenable to
 full hardware acceleration and should still remain very fast.
 
-The **CHAIN** construction provides the only "streaming" [misuse resistant]
-[authenticated encryption] scheme with a rigorous security proof.
+The **CHAIN** construction achieves the best-possible security for an online
+[authenticated encryption] scheme (OAE2).
 
-The **STREAM** construction provides streaming [authenticated encryption]
-and defends against reordering and truncation attacks.
+The **STREAM** construction provides a weaker definition of online
+[authenticated encryption] (OAE1) but supports parallel encryption/decryption
+as well as random access while defending against reordering and truncation
+attacks.
 
 There are other libraries that try to solve this problem, such as [saltpack],
 however these libraries do not provide constructions with security proofs,
