@@ -45,7 +45,7 @@ Have questions? Want to suggest a feature or change?
 
 [Gitter]: https://gitter.im/miscreant/Lobby
 [Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
-[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
 
 ## Security Notice
 
