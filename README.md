@@ -18,10 +18,17 @@ authenticated encryption of individual messages, encryption keys,
 message streams, or large files using the [AES-SIV] ([RFC 5297]) and
 [CHAIN/STREAM] constructions.
 
+Miscreant is available for several programming languages, including
+[Go], [JavaScript], [Python], [Ruby], and [Rust].
+
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-
+[Go]: https://github.com/miscreant/miscreant/tree/master/go
+[Python]: https://github.com/miscreant/miscreant/tree/master/python
+[Ruby]: https://github.com/miscreant/miscreant/tree/master/ruby
+[Rust]: https://github.com/miscreant/miscreant/tree/master/rust
+[TypeScript]: https://github.com/miscreant/miscreant/tree/master/js
 
 ## What is Miscreant?
 
