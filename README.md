@@ -91,7 +91,7 @@ to follow progress on adding support.
 
 Have questions? Want to suggest a feature or change?
 
-* [Gitter]: web-based chat about miscreant projects including **miscreant.rb**
+* [Gitter]: web-based chat about Miscreant
 * [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
 
 [Gitter]: https://gitter.im/miscreant/Lobby
