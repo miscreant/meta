@@ -41,11 +41,11 @@ For more information, see the [toplevel README.md].
 Have questions? Want to suggest a feature or change?
 
 * [Gitter]: web-based chat about miscreant projects including **miscreant.rb**
-* [Google Group]: join via web or email ([miscreant+subscribe@googlegroups.com])
+* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
 
 [Gitter]: https://gitter.im/miscreant/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/miscreant
-[miscreant+subscribe@googlegroups.com]: mailto:miscreant+subscribe@googlegroups.com
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com
 
 ## Security Notice
 
