@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Miscreant::AES::SIV do
+RSpec.describe Miscreant::Internals::AES::SIV do
   let(:example_key) { "\x01".b * 32 }
   let(:example_ad) { ["INVALID".b] }
   let(:test_vectors) { described_class::Example.load_file }
@@ -8,7 +8,7 @@ RSpec.describe Miscreant::AES::SIV do
   describe "inspect" do
     it "does not contain instance variable values" do
       cmac = described_class.new(example_key)
-      expect(cmac.inspect).to match(/\A#<Miscreant::AES::SIV:0[xX][0-9a-fA-F]+>\z/)
+      expect(cmac.inspect).to match(/\A#<#{described_class}:0[xX][0-9a-fA-F]+>\z/)
     end
   end
 

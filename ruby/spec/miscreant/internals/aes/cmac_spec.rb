@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe Miscreant::AES::CMAC do
+RSpec.describe Miscreant::Internals::AES::CMAC do
   let(:example_key) { ("\x01" * 16).b }
 
   describe "inspect" do
     it "does not contain instance variable values" do
       cmac = described_class.new(example_key)
-      expect(cmac.inspect).to match(/\A#<Miscreant::AES::CMAC:0[xX][0-9a-fA-F]+>\z/)
+      expect(cmac.inspect).to match(/\A#<#{described_class}:0[xX][0-9a-fA-F]+>\z/)
     end
   end
 

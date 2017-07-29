@@ -4,11 +4,7 @@ require "openssl"
 require "securerandom"
 
 require "miscreant/version"
-
-require "miscreant/aes"
-require "miscreant/aes/siv"
-require "miscreant/aes/cmac"
-require "miscreant/util"
+require "miscreant/internals"
 
 # Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions
 module Miscreant
