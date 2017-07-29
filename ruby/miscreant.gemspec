@@ -7,13 +7,18 @@ require "miscreant/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "miscreant"
-  spec.version       = Miscreant::VERSION
   spec.authors       = ["Tony Arcieri"]
   spec.email         = ["bascule@gmail.com"]
+  spec.summary       = "Misuse-resistant authenticated symmetric encryption"
+  spec.description   = <<-DESCRIPTION.strip.gsub(/\s+/, " ")
+    Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297)
+    and CHAIN/STREAM constructions.
+  DESCRIPTION
+
+  spec.version       = Miscreant::VERSION
   spec.licenses      = ["MIT"]
   spec.homepage      = "https://github.com/miscreant/miscreant/tree/master/ruby/"
-  spec.summary       = "Misuse-resistant authenticated symmetric encryption"
-  spec.description   = "Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions"
+  spec.description   = ""
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

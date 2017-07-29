@@ -14,7 +14,7 @@
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
 Go implementation of **Miscreant**: Advanced symmetric encryption using the
-[AES-SIV] ([RFC 5297]) and [CHAIN] constructions, providing easy-to-use
+[AES-SIV] ([RFC 5297]) and [CHAIN/STREAM] constructions, providing easy-to-use
 (or rather, hard-to-misuse) encryption of individual messages or message
 streams.
 
@@ -31,7 +31,7 @@ For more information, see the [toplevel README.md].
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
-[CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 [nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack

@@ -1,6 +1,6 @@
 [package]
 name        = "miscreant"
-description = "Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions"
+description = "Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN/STREAM constructions"
 version     = "0.0.0"
 license     = "MIT"
 authors     = ["Tony Arcieri <bascule@gmail.com>"]
