@@ -1,4 +1,4 @@
-# miscreant.rs [![Build Status][build-shield]][build-link] [![MIT licensed][license-shield]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.rs [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
