@@ -47,10 +47,8 @@ The following constructions are provided by **Miscreant**:
 
 * [CHAIN]: a construction which provides "online" chunked/multipart
   [authenticated encryption] when used in conjunction with a cipher like
-  **AES-SIV**. Though not yet described in an RFC, **CHAIN** was designed by
-  [Phil Rogaway] (who also created **AES-SIV** and the paper contains a
-  rigorous security analysis proving it secure. **CHAIN** achieves the
-  best-possible security for an online authenticated encryption scheme (OAE2).
+  **AES-SIV**. **CHAIN** achieves the best-possible security for an online
+  authenticated encryption scheme (OAE2).
 
 * [STREAM]: a construction which provides streaming [authenticated encryption]
   and defends against reordering and truncation attacks. Unlike **CHAIN**,
@@ -58,6 +56,16 @@ The following constructions are provided by **Miscreant**:
   a message to be encrypted and decrypted in any order the user wants.
   **STREAM** achieves a slightly lower definition of security for an online
   encryption scheme (OAE1) as compared to **CHAIN**.
+
+Though not yet described in an RFC, **CHAIN** and **STREAM** were designed by
+[Phil Rogaway] (who also created **AES-SIV**) and are described in the paper
+[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance], which
+contains a rigorous security analysis proving them secure under the definitions
+of OAE2 and OAE1 respectively.
+
+_NOTE:_ this library does not yet support **CHAIN** and **STREAM**! Please see
+the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
+to follow progress on adding support.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
@@ -67,8 +75,12 @@ The following constructions are provided by **Miscreant**:
 [misuse resistant]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 [STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[CHAIN support (OAE2)]: https://github.com/miscreant/miscreant/issues/33
+[STREAM support (Nonce-based OAE)]: https://github.com/miscreant/miscreant/issues/32
 
-## Comparison with other symmetric encryption algorithms
+
+## Comparison of AES-SIV to other symmetric encryption ciphers
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Passes | Standardization   |
 |-------------------|----------------------------|---------------------|--------|-------------------|
@@ -350,9 +362,6 @@ Support is forthcoming, sorry!
 
 Please see the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
 to follow progress on adding support.
-
-[CHAIN support (OAE2)]: https://github.com/miscreant/miscreant/issues/33
-[STREAM support (Nonce-based OAE)]: https://github.com/miscreant/miscreant/issues/32
 
 ## Copyright
 
