@@ -1,4 +1,4 @@
-# miscreant.py [![Latest Version][pypi-shield]][pypi-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link]
+# miscreant.py [![Latest Version][pypi-shield]][pypi-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [pypi-shield]: https://img.shields.io/pypi/v/miscreant.svg
 [pypi-link]: https://pypi.python.org/pypi/miscreant/
@@ -6,6 +6,8 @@
 [build-link]: http://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
+[gitter-image]: https://badges.gitter.im/badge.svg
+[gitter-link]: https://gitter.im/miscreant/Lobby
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 

@@ -1,4 +1,4 @@
-# miscreant.js [![Latest Version][npm-shield]][npm-link] [![Build Status][build-image]][build-link] [![Known Vulnerabilities][snyk-image]][snyk-link] [![MIT licensed][license-image]][license-link]
+# miscreant.js [![Latest Version][npm-shield]][npm-link] [![Build Status][build-image]][build-link] [![Known Vulnerabilities][snyk-image]][snyk-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [npm-shield]: https://img.shields.io/npm/v/miscreant.svg
 [npm-link]: https://www.npmjs.com/package/miscreant
@@ -8,6 +8,8 @@
 [snyk-link]: https://snyk.io/test/github/miscreant/miscreant?targetFile=js%2Fpackage.json
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
+[gitter-image]: https://badges.gitter.im/badge.svg
+[gitter-link]: https://gitter.im/miscreant/Lobby
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
