@@ -45,14 +45,19 @@ The following constructions are provided by **Miscreant**:
   like **AES-GCM**. **AES-SIV** provides [nonce reuse misuse resistance],
   considered the gold standard in cryptography today.
 
-* [CHAIN]: a construction which provides chunked/multipart [misuse resistant]
+* [CHAIN]: a construction which provides "online" chunked/multipart
   [authenticated encryption] when used in conjunction with a cipher like
   **AES-SIV**. Though not yet described in an RFC, **CHAIN** was designed by
-  Phil Rogaway (who also created **AES-SIV** and the paper contains a rigorous
-  security analysis proving it secure.
+  [Phil Rogaway] (who also created **AES-SIV** and the paper contains a
+  rigorous security analysis proving it secure. **CHAIN** achieves the
+  best-possible security for an online authenticated encryption scheme (OAE2).
 
 * [STREAM]: a construction which provides streaming [authenticated encryption]
-  and defends against reordering and truncation attacks.
+  and defends against reordering and truncation attacks. Unlike **CHAIN**,
+  **STREAM** supports parallelization and seeking, allowing chunks within
+  a message to be encrypted and decrypted in any order the user wants.
+  **STREAM** achieves a slightly lower definition of security for an online
+  encryption scheme (OAE1) as compared to **CHAIN**.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
