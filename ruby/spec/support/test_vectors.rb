@@ -4,7 +4,7 @@
 
 require "tjson"
 
-class Miscreant::AES::CMAC::Example
+class Miscreant::Internals::AES::CMAC::Example
   attr_reader :key, :message, :tag
 
   # Error parsing the example file
@@ -27,7 +27,7 @@ class Miscreant::AES::CMAC::Example
   end
 end
 
-class Miscreant::AES::SIV::Example
+class Miscreant::Internals::AES::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
   # Error parsing the example file
@@ -52,7 +52,7 @@ class Miscreant::AES::SIV::Example
   end
 end
 
-class Miscreant::Util::DblExample
+class Miscreant::Internals::Util::DblExample
   attr_reader :input, :output
 
   # Error parsing the example file
