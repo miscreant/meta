@@ -51,8 +51,8 @@ export class AesCtrExample {
 
   public readonly key: Uint8Array;
   public readonly iv: Uint8Array;
-  public readonly src: Uint8Array;
-  public readonly dst: Uint8Array;
+  public readonly plaintext: Uint8Array;
+  public readonly ciphertext: Uint8Array;
 
   static async loadAll(): Promise<AesCtrExample[]> {
     return AesCtrExample.loadFromFile(AesCtrExample.DEFAULT_EXAMPLES_PATH);
@@ -72,8 +72,8 @@ export class AesCmacExample {
   static readonly DEFAULT_EXAMPLES_PATH = "../vectors/aes_cmac.tjson";
 
   public readonly key: Uint8Array;
-  public readonly input: Uint8Array;
-  public readonly result: Uint8Array;
+  public readonly message: Uint8Array;
+  public readonly tag: Uint8Array;
 
   static async loadAll(): Promise<AesCmacExample[]> {
     return AesCmacExample.loadFromFile(AesCmacExample.DEFAULT_EXAMPLES_PATH);

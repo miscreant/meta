@@ -21,8 +21,8 @@ import WebCryptoAesCtr from "../src/internal/webcrypto/aes_ctr";
   @test async "passes the AES-CTR test vectors"() {
     for (let v of PolyfillAesCtrSpec.vectors) {
       const ctrPolyfill = new PolyfillAesCtr(new PolyfillAes(v.key));
-      let ciphertext = await ctrPolyfill.encrypt(v.iv, v.src);
-      expect(ciphertext).to.eql(v.dst);
+      let ciphertext = await ctrPolyfill.encrypt(v.iv, v.plaintext);
+      expect(ciphertext).to.eql(v.ciphertext);
     }
   }
 }
@@ -37,8 +37,8 @@ import WebCryptoAesCtr from "../src/internal/webcrypto/aes_ctr";
   @test async "passes the AES-CTR test vectors"() {
     for (let v of WebCryptoAesCtrSpec.vectors) {
       const ctrNative = await WebCryptoAesCtr.importKey(v.key, new WebCrypto());
-      let ciphertext = await ctrNative.encrypt(v.iv, v.src);
-      expect(ciphertext).to.eql(v.dst);
+      let ciphertext = await ctrNative.encrypt(v.iv, v.plaintext);
+      expect(ciphertext).to.eql(v.ciphertext);
     }
   }
 }

@@ -21,8 +21,8 @@ import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
   @test async "passes the AES-CMAC test vectors"() {
     for (let v of PolyfillAesCmacSpec.vectors) {
       const mac = new PolyfillAesCmac(new PolyfillAes(v.key));
-      await mac.update(v.input);
-      expect(await mac.finish()).to.eql(v.result);
+      await mac.update(v.message);
+      expect(await mac.finish()).to.eql(v.tag);
     }
   }
 }
@@ -37,8 +37,8 @@ import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
   @test async "passes the AES-CMAC test vectors"() {
     for (let v of PolyfillAesCmacSpec.vectors) {
       const mac = await WebCryptoAesCmac.importKey(v.key, new WebCrypto());
-      await mac.update(v.input);
-      expect(await mac.finish()).to.eql(v.result);
+      await mac.update(v.message);
+      expect(await mac.finish()).to.eql(v.tag);
     }
   }
 }
