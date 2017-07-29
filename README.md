@@ -310,8 +310,8 @@ There are some compelling candidates:
 
 * [AES-GCM-SIV] is a high-performance SIV mode currently in the final stages
   of standardization by the IRTF CFRG.
-* [AES-PMAC-SIV][AES-PMAC] is an alternatitive construction of [AES-SIV] which
-  replaces [AES-CMAC] with [AES-PMAC], a parallelizable MAC built on AES
+* [AES-PMAC-SIV][AES-PMAC] is an alternatitive construction of **AES-SIV** which
+  replaces **AES-CMAC** with [AES-PMAC], a parallelizable MAC built on AES
   designed by [Phil Rogaway].
 * [AEZ] is a newer, faster, parallelizable authenticated encryption cipher with
   improved security properties, co-designed by [Phil Rogaway] who also designed
