@@ -300,6 +300,8 @@ Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
 organic usage. While not entirely optimal by the metrics of the CAESAR
 competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
 
+[CAESAR]: https://competitions.cr.yp.to/caesar-submissions.html
+
 ### 10. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV, AEZ)
 
 A: Yes, please see this issue on [adding an additional high-performance cipher to Miscreant].
