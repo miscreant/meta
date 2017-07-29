@@ -291,7 +291,7 @@ our knowledge, the algorithm is entirely in the public domain.
 
 ### 9. Q: Why not wait for the winner of the CAESAR competition to be announced?
 
-A: The CAESAR competition (to select a next generation authentication encryption
+A: The [CAESAR] competition (to select a next generation authentication encryption
 cipher) seems to be taking much longer than was originally expected. Even when
 it concludes, it will be some time before relevant standards are written as to
 the usage and deployment of its winner.
@@ -300,22 +300,29 @@ Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
 organic usage. While not entirely optimal by the metrics of the CAESAR
 competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
 
-### 10. Q: Do you plan on supporting AEZ in this library?
+### 10. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV, AEZ)
 
-A: Maybe! [AEZ] is a newer, faster, parallelizable alternative to **AES-SIV**
-with improved security properties, co-designed by [Phil Rogaway] who also
-designed **AES-SIV**.
+A: Yes, please see this issue on [adding an additional high-performance cipher to Miscreant].
 
+There are some compelling candidates:
+
+* [AES-GCM-SIV] is a high-performance SIV mode currently in the final stages
+  of standardization by the IRTF CFRG.
+* [AES-PMAC-SIV] is an alternatitive construction of [AES-SIV] which replaces
+  [AES-CMAC] with [AES-PMAC], a parallelizable MAC built on AES designed by
+  [Phil Rogaway].
+* [AEZ] is a newer, faster, parallelizable authenticated encryption cipher with
+  improved security properties, co-designed by [Phil Rogaway] who also designed
+  **AES-SIV**.
+* [HS1-SIV] is a authenticated encryption cipher several people thought was
+  compelling but was unfortunately eliminated from the [CAESAR] competition.
+
+[adding an additional high-performance cipher to Miscreant]: https://github.com/miscreant/miscreant/issues/31
+[AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
 [AEZ]: http://web.cs.ucdavis.edu/~rogaway/aez/
-
-### 11. Q: Do you plan on supporting HS1-SIV in this library?
-
-A: Maybe! [HS1-SIV] is an interesting SIV mode authenticated encryption cipher.
-We are certainly keeping an eye on its development.
-
 [HS1-SIV]: https://competitions.cr.yp.to/round2/hs1sivv2.pdf
 
-### 12. Q: This project mentions security proofs several times. Where do I find them?
+### 11. Q: This project mentions security proofs several times. Where do I find them?
 
 A: Please see the paper
 [Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem](http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf).
