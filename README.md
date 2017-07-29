@@ -27,9 +27,8 @@ message streams, or large files using the [AES-SIV] ([RFC 5297]) and
 
 **Miscreant** is a set of interoperable libraries implemented in several
 languages providing a high-level API for misuse-resistant symmetric encryption.
-Additionally, it provides streaming support, allowing large messages
-to be incrementally encrypted/decrypted while still providing
-[authenticated encryption].
+Additionally, it provides support for "online" [authenticated encryption] use
+cases such as streaming or incrementally encryption/decryption of large files.
 
 The following constructions are provided by **Miscreant**:
 
