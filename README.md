@@ -16,11 +16,11 @@
 A misuse resistant symmetric encryption library designed to support
 authenticated encryption of individual messages, encryption keys,
 message streams, or large files using the [AES-SIV] ([RFC 5297]) and
-[CHAIN] constructions.
+[CHAIN/STREAM] constructions.
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
-[CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 
 
 ## What is Miscreant?
@@ -45,18 +45,23 @@ The following constructions are provided by **Miscreant**:
   like **AES-GCM**. **AES-SIV** provides [nonce reuse misuse resistance],
   considered the gold standard in cryptography today.
 
-* [CHAIN]: a construction which provides streaming [authenticated encryption]
-  when used in conjunction with a cipher like **AES-SIV** that supports
-  [nonce reuse misuse resistance]. Though not yet described in an RFC,
-  **CHAIN** was designed by Phil Rogaway (who also created **AES-SIV**)
-  and the paper contains a rigorous security analysis proving it secure.
+* [CHAIN]: a construction which provides chunked/multipart [misuse resistant]
+  [authenticated encryption] when used in conjunction with a cipher like
+  **AES-SIV**. Though not yet described in an RFC, **CHAIN** was designed by
+  Phil Rogaway (who also created **AES-SIV** and the paper contains a rigorous
+  security analysis proving it secure.
+
+* [STREAM]: a construction which provides streaming [authenticated encryption]
+  and defends against reordering and truncation attacks.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
-
+[misuse resistant]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
+[CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
 
 ## Comparison with other symmetric encryption algorithms
 
@@ -198,8 +203,11 @@ hit as compared to **AES-GCM**. We hope to have benchmarks soon so we can show
 exactly how much performance is lost, however the scheme is still amenable to
 full hardware acceleration and should still remain very fast.
 
-The **CHAIN** construction provides the only "streaming" misuse resistant
-authentication encryption scheme with a rigorous security proof.
+The **CHAIN** construction provides the only "streaming" [misuse resistant]
+[authenticated encryption] scheme with a rigorous security proof.
+
+The **STREAM** construction provides streaming [authenticated encryption]
+and defends against reordering and truncation attacks.
 
 There are other libraries that try to solve this problem, such as [saltpack],
 however these libraries do not provide constructions with security proofs,
@@ -330,6 +338,10 @@ There are some compelling candidates:
 A: Please see the paper
 [Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem](http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf).
 
+### 12. Q: Where are CHAIN/STREAM? I can't find them!
+
+A: The many claims of support in the READMEs are actually lies! They are not implemented yet.
+Support is forthcoming, sorry!
 
 ## Copyright
 
