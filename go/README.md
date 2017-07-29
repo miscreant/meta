@@ -51,3 +51,15 @@ Have questions? Want to suggest a feature or change?
 ## Security Notice
 
 **!!! DO NOT USE, NOT TESTED PROPERLY YET !!!**
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
+
+## Copyright
+
+Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
+See [LICENSE.txt] for further details.
+
+[AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
+[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
