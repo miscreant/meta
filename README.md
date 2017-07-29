@@ -80,6 +80,18 @@ to follow progress on adding support.
 [STREAM support (Nonce-based OAE)]: https://github.com/miscreant/miscreant/issues/32
 
 
+## Help and Discussion
+
+Have questions? Want to suggest a feature or change?
+
+* [Gitter]: web-based chat about miscreant projects including **miscreant.rb**
+* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
+
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
+
+
 ## Comparison of AES-SIV to other symmetric encryption ciphers
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Passes | Standardization   |
