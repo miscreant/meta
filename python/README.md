@@ -47,9 +47,18 @@ Have questions? Want to suggest a feature or change?
 
 ## Security Notice
 
-Though this library is written by cryptographic professionals, it has not
-undergone a thorough security audit, and cryptographic professionals are still
-humans that make mistakes. Use this library at your own risk.
+This library implements some portions of the construction in pure Python and
+therefore these parts are not constant time: though the core cryptography is
+provided by the Python `cryptography` library including the AES function,
+various other parts, particularly the `s2v` and `dbl` functions are Python.
+
+These functions act on Python integers, which are boxed. They may reveal
+timing information which may help an attacker compromise this implementation,
+possibly even facilitating complete plaintext recovery. The exact extent to
+which this is possible has not been thoroughly investigated, nor has this
+library been professionally audited by cryptography experts.
+
+Use this library at your own risk.
 
 ## Requirements
 
