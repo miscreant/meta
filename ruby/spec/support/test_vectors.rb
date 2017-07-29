@@ -5,7 +5,7 @@
 require "tjson"
 
 class Miscreant::AES::CMAC::Example
-  attr_reader :key, :input, :result
+  attr_reader :key, :message, :tag
 
   # Error parsing the example file
   ParseError = Class.new(StandardError)
@@ -22,8 +22,8 @@ class Miscreant::AES::CMAC::Example
 
   def initialize(attrs)
     @key = attrs.fetch("key")
-    @input = attrs.fetch("input")
-    @result = attrs.fetch("result")
+    @message = attrs.fetch("message")
+    @tag = attrs.fetch("tag")
   end
 end
 

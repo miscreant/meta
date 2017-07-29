@@ -14,8 +14,8 @@ RSpec.describe Miscreant::AES::CMAC do
     it "passes all AES-CMAC test vectors" do
       described_class::Example.load_file.each do |ex|
         cmac = described_class.new(ex.key)
-        output = cmac.digest(ex.input)
-        expect(output).to eq(ex.result)
+        output = cmac.digest(ex.message)
+        expect(output).to eq(ex.tag)
       end
     end
   end
