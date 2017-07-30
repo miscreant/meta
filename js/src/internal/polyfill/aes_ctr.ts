@@ -74,7 +74,7 @@ function incrementCounter(counter: Uint8Array) {
   let carry = 1;
 
   for (let i = counter.length - 1; i >= 0; i--) {
-    carry = carry + (counter[i] & 0xff) | 0;
+    carry += (counter[i] & 0xff) | 0;
     counter[i] = carry & 0xff;
     carry >>>= 8;
   }
