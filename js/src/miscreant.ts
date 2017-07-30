@@ -1,4 +1,4 @@
-/** miscreant.ts: The AES-SIV encryption mode and CHAIN chaining mode */
+/** miscreant.ts: Main entry point to the Miscreant library */
 
 import { ISivLike } from "./internal/interfaces";
 import { defaultCryptoProvider } from "./internal/util";
@@ -6,7 +6,7 @@ import { defaultCryptoProvider } from "./internal/util";
 import AesSiv from "./internal/aes_siv";
 import PolyfillCrypto from "./internal/polyfill";
 
-/** Common interface to AES-SIV algorithms */
+/** Miscreant: A misuse-resistant symmetric encryption library */
 export default class Miscreant {
   /** Import a key for the given algorithm. Valid algorithms: "AES-SIV" */
   public static async importKey(

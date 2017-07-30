@@ -6,7 +6,7 @@ require "securerandom"
 require "miscreant/version"
 require "miscreant/internals"
 
-# Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN constructions
+# Miscreant: A misuse-resistant symmetric encryption library
 module Miscreant
   # Parent of all cryptography-related errors
   CryptoError = Class.new(StandardError)
