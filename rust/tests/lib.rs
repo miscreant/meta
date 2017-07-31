@@ -3,7 +3,7 @@ extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv};
-use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr, util};
+use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr};
 use miscreant::internals::BLOCK_SIZE;
 
 mod test_vectors;
@@ -139,8 +139,8 @@ fn aes_siv_examples_open() {
 fn dbl_examples() {
     let examples = DblExample::load_all();
     for example in examples {
-        let mut value = *array_ref!(example.input, 0, 16);
-        util::dbl(&mut value);
-        assert_eq!(value, *array_ref!(example.output, 0, 16));
+        let mut block = Block::from(&example.input[..]);
+        block.dbl();
+        assert_eq!(block.as_ref(), &example.output[..]);
     }
 }

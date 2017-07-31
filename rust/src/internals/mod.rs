@@ -5,7 +5,7 @@ mod block;
 pub mod block_cipher;
 mod cmac;
 mod ctr;
-pub mod util;
+mod xor;
 
 pub use self::aes::{Aes128, Aes256};
 pub use self::block::Block;

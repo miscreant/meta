@@ -2,8 +2,8 @@
 //!
 //! Special-cased for AES's 128-bit block size
 
-use super::util;
-use core::{mem, ptr};
+use super::xor;
+use core::{intrinsics, mem, ptr};
 use subtle::{self, CTEq, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
@@ -43,7 +43,7 @@ impl Block {
             *x ^= *y;
         } else {
             // Fall back on a slower method if unaligned
-            util::xor_in_place(&mut self.0, other.as_ref());
+            xor::in_place(&mut self.0, other.as_ref());
         }
     }
 
@@ -56,17 +56,28 @@ impl Block {
         unsafe { ptr::copy_nonoverlapping(&other.0, &mut self.0, SIZE) }
     }
 
-    /// Performs a doubling operation as defined in the CMAC and SIV papers
-    // TODO: use optimized implementation that assumes alignment
-    #[inline]
-    pub fn dbl(&mut self) {
-        util::dbl(&mut self.0);
-    }
-
     /// Zero out the contents of the block
     #[inline]
     pub fn clear(&mut self) {
-        util::clear(&mut self.0);
+        unsafe {
+            // TODO: use a crate that provides this (e.g. clear_on_drop) instead of intrinsics
+            intrinsics::volatile_set_memory(self.0.as_mut_ptr(), 0, SIZE)
+        }
+    }
+
+    /// Performs a doubling operation as defined in the CMAC and SIV papers
+    #[inline]
+    pub fn dbl(&mut self) {
+        // Use a verified constant time assembly implementation from dbl.asm
+        // which was generated from the reference implementation in dbl.rs
+        unsafe {
+            asm!(include_str!("dbl.asm")
+            :
+            : "rdi"(&self.0)
+            : "rax", "rcx", "rdx", "eax", "memory"
+            : "intel"
+            )
+        }
     }
 }
 
