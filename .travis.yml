@@ -31,9 +31,7 @@ matrix:
   - env: SUITE="ruby"
     language: ruby
     rvm: 2.2.2
-  - env: SUITE="rust"
-    language: rust
-    rust: stable
+  # TODO: support stable Rust
   - env: SUITE="rust"
     language: rust
     rust: nightly

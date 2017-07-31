@@ -7,7 +7,15 @@ authors     = ["Tony Arcieri <bascule@gmail.com>"]
 homepage    = "https://miscreant.org"
 repository  = "https://github.com/miscreant/miscreant/tree/master/rust"
 readme      = "README.md"
-categories  = ["cryptography"]
+categories  = ["cryptography", "no-std"]
 keywords    = ["cryptography", "encryption", "security", "streaming"]
 
 [dependencies]
+aesni = "0.1"
+arrayref = "0.3"
+byteorder = { version = "1.1", default-features = false, features = ["i128"] }
+subtle = { git = "https://github.com/isislovecruft/subtle", default-features = false }
+
+[dev-dependencies]
+data-encoding = "2.0.0-rc.1"
+serde_json = "1"
