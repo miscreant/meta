@@ -4,7 +4,6 @@ use core::ptr;
 
 use internals::{Aes128, Aes256};
 use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr};
-use internals::util;
 use subtle::CTEq;
 
 /// Maximum number of associated data items
@@ -97,7 +96,7 @@ impl<C: BlockCipher> Siv<C> {
         let mut iv = self.s2v(associated_data, &plaintext[BLOCK_SIZE..]);
         plaintext[..BLOCK_SIZE].copy_from_slice(iv.as_ref());
 
-        util::zero_iv_bits(iv.as_mut());
+        zero_iv_bits(&mut iv);
         self.ctr.transform(&mut iv, &mut plaintext[BLOCK_SIZE..]);
         self.ctr.reset();
     }
@@ -118,7 +117,7 @@ impl<C: BlockCipher> Siv<C> {
         }
 
         let mut iv = Block::from(&ciphertext[..BLOCK_SIZE]);
-        util::zero_iv_bits(iv.as_mut());
+        zero_iv_bits(&mut iv);
 
         self.ctr.transform(&mut iv, &mut ciphertext[BLOCK_SIZE..]);
         self.ctr.reset();
@@ -193,4 +192,13 @@ impl<C: BlockCipher> Siv<C> {
 
         result
     }
+}
+
+/// Zero out the top bits in the last 32-bit words of the IV
+fn zero_iv_bits(block: &mut Block) {
+    // "We zero-out the top bit in each of the last two 32-bit words
+    // of the IV before assigning it to Ctr"
+    //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
+    block.as_mut()[8] &= 0x7f;
+    block.as_mut()[12] &= 0x7f;
 }
