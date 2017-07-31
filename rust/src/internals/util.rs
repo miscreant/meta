@@ -1,17 +1,6 @@
 //! `internals/util.rs`: Utility functions
 
 use super::BLOCK_SIZE;
-use byteorder::{BigEndian, ByteOrder};
-
-/// Increment a CTR-mode counter. Panics on overflow
-// TODO: use verified asm implementation?
-pub fn ctr_increment(value: &mut [u8; BLOCK_SIZE]) {
-    // This intentionally uses wrapping arithmetic as this is the correct
-    // behavior for counter overflows.
-    // TODO: verify we wrap at 128-bits and add test vectors which exercise it
-    let output = BigEndian::read_u128(value) + 1;
-    BigEndian::write_u128(value, output);
-}
 
 /// XOR the second argument into the first in-place. Slices do not have to be
 /// aligned in memory.
@@ -34,20 +23,4 @@ pub fn zero_iv_bits(iv: &mut [u8; BLOCK_SIZE]) {
     //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
     iv[len - 8] &= 0x7f;
     iv[len - 4] &= 0x7f;
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn counter_increment() {
-        let mut buffer = [0u8; 16];
-        super::ctr_increment(&mut buffer);
-        assert_eq!(buffer, *b"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01");
-    }
-
-    #[test]
-    #[should_panic]
-    fn counter_overflow() {
-        super::ctr_increment(&mut [0xFFu8; 16]);
-    }
 }
