@@ -1,7 +1,9 @@
-# miscreant.rs [![crate][crate-image]][crate-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.rs [![crate][crate-image]][crate-link] [![Docs][docs-image]][docs-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [crate-image]: https://img.shields.io/crates/v/miscreant.svg
 [crate-link]: https://crates.io/crates/miscreant
+[docs-image]: https://docs.rs/miscreant/badge.svg
+[docs-link]: https://docs.rs/miscreant/
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
