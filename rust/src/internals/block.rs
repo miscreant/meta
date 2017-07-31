@@ -3,7 +3,7 @@
 //! Special-cased for AES's 128-bit block size
 
 use super::util;
-use core::{mem, ptr};
+use core::{intrinsics, mem, ptr};
 use subtle::{self, CTEq, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
@@ -66,7 +66,10 @@ impl Block {
     /// Zero out the contents of the block
     #[inline]
     pub fn clear(&mut self) {
-        util::clear(&mut self.0);
+        unsafe {
+            // TODO: use a crate that provides this (e.g. clear_on_drop) instead of intrinsics
+            intrinsics::volatile_set_memory(self.0.as_mut_ptr(), 0, SIZE)
+        }
     }
 }
 

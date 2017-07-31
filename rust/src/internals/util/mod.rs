@@ -2,16 +2,6 @@
 
 use super::BLOCK_SIZE;
 use byteorder::{BigEndian, ByteOrder};
-use core::intrinsics;
-
-/// Zero out the given slice
-#[inline]
-pub fn clear(value: &mut [u8]) {
-    unsafe {
-        // TODO: use a crate that provides this (e.g. clear_on_drop) instead of intrinsics
-        intrinsics::volatile_set_memory(value.as_mut_ptr(), 0, value.len())
-    }
-}
 
 /// Increment a CTR-mode counter. Panics on overflow
 // TODO: use verified asm implementation?
