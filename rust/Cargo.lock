@@ -7,7 +7,7 @@ dependencies = [
  "byteorder 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "data-encoding 2.0.0-rc.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "subtle 0.2.0 (git+https://github.com/isislovecruft/subtle)",
+ "subtle 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -63,8 +63,11 @@ dependencies = [
 
 [[package]]
 name = "subtle"
-version = "0.2.0"
-source = "git+https://github.com/isislovecruft/subtle#b415469005e875326579572df33aeabd1ba4a091"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "num-traits 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [metadata]
 "checksum aesni 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "341c18a4ead1b3e3858e013473455dd24df63118308e548b9796187f17ab5ba7"
@@ -76,4 +79,4 @@ source = "git+https://github.com/isislovecruft/subtle#b415469005e875326579572df3
 "checksum num-traits 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)" = "99843c856d68d8b4313b03a17e33c4bb42ae8f6610ea81b28abe076ac721b9b0"
 "checksum serde 1.0.11 (registry+https://github.com/rust-lang/crates.io-index)" = "f7726f29ddf9731b17ff113c461e362c381d9d69433f79de4f3dd572488823e9"
 "checksum serde_json 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "48b04779552e92037212c3615370f6bd57a40ebba7f20e554ff9f55e41a69a7b"
-"checksum subtle 0.2.0 (git+https://github.com/isislovecruft/subtle)" = "<none>"
+"checksum subtle 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7b811576c12506ff3f6da145585dc833edc32ee34c9fc021127d90e8134cc05c"
