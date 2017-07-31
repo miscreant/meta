@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name="miscreant",
-    version="0.0.0",
+    version="0.1.0",
     description="Misuse-resistant authenticated symmetric encryption",
     long_description="Misuse resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN/STREAM constructions",
     author="Tony Arcieri",
