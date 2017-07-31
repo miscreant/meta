@@ -1,7 +1,7 @@
 //! `internals/cmac.rs`: Cipher-based Message Authentication Code
 
 use super::{Block, BlockCipher, BLOCK_SIZE};
-use super::util;
+use super::xor;
 
 type Tag = Block;
 
@@ -57,7 +57,7 @@ impl<C: BlockCipher> Cmac<C> {
         let remaining = BLOCK_SIZE - self.state_pos;
 
         if msg_len > remaining {
-            util::xor_in_place(
+            xor::in_place(
                 &mut self.state.as_mut()[self.state_pos..],
                 &msg[..remaining],
             );
@@ -83,7 +83,7 @@ impl<C: BlockCipher> Cmac<C> {
         if msg_len > 0 {
             let state_end = self.state_pos.checked_add(msg_len).expect("overflow");
 
-            util::xor_in_place(
+            xor::in_place(
                 &mut self.state.as_mut()[self.state_pos..state_end],
                 &msg[msg_pos..msg_pos.checked_add(msg_len).expect("overflow")],
             );

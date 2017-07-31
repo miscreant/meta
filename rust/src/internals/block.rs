@@ -2,7 +2,7 @@
 //!
 //! Special-cased for AES's 128-bit block size
 
-use super::util;
+use super::xor;
 use core::{intrinsics, mem, ptr};
 use subtle::{self, CTEq, Mask};
 
@@ -43,7 +43,7 @@ impl Block {
             *x ^= *y;
         } else {
             // Fall back on a slower method if unaligned
-            util::xor_in_place(&mut self.0, other.as_ref());
+            xor::in_place(&mut self.0, other.as_ref());
         }
     }
 

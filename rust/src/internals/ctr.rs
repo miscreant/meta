@@ -54,8 +54,8 @@ fn increment_ctr(block: &mut Block) {
 
 #[cfg(test)]
 mod tests {
-    use super::increment_ctr;
     use super::{Block, BLOCK_SIZE};
+    use super::increment_ctr;
 
     #[test]
     fn counter_increment() {
