@@ -1,4 +1,4 @@
-//! `internals/util/mod.rs`: Utility functions
+//! `internals/util.rs`: Utility functions
 
 use super::BLOCK_SIZE;
 use byteorder::{BigEndian, ByteOrder};
@@ -11,19 +11,6 @@ pub fn ctr_increment(value: &mut [u8; BLOCK_SIZE]) {
     // TODO: verify we wrap at 128-bits and add test vectors which exercise it
     let output = BigEndian::read_u128(value) + 1;
     BigEndian::write_u128(value, output);
-}
-
-/// Perform an in-place doubling operation
-#[inline]
-pub fn dbl(value: &mut [u8; BLOCK_SIZE]) {
-    unsafe {
-        asm!(include_str!("dbl.asm")
-            :
-            : "rdi"(value)
-            : "rax", "rcx", "rdx", "eax", "memory"
-            : "intel"
-        )
-    }
 }
 
 /// XOR the second argument into the first in-place. Slices do not have to be

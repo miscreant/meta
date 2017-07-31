@@ -1,7 +1,7 @@
-//! `internals/util/dbl.rs`: Reference implementation of dbl()
+//! `internals/dbl.rs`: Reference implementation of dbl()
 //!
 //! This implementation is not guaranteed to be constant time, so we first compile it for a
-//! particular architecture and then verify the generated assembly.
+//! particular architecture, verify the generated assembly, and use the assembly version.
 //!
 //! See `dbl.asm` for the generated output.
 

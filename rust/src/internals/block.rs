@@ -56,19 +56,27 @@ impl Block {
         unsafe { ptr::copy_nonoverlapping(&other.0, &mut self.0, SIZE) }
     }
 
-    /// Performs a doubling operation as defined in the CMAC and SIV papers
-    // TODO: use optimized implementation that assumes alignment
-    #[inline]
-    pub fn dbl(&mut self) {
-        util::dbl(&mut self.0);
-    }
-
     /// Zero out the contents of the block
     #[inline]
     pub fn clear(&mut self) {
         unsafe {
             // TODO: use a crate that provides this (e.g. clear_on_drop) instead of intrinsics
             intrinsics::volatile_set_memory(self.0.as_mut_ptr(), 0, SIZE)
+        }
+    }
+
+    /// Performs a doubling operation as defined in the CMAC and SIV papers
+    #[inline]
+    pub fn dbl(&mut self) {
+        // Use a verified constant time assembly implementation from dbl.asm
+        // which was generated from the reference implementation in dbl.rs
+        unsafe {
+            asm!(include_str!("dbl.asm")
+            :
+            : "rdi"(&self.0)
+            : "rax", "rcx", "rdx", "eax", "memory"
+            : "intel"
+            )
         }
     }
 }
