@@ -11,7 +11,7 @@ use subtle::CTEq;
 pub const MAX_ASSOCIATED_DATA: usize = 126;
 
 /// A block of all zeroes
-pub const ZERO_BLOCK: &[u8; BLOCK_SIZE] = &[0u8; BLOCK_SIZE];
+const ZERO_BLOCK: &[u8; BLOCK_SIZE] = &[0u8; BLOCK_SIZE];
 
 /// A SIV tag
 type Tag = Block;
