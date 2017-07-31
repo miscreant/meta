@@ -1,6 +1,6 @@
 # miscreant.rs [![crate][crate-image]][crate-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
-[crate-shield]: https://img.shields.io/crates/v/miscreant.svg
+[crate-image]: https://img.shields.io/crates/v/miscreant.svg
 [crate-link]: https://crates.io/crates/miscreant
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
@@ -38,7 +38,7 @@ For more information, see the [toplevel README.md].
 
 Have questions? Want to suggest a feature or change?
 
-* [Gitter]: web-based chat about miscreant projects including **miscreant.rb**
+* [Gitter]: web-based chat about **Miscreant** projects including **miscreant.rs**
 * [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
 
 [Gitter]: https://gitter.im/miscreant/Lobby
@@ -49,7 +49,35 @@ Have questions? Want to suggest a feature or change?
 
 Though this library is written by cryptographic professionals, it has not
 undergone a thorough security audit, and cryptographic professionals are still
-humans that make mistakes. Use this library at your own risk.
+humans that make mistakes.
+
+This library makes an effort to use constant time operations throughout its
+implementation, however actual constant time behavior has not been verified.
+Furthermore to accomplish this, unsafe Rust features including inline assembly
+have been used. The correct operation of this unsafe code has not been
+thoroughly reviewed.
+
+Use this library at your own risk.
+
+## Requirements
+
+This library presently requires the following:
+
+* **x86_64** CPU architecture
+* Rust **nightly** compiler
+
+This library implements the AES cipher using the [aesni] crate, which
+uses the [Intel AES-NI] CPU instructions to provide a fast, constant-time
+hardware-based implementation. No software-only implementation of AES is
+provided. Additionally it includes Intel assembly language implementations of
+certain secret-dependent functions which have verified constant-time operation.
+
+This library also makes use of certain nightly-only features including inline
+assembly and `repr_align`. Supporting stable Rust will first require upstream
+changes in the [aesni] crate, which is also nightly-only.
+
+[aesni]: https://github.com/RustCrypto/block-ciphers
+[Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms
 
 ## Contributing
 
