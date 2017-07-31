@@ -4,7 +4,7 @@
 
 use super::util;
 use core::{mem, ptr};
-use subtle::{Equal, Mask};
+use subtle::{self, CTEq, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
 pub const SIZE: usize = 16;
@@ -113,10 +113,10 @@ impl Drop for Block {
     }
 }
 
-impl Equal for Block {
+impl CTEq for Block {
     #[inline]
     fn ct_eq(&self, other: &Self) -> Mask {
-        self.0.ct_eq(&other.0)
+        subtle::arrays_equal(&self.0, &other.0)
     }
 }
 

@@ -5,7 +5,7 @@ use core::ptr;
 use internals::{Aes128, Aes256};
 use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr};
 use internals::util;
-use subtle::Equal;
+use subtle::CTEq;
 
 /// Maximum number of associated data items
 pub const MAX_ASSOCIATED_DATA: usize = 126;
