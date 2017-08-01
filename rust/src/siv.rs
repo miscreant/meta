@@ -38,7 +38,7 @@ impl Aes128Siv {
 pub type Aes256Siv = Siv<Aes256>;
 
 impl Aes256Siv {
-    /// Create a new AES-SIV instance with a 32-byte key
+    /// Create a new AES-SIV instance with a 64-byte key
     pub fn new(key: &[u8; 64]) -> Self {
         Self {
             mac: Cmac::new(Aes256::new(array_ref!(key, 0, 32))),
