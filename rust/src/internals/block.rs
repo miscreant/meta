@@ -3,6 +3,7 @@
 //! Special-cased for AES's 128-bit block size
 
 use super::xor;
+use byteorder::{BigEndian, ByteOrder};
 use core::{intrinsics, mem, ptr};
 use subtle::{self, CTEq, Mask};
 
@@ -68,16 +69,9 @@ impl Block {
     /// Performs a doubling operation as defined in the CMAC and SIV papers
     #[inline]
     pub fn dbl(&mut self) {
-        // Use a verified constant time assembly implementation from dbl.asm
-        // which was generated from the reference implementation in dbl.rs
-        unsafe {
-            asm!(include_str!("dbl.asm")
-            :
-            : "rdi"(&self.0)
-            : "rax", "rcx", "rdx", "eax", "memory"
-            : "intel"
-            )
-        }
+        let input = BigEndian::read_u128(&self.0);
+        let output = (input << 1) ^ ((input >> 127) * 0b10000111);
+        BigEndian::write_u128(&mut self.0, output);
     }
 }
 
