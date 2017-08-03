@@ -1,10 +1,9 @@
-//! `internals/block.rs`: Functions for working on cipher blocks.
-//!
-//! Special-cased for AES's 128-bit block size
+//! `internals/block.rs`: Functions for working on cipher blocks. Special-cased for
+//! AES's 128-bit block size.
 
 use byteorder::{BigEndian, NativeEndian, ByteOrder};
 use core::{intrinsics, ptr};
-use subtle::{self, CTEq, Mask};
+use subtle::{Equal, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
 pub const SIZE: usize = 16;
@@ -109,10 +108,10 @@ impl Drop for Block {
     }
 }
 
-impl CTEq for Block {
+impl Equal for Block {
     #[inline]
     fn ct_eq(&self, other: &Self) -> Mask {
-        subtle::arrays_equal(&self.0, &other.0)
+        self.0.ct_eq(&other.0)
     }
 }
 
