@@ -2,9 +2,8 @@
 //!
 //! Special-cased for AES's 128-bit block size
 
-use super::xor;
-use byteorder::{BigEndian, ByteOrder};
-use core::{intrinsics, mem, ptr};
+use byteorder::{BigEndian, NativeEndian, ByteOrder};
+use core::{intrinsics, ptr};
 use subtle::{self, CTEq, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
@@ -34,18 +33,10 @@ impl Block {
             "xor_in_place works on block-sized slices"
         );
 
-        let other_ref: &[u8; SIZE] = array_ref!(other.as_ref(), 0, SIZE);
+        let x: u128 = NativeEndian::read_u128(&self.0);
+        let y: u128 = NativeEndian::read_u128(other.as_ref());
 
-        if (other_ref.as_ptr() as usize) % SIZE == 0 {
-            // If the other value is aligned we can XOR directly
-            let x: &mut u128 = unsafe { mem::transmute(&mut self.0) };
-            let y: &u128 = unsafe { mem::transmute(other_ref) };
-
-            *x ^= *y;
-        } else {
-            // Fall back on a slower method if unaligned
-            xor::in_place(&mut self.0, other.as_ref());
-        }
+        NativeEndian::write_u128(&mut self.0, x ^ y);
     }
 
     /// Copy the contents of the other block into this one
@@ -70,7 +61,7 @@ impl Block {
     #[inline]
     pub fn dbl(&mut self) {
         let input = BigEndian::read_u128(&self.0);
-        let output = (input << 1) ^ ((input >> 127) * 0b10000111);
+        let output = (input << 1) ^ ((input >> 127) * 0b1000_0111);
         BigEndian::write_u128(&mut self.0, output);
     }
 }
