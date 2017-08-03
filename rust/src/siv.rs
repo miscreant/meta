@@ -1,7 +1,5 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
-use core::ptr;
-
 use internals::{Aes128, Aes256};
 use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr};
 use subtle::Equal;
@@ -53,7 +51,7 @@ impl<C: BlockCipher> Siv<C> {
     ///
     /// # Usage
     ///
-    /// It's important to note that only the beginning of the buffer will be
+    /// It's important to note that only the *end* of the buffer will be
     /// treated as the input plaintext:
     ///
     /// ```rust
@@ -61,13 +59,13 @@ impl<C: BlockCipher> Siv<C> {
     /// let plaintext = &buffer[..buffer.len() - 16];
     /// ```
     ///
-    /// In this case, only the first 5 bytes are treated as the plaintext,
+    /// In this case, only the *last* 5 bytes are treated as the plaintext,
     /// since `21 - 16 = 5` (the AES block size is 16-bytes).
     ///
     /// The buffer must include an additional 16-bytes of space in which to
     /// write the SIV tag (at the beginning of the buffer).
     /// Failure to account for this will leave you with plaintext messages that
-    /// are missing their last 16-bytes!
+    /// are missing their first 16-bytes!
     ///
     /// # Panics
     ///
@@ -82,16 +80,6 @@ impl<C: BlockCipher> Siv<C> {
             panic!("plaintext buffer too small to hold SIV tag!");
         }
 
-        let len = plaintext.len().checked_sub(BLOCK_SIZE).unwrap();
-
-        unsafe {
-            ptr::copy(
-                plaintext.as_ptr(),
-                plaintext[BLOCK_SIZE..].as_mut_ptr(),
-                len,
-            );
-        }
-
         // Compute the synthetic IV for this plaintext
         let mut iv = self.s2v(associated_data, &plaintext[BLOCK_SIZE..]);
         plaintext[..BLOCK_SIZE].copy_from_slice(iv.as_ref());
@@ -103,6 +91,8 @@ impl<C: BlockCipher> Siv<C> {
 
     /// Decrypt the given ciphertext in-place, authenticating it against the
     /// synthetic IV included in the message.
+    ///
+    /// Returns a slice containing a decrypted message on success.
     pub fn open_in_place<'a, I, T>(
         &mut self,
         associated_data: I,
@@ -134,17 +124,7 @@ impl<C: BlockCipher> Siv<C> {
             return Err(());
         }
 
-        let len = ciphertext.len().checked_sub(BLOCK_SIZE).unwrap();
-
-        unsafe {
-            ptr::copy(
-                ciphertext[BLOCK_SIZE..].as_ptr(),
-                ciphertext.as_mut_ptr(),
-                len,
-            );
-        }
-
-        Ok(&ciphertext[..len])
+        Ok(&ciphertext[BLOCK_SIZE..])
     }
 
     /// The S2V operation consists of the doubling and XORing of the outputs

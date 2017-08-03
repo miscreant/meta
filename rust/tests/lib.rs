@@ -94,7 +94,7 @@ fn aes_siv_examples_seal() {
     for example in examples {
         let len = example.plaintext.len();
         let mut buffer = vec![0; len + BLOCK_SIZE];
-        buffer[..len].copy_from_slice(&example.plaintext);
+        buffer[BLOCK_SIZE..].copy_from_slice(&example.plaintext);
 
         match example.key.len() {
             32 => {
