@@ -15,12 +15,19 @@
 #![feature(asm)]
 #![feature(attr_literals)]
 #![feature(repr_align)]
+#![cfg_attr(feature = "bench", feature(test))]
+
+#[cfg(all(feature = "bench", test))]
+extern crate test;
 
 #[macro_use]
 extern crate arrayref;
 extern crate byteorder;
 extern crate clear_on_drop;
 extern crate subtle;
+
+#[cfg(feature = "bench")]
+mod bench;
 
 // TODO: reduce visibility by gating it on e.g. #[cfg(debug_assertions)]
 pub mod internals;
