@@ -16,7 +16,19 @@ arrayref = "0.3"
 byteorder = { version = "1.1", default-features = false, features = ["i128"] }
 clear_on_drop = { version = "0.2", features = ["nightly"] }
 subtle = { version = "0.2", default-features = false }
+ring = { version = "0.11", optional = true }
 
 [dev-dependencies]
 data-encoding = "2.0.0-rc.1"
 serde_json = "1"
+
+[features]
+bench = ["ring"]
+
+[profile.bench]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 1
