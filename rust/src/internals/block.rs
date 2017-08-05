@@ -2,7 +2,7 @@
 //! AES's 128-bit block size.
 
 use byteorder::{BigEndian, NativeEndian, ByteOrder};
-use core::{intrinsics, ptr};
+use clear_on_drop::clear::Clear;
 use subtle::{Equal, Mask};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
@@ -17,6 +17,23 @@ impl Block {
     /// Create a new block, initialized to zero
     pub fn new() -> Block {
         Block([0u8; SIZE])
+    }
+
+    /// Copy the contents of the other block into this one
+    ///
+    /// Panics if the two blocks are the same
+    #[inline]
+    pub fn copy_from_block(&mut self, other: &Block) {
+        assert_ne!(self.0.as_ptr(), other.0.as_ptr(), "can't copy self");
+        self.0.copy_from_slice(&other.0);
+    }
+
+    /// Performs a doubling operation as defined in the CMAC and SIV papers
+    #[inline]
+    pub fn dbl(&mut self) {
+        let input = BigEndian::read_u128(&self.0);
+        let output = (input << 1) ^ ((input >> 127) * 0b1000_0111);
+        BigEndian::write_u128(&mut self.0, output);
     }
 
     /// XOR the other block into this one
@@ -36,32 +53,6 @@ impl Block {
         let y: u128 = NativeEndian::read_u128(other.as_ref());
 
         NativeEndian::write_u128(&mut self.0, x ^ y);
-    }
-
-    /// Copy the contents of the other block into this one
-    ///
-    /// Panics if the two blocks are the same
-    #[inline]
-    pub fn copy_from_block(&mut self, other: &Block) {
-        assert_ne!(self.0.as_ptr(), other.0.as_ptr(), "can't copy self");
-        unsafe { ptr::copy_nonoverlapping(&other.0, &mut self.0, SIZE) }
-    }
-
-    /// Zero out the contents of the block
-    #[inline]
-    pub fn clear(&mut self) {
-        unsafe {
-            // TODO: use a crate that provides this (e.g. clear_on_drop) instead of intrinsics
-            intrinsics::volatile_set_memory(self.0.as_mut_ptr(), 0, SIZE)
-        }
-    }
-
-    /// Performs a doubling operation as defined in the CMAC and SIV papers
-    #[inline]
-    pub fn dbl(&mut self) {
-        let input = BigEndian::read_u128(&self.0);
-        let output = (input << 1) ^ ((input >> 127) * 0b1000_0111);
-        BigEndian::write_u128(&mut self.0, output);
     }
 }
 
@@ -104,7 +95,7 @@ impl AsMut<[u8; SIZE]> for Block {
 impl Drop for Block {
     #[inline]
     fn drop(&mut self) {
-        self.clear()
+        self.0.clear()
     }
 }
 

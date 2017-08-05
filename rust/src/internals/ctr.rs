@@ -2,6 +2,7 @@
 
 use super::{Block, BlockCipher, BLOCK_SIZE};
 use byteorder::{BigEndian, ByteOrder};
+use clear_on_drop::clear::Clear;
 
 /// Counter Mode encryption/decryption
 pub struct Ctr<C: BlockCipher> {

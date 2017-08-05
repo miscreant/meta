@@ -2,6 +2,7 @@
 
 use super::{Block, BlockCipher, BLOCK_SIZE};
 use super::xor;
+use clear_on_drop::clear::Clear;
 
 type Tag = Block;
 

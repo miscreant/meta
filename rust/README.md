@@ -55,9 +55,6 @@ humans that make mistakes.
 
 This library makes an effort to use constant time operations throughout its
 implementation, however actual constant time behavior has not been verified.
-Furthermore to accomplish this, unsafe Rust features including inline assembly
-have been used. The correct operation of this unsafe code has not been
-thoroughly reviewed.
 
 Use this library at your own risk.
 
