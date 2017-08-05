@@ -14,12 +14,12 @@
 #![feature(i128_type)]
 #![feature(asm)]
 #![feature(attr_literals)]
-#![feature(core_intrinsics)]
 #![feature(repr_align)]
 
 #[macro_use]
 extern crate arrayref;
 extern crate byteorder;
+extern crate clear_on_drop;
 extern crate subtle;
 
 // TODO: reduce visibility by gating it on e.g. #[cfg(debug_assertions)]
