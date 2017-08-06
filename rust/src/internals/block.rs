@@ -3,7 +3,7 @@
 
 use byteorder::{BigEndian, NativeEndian, ByteOrder};
 use clear_on_drop::clear::Clear;
-use subtle::{Equal, Mask};
+use subtle::{Equal, Mask, slices_equal};
 
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
 pub const SIZE: usize = 16;
@@ -14,7 +14,7 @@ pub const SIZE: usize = 16;
 pub struct Block([u8; SIZE]);
 
 impl Block {
-    /// Create a new block, initialized to zero
+    /// Create a new `Block`, initialized to all zeroes
     pub fn new() -> Block {
         Block([0u8; SIZE])
     }
@@ -103,6 +103,52 @@ impl Equal for Block {
     #[inline]
     fn ct_eq(&self, other: &Self) -> Mask {
         self.0.ct_eq(&other.0)
+    }
+}
+
+/// Eight contiguous cipher blocks, suitable for vectorized encryption
+#[repr(align(16))]
+pub struct Block8([u8; 8 * SIZE]);
+
+impl Block8 {
+    /// Create a new `Block8`, initialized to all zeroes
+    pub fn new() -> Block8 {
+        Block8([0u8; 8 * SIZE])
+    }
+}
+
+impl Default for Block8 {
+    #[inline]
+    fn default() -> Block8 {
+        Block8::new()
+    }
+}
+
+impl AsRef<[u8]> for Block8 {
+    #[inline]
+    fn as_ref(&self) -> &[u8] {
+        &self.0
+    }
+}
+
+impl AsMut<[u8; 8 * SIZE]> for Block8 {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [u8; 8 * SIZE] {
+        &mut self.0
+    }
+}
+
+impl Drop for Block8 {
+    #[inline]
+    fn drop(&mut self) {
+        self.0.clear()
+    }
+}
+
+impl Equal for Block8 {
+    #[inline]
+    fn ct_eq(&self, other: &Self) -> Mask {
+        slices_equal(&self.0[..], &other.0[..])
     }
 }
 
