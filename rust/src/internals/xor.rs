@@ -5,9 +5,9 @@
 ///
 /// Panics if the two slices aren't the same length
 pub fn in_place(a: &mut [u8], b: &[u8]) {
-    assert_eq!(a.len(), b.len(), "slices are not the same length!");
+    debug_assert_eq!(a.len(), b.len(), "slices are not the same length!");
 
-    for (b1, b2) in a.iter_mut().zip(b.iter()) {
-        *b1 ^= *b2;
+    for i in 0..a.len() {
+        a[i] ^= b[i];
     }
 }
