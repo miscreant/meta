@@ -24,8 +24,8 @@ impl Block {
     /// Panics if the two blocks are the same
     #[inline]
     pub fn copy_from_block(&mut self, other: &Block) {
-        assert_ne!(self.0.as_ptr(), other.0.as_ptr(), "can't copy self");
-        self.0.copy_from_slice(&other.0);
+        let block = NativeEndian::read_u128(&other.0);
+        NativeEndian::write_u128(&mut self.0, block);
     }
 
     /// Performs a doubling operation as defined in the CMAC and SIV papers
