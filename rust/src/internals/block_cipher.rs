@@ -1,6 +1,6 @@
 //! `internals/block_cipher.rs`: Trait for encrypting with different block ciphers.
 
-use super::Block;
+use super::{Block, Block8};
 
 /// Common interface to a block cipher's raw block function
 ///
@@ -11,4 +11,7 @@ pub trait BlockCipher: Clone {
 
     /// Encrypt a block
     fn encrypt(&self, block: &mut Block);
+
+    /// Encrypt a vector of 8 blocks
+    fn encrypt8(&self, block8: &mut Block8);
 }

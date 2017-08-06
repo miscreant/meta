@@ -1,6 +1,6 @@
 //! `internals/aes.rs`: The Advanced Encryption Standard block cipher
 
-use super::{Block, BlockCipher};
+use super::{Block, Block8, BlockCipher};
 
 extern crate aesni;
 
@@ -29,6 +29,12 @@ impl BlockCipher for Aes128 {
     fn encrypt(&self, block: &mut Block) {
         self.cipher.encrypt(block.as_mut())
     }
+
+    /// Encrypt a vector of 8 blocks in-place
+    #[inline]
+    fn encrypt8(&self, block8: &mut Block8) {
+        self.cipher.encrypt8(block8.as_mut())
+    }
 }
 
 /// AES with a 256-bit key
@@ -52,5 +58,11 @@ impl BlockCipher for Aes256 {
     #[inline]
     fn encrypt(&self, block: &mut Block) {
         self.cipher.encrypt(block.as_mut())
+    }
+
+    /// Encrypt a vector of 8 blocks in-place
+    #[inline]
+    fn encrypt8(&self, block8: &mut Block8) {
+        self.cipher.encrypt8(block8.as_mut())
     }
 }
