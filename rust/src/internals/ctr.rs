@@ -32,29 +32,32 @@ impl<C: BlockCipher> Ctr<C> {
     ///
     /// Accepts a mutable counter value, which is also updated in-place
     pub fn transform(&mut self, counter: &mut Block, data: &mut [u8]) {
-        let mut c = BigEndian::read_u128(counter.as_ref());
+        let mut ctr = BigEndian::read_u128(counter.as_ref());
 
         for b in data {
-            if self.buffer_pos == 8 * BLOCK_SIZE {
-
-                for i in 0..8 {
-                    BigEndian::write_u128(
-                        array_mut_ref!(self.buffer.as_mut(), i * BLOCK_SIZE, BLOCK_SIZE),
-                        c,
-                    );
-
-                    // AES-CTR uses a wrapping counter
-                    c = c.wrapping_add(1);
-                }
-
-                self.cipher.encrypt8(&mut self.buffer);
-                self.buffer_pos = 0;
-            }
-
+            self.fill_buffer(&mut ctr);
             *b ^= self.buffer.as_ref()[self.buffer_pos];
             self.buffer_pos = self.buffer_pos.checked_add(1).expect("overflow");
         }
 
-        BigEndian::write_u128(counter.as_mut(), c);
+        BigEndian::write_u128(counter.as_mut(), ctr);
+    }
+
+    /// Fill the internal buffer of AES-CTR values
+    #[inline]
+    fn fill_buffer(&mut self, counter: &mut u128) {
+        if self.buffer_pos != 8 * BLOCK_SIZE {
+            return;
+        }
+
+        for chunk in self.buffer.as_mut().chunks_mut(BLOCK_SIZE) {
+            BigEndian::write_u128(chunk, *counter);
+
+            // AES-CTR uses a wrapping counter
+            *counter = counter.wrapping_add(1);
+        }
+
+        self.cipher.encrypt8(&mut self.buffer);
+        self.buffer_pos = 0;
     }
 }
