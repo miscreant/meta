@@ -33,4 +33,4 @@ mod bench;
 pub mod internals;
 pub mod siv;
 
-pub use siv::{Aes128Siv, Aes256Siv};
+pub use siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
