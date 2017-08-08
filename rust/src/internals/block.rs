@@ -43,7 +43,7 @@ impl Block {
         T: AsRef<[u8]>,
     {
         // TODO: find a way to eliminate this assertion with type safety
-        assert_eq!(
+        debug_assert_eq!(
             other.as_ref().len(),
             SIZE,
             "xor_in_place works on block-sized slices"

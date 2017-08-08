@@ -105,9 +105,6 @@ impl<C: BlockCipher> Cmac<C> {
             self.state.xor_in_place(&self.subkey1);
         } else {
             self.state.xor_in_place(&self.subkey2);
-        };
-
-        if self.state_pos < BLOCK_SIZE {
             self.state.as_mut()[self.state_pos] ^= 0x80;
         }
 
