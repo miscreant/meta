@@ -2,6 +2,7 @@ extern crate ring;
 
 use self::ring::aead;
 use Aes128Siv;
+use internals::{Aes128, Block, Ctr};
 use test::Bencher;
 
 // WARNING: Do not ever actually use a key of all zeroes
@@ -9,6 +10,55 @@ const KEY_128_BIT: [u8; 16] = [0u8; 16];
 const KEY_256_BIT: [u8; 32] = [0u8; 32];
 
 const NONCE: [u8; 12] = [0u8; 12];
+
+//
+// AES-CTR benchmarks
+//
+
+#[bench]
+fn bench_aes_ctr_128_encrypt_128_bytes(b: &mut Bencher) {
+    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
+    let mut iv = Block::new();
+
+    // 128 bytes input + 16 bytes tag
+    let mut buffer = [0u8; 144];
+    b.bytes = 128;
+
+    b.iter(|| {
+        ctr.transform(&mut iv, &mut buffer);
+        ctr.reset();
+    });
+}
+
+#[bench]
+fn bench_aes_ctr_128_encrypt_1024_bytes(b: &mut Bencher) {
+    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
+    let mut iv = Block::new();
+
+    // 1024 bytes input + 16 bytes tag
+    let mut buffer = [0u8; 1040];
+    b.bytes = 1024;
+
+    b.iter(|| {
+        ctr.transform(&mut iv, &mut buffer);
+        ctr.reset();
+    });
+}
+
+#[bench]
+fn bench_aes_ctr_128_encrypt_16384_bytes(b: &mut Bencher) {
+    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
+    let mut iv = Block::new();
+
+    // 16384 bytes input + 16 bytes tag
+    let mut buffer = [0u8; 16400];
+    b.bytes = 16384;
+
+    b.iter(|| {
+        ctr.transform(&mut iv, &mut buffer);
+        ctr.reset();
+    });
+}
 
 //
 // AES-SIV benchmarks
