@@ -1,7 +1,7 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
 use internals::{Aes128, Aes256};
-use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr};
+use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr, Mac};
 use subtle::Equal;
 
 /// Maximum number of associated data items
@@ -14,13 +14,13 @@ const ZERO_BLOCK: &[u8; BLOCK_SIZE] = &[0u8; BLOCK_SIZE];
 type Tag = Block;
 
 /// The SIV misuse resistant block cipher mode of operation
-pub struct Siv<C: BlockCipher> {
-    mac: Cmac<C>,
+pub struct Siv<C: BlockCipher, M: Mac<C>> {
+    mac: M,
     ctr: Ctr<C>,
 }
 
-/// AES-SIV with a 128-bit key
-pub type Aes128Siv = Siv<Aes128>;
+/// AES-CMAC-SIV with a 128-bit key
+pub type Aes128Siv = Siv<Aes128, Cmac<Aes128>>;
 
 impl Aes128Siv {
     /// Create a new AES-SIV instance with a 32-byte key
@@ -32,8 +32,8 @@ impl Aes128Siv {
     }
 }
 
-/// AES-SIV with a 256-bit key
-pub type Aes256Siv = Siv<Aes256>;
+/// AES-CMAC-SIV with a 256-bit key
+pub type Aes256Siv = Siv<Aes256, Cmac<Aes256>>;
 
 impl Aes256Siv {
     /// Create a new AES-SIV instance with a 64-byte key
@@ -45,7 +45,7 @@ impl Aes256Siv {
     }
 }
 
-impl<C: BlockCipher> Siv<C> {
+impl<C: BlockCipher, M: Mac<C>> Siv<C, M> {
     /// Encrypt the given plaintext in-place, replacing it with the SIV tag and
     /// ciphertext. Requires a buffer with 16-bytes additional space.
     ///
