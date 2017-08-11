@@ -3,7 +3,7 @@ extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv};
-use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr};
+use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr, Mac};
 use miscreant::internals::BLOCK_SIZE;
 
 mod test_vectors;
