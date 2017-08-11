@@ -46,7 +46,7 @@ impl<C: BlockCipher> Mac<C> for Cmac<C> {
 
     /// Update the CMAC buffer with the given message
     ///
-    /// Panics if we're already in a finished buffer (must reset before reusing)
+    /// Panics if we're already in a finished state (must reset before reusing)
     fn update(&mut self, msg: &[u8]) {
         if self.finished {
             panic!("already finished");
@@ -94,7 +94,7 @@ impl<C: BlockCipher> Mac<C> for Cmac<C> {
 
     /// Finish computing CMAC, returning the computed tag
     ///
-    /// Panics if we're already in a finished buffer (must reset before reusing)
+    /// Panics if we're already in a finished state (must reset before reusing)
     fn finish(&mut self) -> Tag {
         if self.finished {
             panic!("already finished");
