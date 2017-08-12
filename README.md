@@ -349,27 +349,19 @@ competition, it's a boring, uncontroversial solution we can use off-the-shelf to
 
 [CAESAR]: https://competitions.cr.yp.to/caesar-submissions.html
 
-### 10. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV, AEZ)
+### 10. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV)
 
-A: Yes, please see this issue on [adding an additional high-performance cipher to Miscreant].
+A: We are working on adding support for an **AES-SIV** construction based on
+[AES-PMAC] instead of **AES-CMAC** which we are calling **AES-PMAC-SIV**.
+Though this is a novel construction, it retains all of the original security
+properties of the original **AES-SIV** construction.
 
-There are some compelling candidates:
+In the future, we may consider adding support for **AES-GCM-SIV**.
 
-* [AES-GCM-SIV] is a high-performance SIV mode currently in the final stages
-  of standardization by the IRTF CFRG.
-* [AES-PMAC-SIV][AES-PMAC] is an alternatitive construction of **AES-SIV** which
-  replaces **AES-CMAC** with [AES-PMAC], a parallelizable MAC built on AES
-  designed by [Phil Rogaway].
-* [AEZ] is a newer, faster, parallelizable authenticated encryption cipher with
-  improved security properties, co-designed by [Phil Rogaway] who also designed
-  **AES-SIV**.
-* [HS1-SIV] is a authenticated encryption cipher several people thought was
-  compelling but was unfortunately eliminated from the [CAESAR] competition.
+Please see [Issue #31: Support a faster construction than AES-SIV](https://github.com/miscreant/miscreant/issues/31)
+for more information.
 
-[adding an additional high-performance cipher to Miscreant]: https://github.com/miscreant/miscreant/issues/31
 [AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
-[AEZ]: http://web.cs.ucdavis.edu/~rogaway/aez/
-[HS1-SIV]: https://competitions.cr.yp.to/round2/hs1sivv2.pdf
 
 ### 11. Q: This project mentions security proofs several times. Where do I find them?
 
