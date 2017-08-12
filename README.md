@@ -354,7 +354,8 @@ competition, it's a boring, uncontroversial solution we can use off-the-shelf to
 A: We are working on adding support for an **AES-SIV** construction based on
 [AES-PMAC] instead of **AES-CMAC** which we are calling **AES-PMAC-SIV**.
 Though this is a novel construction, it retains all of the original security
-properties of the original **AES-SIV** construction.
+properties of the original **AES-SIV** construction, but is fully
+parallelizable/vectorizable and therefore provides better performance.
 
 In the future, we may consider adding support for **AES-GCM-SIV**.
 
