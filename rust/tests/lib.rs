@@ -3,11 +3,12 @@ extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv};
-use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr, Mac};
+use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr, Mac, Pmac};
 use miscreant::internals::BLOCK_SIZE;
 
 mod test_vectors;
-use test_vectors::{AesExample, AesCmacExample, AesCtrExample, AesSivExample, DblExample};
+use test_vectors::{AesExample, AesCmacExample, AesCtrExample, AesPmacExample, AesSivExample,
+                   DblExample};
 
 #[test]
 fn aes_examples() {
@@ -84,6 +85,33 @@ fn aes_ctr_examples() {
         };
 
         assert_eq!(buffer, example.ciphertext);
+    }
+}
+
+#[test]
+fn aes_pmac_examples() {
+    let examples = AesPmacExample::load_all();
+
+    for example in examples {
+        let result = match example.key.len() {
+            16 => {
+                let aes = Aes128::new(array_ref!(example.key, 0, 16));
+                let mut aes_pmac = Pmac::new(aes);
+
+                aes_pmac.update(&example.message);
+                aes_pmac.finish()
+            }
+            32 => {
+                let aes = Aes256::new(array_ref!(example.key, 0, 32));
+                let mut aes_pmac = Pmac::new(aes);
+
+                aes_pmac.update(&example.message);
+                aes_pmac.finish()
+            }
+            _ => panic!("unexpected key size: {}", example.key.len()),
+        };
+
+        assert_eq!(result.as_ref(), array_ref!(example.tag, 0, 16));
     }
 }
 

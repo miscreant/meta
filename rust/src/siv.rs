@@ -1,7 +1,7 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
 use internals::{Aes128, Aes256};
-use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr, Mac};
+use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr, Mac, Pmac};
 use subtle::Equal;
 
 /// Maximum number of associated data items
@@ -40,6 +40,32 @@ impl Aes256Siv {
     pub fn new(key: &[u8; 64]) -> Self {
         Self {
             mac: Cmac::new(Aes256::new(array_ref!(key, 0, 32))),
+            ctr: Ctr::new(Aes256::new(array_ref!(key, 32, 32))),
+        }
+    }
+}
+
+/// AES-PMAC-SIV with a 128-bit key
+pub type Aes128PmacSiv = Siv<Aes128, Pmac<Aes128>>;
+
+impl Aes128PmacSiv {
+    /// Create a new AES-SIV instance with a 32-byte key
+    pub fn new(key: &[u8; 32]) -> Self {
+        Self {
+            mac: Pmac::new(Aes128::new(array_ref!(key, 0, 16))),
+            ctr: Ctr::new(Aes128::new(array_ref!(key, 16, 16))),
+        }
+    }
+}
+
+/// AES-SIV with a 256-bit key
+pub type Aes256PmacSiv = Siv<Aes256, Pmac<Aes256>>;
+
+impl Aes256PmacSiv {
+    /// Create a new AES-SIV instance with a 64-byte key
+    pub fn new(key: &[u8; 64]) -> Self {
+        Self {
+            mac: Pmac::new(Aes256::new(array_ref!(key, 0, 32))),
             ctr: Ctr::new(Aes256::new(array_ref!(key, 32, 32))),
         }
     }

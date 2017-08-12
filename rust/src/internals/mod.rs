@@ -6,6 +6,7 @@ pub mod block_cipher;
 mod cmac;
 mod ctr;
 mod mac;
+mod pmac;
 mod xor;
 
 pub use self::aes::{Aes128, Aes256};
@@ -15,3 +16,4 @@ pub use self::block_cipher::BlockCipher;
 pub use self::cmac::Cmac;
 pub use self::ctr::Ctr;
 pub use self::mac::Mac;
+pub use self::pmac::Pmac;
