@@ -6,11 +6,11 @@
 package miscreant
 
 import (
-	"github.com/miscreant/miscreant/go/cmac"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/subtle"
 	"errors"
+	"github.com/miscreant/miscreant/go/cmac"
 	"hash"
 )
 
