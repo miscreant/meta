@@ -50,7 +50,14 @@ Have questions? Want to suggest a feature or change?
 
 ## Security Notice
 
-**!!! DO NOT USE, NOT TESTED PROPERLY YET !!!**
+Though this library is written by cryptographic professionals, it has not
+undergone a thorough security audit, and cryptographic professionals are still
+humans that make mistakes.
+
+This library makes an effort to use constant time operations throughout its
+implementation, however actual constant time behavior has not been verified.
+
+Use this library at your own risk.
 
 ## Contributing
 
