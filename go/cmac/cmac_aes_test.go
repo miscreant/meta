@@ -22,18 +22,18 @@ type cmacAESExample struct {
 // Load AES-CMAC test vectors from aes_cmac.tjson
 // TODO: switch to a native Go TJSON parser when available
 func loadCMACAESExamples() []cmacAESExample {
-	var examplesJson map[string]interface{}
+	var examplesJSON map[string]interface{}
 
 	exampleData, err := ioutil.ReadFile("../../vectors/aes_cmac.tjson")
 	if err != nil {
 		panic(err)
 	}
 
-	if err = json.Unmarshal(exampleData, &examplesJson); err != nil {
+	if err = json.Unmarshal(exampleData, &examplesJSON); err != nil {
 		panic(err)
 	}
 
-	examplesArray := examplesJson["examples:A<O>"].([]interface{})
+	examplesArray := examplesJSON["examples:A<O>"].([]interface{})
 
 	if examplesArray == nil {
 		panic("no toplevel 'examples:A<O>' key in aes_cmac.tjson")
@@ -41,8 +41,8 @@ func loadCMACAESExamples() []cmacAESExample {
 
 	result := make([]cmacAESExample, len(examplesArray))
 
-	for i, exampleJson := range examplesArray {
-		example := exampleJson.(map[string]interface{})
+	for i, exampleJSON := range examplesArray {
+		example := exampleJSON.(map[string]interface{})
 
 		keyHex := example["key:d16"].(string)
 		key := make([]byte, hex.DecodedLen(len(keyHex)))
@@ -111,7 +111,10 @@ func TestWrite(t *testing.T) {
 
 	// Test writing byte-by-byte
 	for _, b := range tt.message {
-		d.Write([]byte{b})
+		_, err := d.Write([]byte{b})
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 	sum := d.Sum(nil)
 	if !bytes.Equal(sum, tt.tag) {
@@ -121,8 +124,17 @@ func TestWrite(t *testing.T) {
 
 	// Test writing halves
 	d.Reset()
-	d.Write(tt.message[:len(tt.message)/2])
-	d.Write(tt.message[len(tt.message)/2:])
+
+	_, err = d.Write(tt.message[:len(tt.message)/2])
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = d.Write(tt.message[len(tt.message)/2:])
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	sum = d.Sum(nil)
 	if !bytes.Equal(sum, tt.tag) {
 		x := d.(*cmac)
@@ -131,8 +143,16 @@ func TestWrite(t *testing.T) {
 
 	// Test writing third, then the rest
 	d.Reset()
-	d.Write(tt.message[:len(tt.message)/3])
-	d.Write(tt.message[len(tt.message)/3:])
+	_, err = d.Write(tt.message[:len(tt.message)/3])
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = d.Write(tt.message[len(tt.message)/3:])
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	sum = d.Sum(nil)
 	if !bytes.Equal(sum, tt.tag) {
 		x := d.(*cmac)
@@ -141,9 +161,19 @@ func TestWrite(t *testing.T) {
 
 	// Test continuing after Sum
 	d.Reset()
-	d.Write(tt.message[:len(tt.message)/2])
+
+	_, err = d.Write(tt.message[:len(tt.message)/2])
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	sum = d.Sum(nil)
-	d.Write(tt.message[len(tt.message)/2:])
+
+	_, err = d.Write(tt.message[len(tt.message)/2:])
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	sum = d.Sum(nil)
 	if !bytes.Equal(sum, tt.tag) {
 		x := d.(*cmac)
@@ -159,7 +189,10 @@ func BenchmarkCMAC_AES128(b *testing.B) {
 	b.SetBytes(int64(len(v)))
 	for i := 0; i < b.N; i++ {
 		d, _ := New(c)
-		d.Write(v)
+		_, err := d.Write(v)
+		if err != nil {
+			panic(err)
+		}
 		out = d.Sum(out[:0])
 	}
 }

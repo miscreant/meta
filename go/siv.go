@@ -14,14 +14,21 @@ import (
 	"hash"
 )
 
-const MaxAssociatedDataItems = 126 // maximum number of associated data items
+// MaxAssociatedDataItems is the maximum number of associated data items
+const MaxAssociatedDataItems = 126
 
 var (
-	ErrKeySize                    = errors.New("siv: bad key size")
-	ErrNotAuthentic               = errors.New("siv: authentication failed")
+	// ErrKeySize indicates the given key size is not supported
+	ErrKeySize = errors.New("siv: bad key size")
+
+	// ErrNotAuthentic indicates a ciphertext is malformed or corrupt
+	ErrNotAuthentic = errors.New("siv: authentication failed")
+
+	// ErrTooManyAssociatedDataItems indicates more than MaxAssociatedDataItems were given
 	ErrTooManyAssociatedDataItems = errors.New("siv: too many associated data items")
 )
 
+// Cipher is an instance of AES-SIV
 type Cipher struct {
 	h          hash.Hash
 	b          cipher.Block
@@ -134,12 +141,20 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	// never triggered, since we always pass plaintext as the last vector
 	// (even if it's zero-length), so we omit this case.
 
-	h.Write(tmp)
+	_, err := h.Write(tmp)
+	if err != nil {
+		panic(err)
+	}
+
 	d = h.Sum(d[:0])
 	h.Reset()
 
 	for _, v := range s {
-		h.Write(v)
+		_, err := h.Write(v)
+		if err != nil {
+			panic(err)
+		}
+
 		tmp = h.Sum(tmp[:0])
 		h.Reset()
 		dbl(d)
@@ -151,14 +166,21 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	if len(sn) >= h.BlockSize() {
 		n := len(sn) - len(d)
 		copy(tmp, sn[n:])
-		h.Write(sn[:n])
+		_, err = h.Write(sn[:n])
+		if err != nil {
+			panic(err)
+		}
 	} else {
 		copy(tmp, sn)
 		tmp[len(sn)] = 0x80
 		dbl(d)
 	}
 	xor(tmp, d)
-	h.Write(tmp)
+	_, err = h.Write(tmp)
+	if err != nil {
+		panic(err)
+	}
+
 	return h.Sum(tmp[:0])
 }
 

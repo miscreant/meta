@@ -26,18 +26,18 @@ type aesSIVExample struct {
 // Load AES-CMAC test vectors from aes_cmac.tjson
 // TODO: switch to a native Go TJSON parser when available
 func loadCMACAESExamples() []aesSIVExample {
-	var examplesJson map[string]interface{}
+	var examplesJSON map[string]interface{}
 
 	exampleData, err := ioutil.ReadFile("../vectors/aes_siv.tjson")
 	if err != nil {
 		panic(err)
 	}
 
-	if err = json.Unmarshal(exampleData, &examplesJson); err != nil {
+	if err = json.Unmarshal(exampleData, &examplesJSON); err != nil {
 		panic(err)
 	}
 
-	examplesArray := examplesJson["examples:A<O>"].([]interface{})
+	examplesArray := examplesJSON["examples:A<O>"].([]interface{})
 
 	if examplesArray == nil {
 		panic("no toplevel 'examples:A<O>' key in aes_cmac.tjson")
@@ -45,8 +45,8 @@ func loadCMACAESExamples() []aesSIVExample {
 
 	result := make([]aesSIVExample, len(examplesArray))
 
-	for i, exampleJson := range examplesArray {
-		example := exampleJson.(map[string]interface{})
+	for i, exampleJSON := range examplesArray {
+		example := exampleJSON.(map[string]interface{})
 
 		name := example["name:s"].(string)
 
@@ -166,7 +166,7 @@ func BenchmarkSIVAES128_Seal_1K(b *testing.B) {
 	out := make([]byte, 0, len(m)+c.Overhead())
 	b.SetBytes(int64(len(m)))
 	for i := 0; i < b.N; i++ {
-		c.Seal(out, m, a)
+		_, _ = c.Seal(out, m, a)
 	}
 }
 
@@ -177,7 +177,7 @@ func BenchmarkSIVAES128_Seal_8K(b *testing.B) {
 	b.SetBytes(int64(len(m)))
 	out := make([]byte, 0, len(m)+c.Overhead())
 	for i := 0; i < b.N; i++ {
-		c.Seal(out, m, a)
+		_, _ = c.Seal(out, m, a)
 	}
 }
 
@@ -189,7 +189,7 @@ func BenchmarkSIVAES128_Open_1K(b *testing.B) {
 	out := make([]byte, 0, len(m))
 	b.SetBytes(int64(len(m)))
 	for i := 0; i < b.N; i++ {
-		c.Open(out, x, a)
+		_, _ = c.Open(out, x, a)
 	}
 }
 
@@ -201,6 +201,6 @@ func BenchmarkSIVAES128_Open_8K(b *testing.B) {
 	out := make([]byte, 0, len(m))
 	b.SetBytes(int64(len(m)))
 	for i := 0; i < b.N; i++ {
-		c.Open(out, x, a)
+		_, _ = c.Open(out, x, a)
 	}
 }
