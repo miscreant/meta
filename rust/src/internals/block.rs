@@ -8,6 +8,9 @@ use subtle::{Equal, Mask, slices_equal};
 /// All constructions are presently specialized to a 128-bit block size (i.e. the AES block size)
 pub const SIZE: usize = 16;
 
+/// Minimal irreducible polynomial for a 128-bit block size
+pub const R: u128 = 0b1000_0111;
+
 /// A block acceptable to pass to a block cipher (i.e. memory aligned)
 #[derive(Clone, Default)]
 #[repr(align(16))]
@@ -28,11 +31,11 @@ impl Block {
         NativeEndian::write_u128(&mut self.0, block);
     }
 
-    /// Performs a doubling operation as defined in the CMAC and SIV papers
+    /// Double a value over GF(2^128)
     #[inline]
     pub fn dbl(&mut self) {
         let input = BigEndian::read_u128(&self.0);
-        let output = (input << 1) ^ ((input >> 127) * 0b1000_0111);
+        let output = (input << 1) ^ ((input >> 127) * R);
         BigEndian::write_u128(&mut self.0, output);
     }
 

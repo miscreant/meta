@@ -1,11 +1,14 @@
 //! `internals/pmac.rs`: Parallel Message Authentication Code
 
 use super::{BLOCK_SIZE, Block, Block8, BlockCipher, Mac, xor};
+use super::block::R;
 use byteorder::{BigEndian, ByteOrder};
 use clear_on_drop::clear::Clear;
 
 type Tag = Block;
 
+// Number of L blocks to precompute
+// TODO: dynamically compute these as needed
 const PRECOMPUTED_BLOCKS: usize = 31;
 
 /// Parallel Message Authentication Code
@@ -37,7 +40,7 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
 
         let mut l_inv = Block::new();
         let l_0 = BigEndian::read_u128(l[0].as_ref());
-        let inv = (l_0 >> 1) ^ ((l_0 & 0x1) * 0x80000000000000000000000000000043);
+        let inv = (l_0 >> 1) ^ ((l_0 & 0x1) * (0x80 << 120 | R >> 1));
         BigEndian::write_u128(l_inv.as_mut(), inv);
 
         Self {
@@ -74,14 +77,9 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         let mut msg_len: usize = msg.len();
         let remaining: usize = 8 * BLOCK_SIZE - self.buffer_pos;
 
-        // Finish filling the 8 * block internal buffer with the message and
-        // then perform a vectorized AES operation, XORing the results into
-        // the tag.
+        // Finish filling the 8 * block internal buffer with the message
         if msg_len > remaining {
-            xor::in_place(
-                &mut self.buffer.as_mut()[self.buffer_pos..],
-                &msg[..remaining],
-            );
+            self.buffer.as_mut()[self.buffer_pos..].copy_from_slice(&msg[..remaining]);
 
             msg_pos = msg_pos.checked_add(remaining).expect("overflow");
             msg_len = msg_len.checked_sub(remaining).expect("underflow");
@@ -92,8 +90,7 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         // So long as we have more than 8 * blocks worth of data, compute
         // whole-sized blocks at a time.
         while msg_len > 8 * BLOCK_SIZE {
-            xor::in_place(
-                self.buffer.as_mut(),
+            self.buffer.as_mut().copy_from_slice(
                 array_ref!(msg, msg_pos, 8 * BLOCK_SIZE),
             );
 
@@ -106,10 +103,7 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         if msg_len > 0 {
             let buf_end = self.buffer_pos.checked_add(msg_len).expect("overflow");
 
-            xor::in_place(
-                &mut self.buffer.as_mut()[self.buffer_pos..buf_end],
-                &msg[msg_pos..],
-            );
+            self.buffer.as_mut()[self.buffer_pos..buf_end].copy_from_slice(&msg[msg_pos..]);
 
             self.buffer_pos = self.buffer_pos.checked_add(msg_len).expect("overflow");
         }
@@ -171,9 +165,9 @@ impl<C: BlockCipher> Pmac<C> {
             self.offset.xor_in_place(
                 self.l[(self.counter + 1).trailing_zeros() as usize].as_ref(),
             );
-            self.counter = self.counter.checked_add(1).expect("overflow");
+            xor::in_place(chunk, self.offset.as_ref());
 
-            chunk.copy_from_slice(self.offset.as_ref());
+            self.counter = self.counter.checked_add(1).expect("overflow");
         }
 
         self.cipher.encrypt8(&mut self.buffer);
@@ -182,7 +176,6 @@ impl<C: BlockCipher> Pmac<C> {
             self.tag.xor_in_place(&chunk);
         }
 
-        self.buffer.clear();
         self.buffer_pos = 0;
     }
 }
