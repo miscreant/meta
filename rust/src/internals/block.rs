@@ -31,7 +31,11 @@ impl Block {
         NativeEndian::write_u128(&mut self.0, block);
     }
 
-    /// Double a value over GF(2^128)
+    /// Double a value over GF(2^128):
+    ///
+    ///     a<<1 if firstbit(a)=0
+    ///     (a<<1) ⊕ 0¹²⁰10000111 if firstbit(a)=1
+    ///
     #[inline]
     pub fn dbl(&mut self) {
         let input = BigEndian::read_u128(&self.0);

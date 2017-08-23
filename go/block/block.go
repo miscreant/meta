@@ -26,7 +26,11 @@ func (b *Block) Clear() {
 	}
 }
 
-// Dbl performs a doubling of a block over GF(2^128)
+// Dbl performs a doubling of a block over GF(2^128):
+//
+//     a<<1 if firstbit(a)=0
+//     (a<<1) ⊕ 0¹²⁰10000111 if firstbit(a)=1
+//
 func (b *Block) Dbl() {
 	var z byte
 
