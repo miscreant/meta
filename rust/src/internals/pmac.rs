@@ -1,4 +1,5 @@
 //! `internals/pmac.rs`: Parallel Message Authentication Code
+//! Defined in http://web.cs.ucdavis.edu/~rogaway/ocb/pmac.pdf
 
 use super::{BLOCK_SIZE, Block, Block8, BlockCipher, Mac, xor};
 use super::block::R;
@@ -7,20 +8,62 @@ use clear_on_drop::clear::Clear;
 
 type Tag = Block;
 
-// Number of L blocks to precompute
+// Number of L blocks to precompute (i.e. µ in the PMAC paper)
 // TODO: dynamically compute these as needed
 const PRECOMPUTED_BLOCKS: usize = 31;
 
 /// Parallel Message Authentication Code
 pub struct Pmac<C: BlockCipher> {
+    // C is the block cipher we're using (i.e. AES-128 or AES-256)
     cipher: C,
+
+    // l is defined as follows (quoted from the PMAC paper):
+    //
+    // Equation 1:
+    //
+    //     a · x =
+    //         a<<1 if firstbit(a)=0
+    //         (a<<1) ⊕ 0¹²⁰10000111 if firstbit(a)=1
+    //
+    // Equation 2:
+    //
+    //     a · x⁻¹ =
+    //         a>>1 if lastbit(a)=0
+    //         (a>>1) ⊕ 10¹²⁰1000011 if lastbit(a)=1
+    //
+    // Let L(0) ← L. For i ∈ [1..µ], compute L(i) ← L(i − 1) · x by
+    // Equation (1) using a shift and a conditional xor.
+    //
+    // Compute L(−1) ← L · x⁻¹ by Equation (2), using a shift and a
+    // conditional xor.
+    //
+    // Save the values L(−1), L(0), L(1), L(2), ..., L(µ) in a table.
+    // (Alternatively, [ed: as we have done in this codebase] defer computing
+    // some or  all of these L(i) values until the value is actually needed.)
     l: [Block; PRECOMPUTED_BLOCKS],
+
+    // l_inv contains the multiplicative inverse (i.e. right shift) of the
+    // first l-value, computed as described above, and is XORed into the tag in
+    // the event the message length is a multiple of the block size
     l_inv: Block,
+
+    // tag is the PMAC tag-in-progress
     tag: Tag,
+
+    // offset is a block counter-specific tweak to the MAC value
     offset: Block,
+
+    // buffer is input plaintext, which we process a block-at-a-time
     buffer: Block8,
+
+    // buffer_pos marks the end of plaintext in the buffer
     buffer_pos: usize,
+
+    // counter is the number of blocks we have MAC'd so far
     counter: usize,
+
+    // finished is set true when we are done processing a message, and forbids
+    // any subsequent writes until we reset the internal state
     finished: bool,
 }
 
