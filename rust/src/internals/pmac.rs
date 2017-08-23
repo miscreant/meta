@@ -81,6 +81,11 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
             tmp.dbl();
         }
 
+        // Compute L(−1) ← L · x⁻¹:
+        //
+        // a>>1 if lastbit(a)=0
+        // (a>>1) ⊕ 10¹²⁰1000011 if lastbit(a)=1
+        //
         let mut l_inv = Block::new();
         let l_0 = BigEndian::read_u128(l[0].as_ref());
         let inv = (l_0 >> 1) ^ ((l_0 & 0x1) * (0x80 << 120 | R >> 1));

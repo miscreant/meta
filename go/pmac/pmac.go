@@ -86,6 +86,11 @@ func New(c cipher.Block) hash.Hash {
 		tmp.Dbl()
 	}
 
+	// Compute L(−1) ← L · x⁻¹:
+	//
+	//     a>>1 if lastbit(a)=0
+	//     (a>>1) ⊕ 10¹²⁰1000011 if lastbit(a)=1
+	//
 	copy(tmp[:], d.l[0][:])
 	lastBit := int(tmp[block.Size-1] & 0x01)
 
