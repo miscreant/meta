@@ -17,7 +17,7 @@ pub struct Pmac<C: BlockCipher> {
     // C is the block cipher we're using (i.e. AES-128 or AES-256)
     cipher: C,
 
-    // l is defined as follows (quoted from the PMAC paper):
+    // L is defined as follows (quoted from the PMAC paper):
     //
     // Equation 1:
     //
@@ -42,7 +42,7 @@ pub struct Pmac<C: BlockCipher> {
     // some or  all of these L(i) values until the value is actually needed.)
     l: [Block; PRECOMPUTED_BLOCKS],
 
-    // l_inv contains the multiplicative inverse (i.e. right shift) of the
+    // L(-1) contains the multiplicative inverse (i.e. right shift) of the
     // first l-value, computed as described above, and is XORed into the tag in
     // the event the message length is a multiple of the block size
     l_inv: Block,
