@@ -41,10 +41,13 @@ The following constructions are provided by **Miscreant**:
 
 * [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR]
   ([NIST SP 800-38A]) mode of encryption with the [AES-CMAC]
-  ([NIST SP 800-38B]) function for integrity.
+  ([NIST SP 800-38B]) or [AES-PMAC] function for integrity.
   Unlike most [authenticated encryption] algorithms, **AES-SIV** uses a
-  MAC-then-encrypt construction, first using **AES-CMAC** to derive an
-  IV from a MAC of zero or more "header" values and the message
+  special "encrypt-with-MAC" construction which combines the roles of an
+  initialization vector (IV) with a message authentication code (MAC)
+  using a construction called a *synthetic initialization vector* (SIV).
+  It works in practice by first using **AES-CMAC** or **AES-PMAC** to derive
+  an IV from a MAC of zero or more "header" values and the message
   plaintext, then encrypting the message under that derived IV.
   This approach provides not just the benefits of an authenticated
   encryption mode, but also makes it resistant to accidental reuse
@@ -78,6 +81,7 @@ to follow progress on adding support.
 [AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
+[AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
 [nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [misuse resistant]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
@@ -101,22 +105,29 @@ Have questions? Want to suggest a feature or change?
 
 ## Comparison of AES-SIV to other symmetric encryption ciphers
 
-| Name              | [Authenticated Encryption] | [Misuse Resistance] | Passes | Standardization   |
-|-------------------|----------------------------|---------------------|--------|-------------------|
-| AES-SIV           | :green_heart:              | :green_heart:       | 2      | [RFC 5297]        |
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | 2      | Forthcoming‡      |
-| AES-GCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38D] |
-| AES-CCM           | :green_heart:              | :broken_heart:      | 2      | [NIST SP 800-38C] |
-| AES-CBC           | :broken_heart:             | :broken_heart:      | 1      | [NIST SP 800-38A] |
-| AES-CTR           | :broken_heart:             | :broken_heart:      | 1      | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | [RFC 7539]        |
-| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | 2      | None              |
+| Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
+|-------------------|----------------------------|---------------------|--------------------|-------------------|
+| AES-SIV           | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
+| AES-PMAC_SIV      | :green_heart:              | :green_heart:       | :green_heart:      | None              |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :sparkling_heart:♣ | Forthcoming‡      |
+| AES-GCM           | :green_heart:              | :broken_heart:      | :sparkling_heart:♣ | [NIST SP 800-38D] |
+| AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
+| AES-CBC           | :broken_heart:             | :broken_heart:      | :sparkling_heart:  | [NIST SP 800-38A] |
+| AES-CTR           | :broken_heart:             | :broken_heart:      | :sparkling_heart:  | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | :sparkling_heart:  | [RFC 7539]        |
+| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | None              |
 
 † Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks].
   These attacks are being addressed in newer drafts of the specification.
 
 ‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
+
+♣ Only applies to platforms which provide a hardware accelerated version of the
+  **GHASH**/**POLYVAL** functions. On platforms that do **NOT** provide
+  acceleration for these functions (e.g. microcontrollers/IoT platforms),
+  these ciphers receive a :yellow_heart: (or potentially :broken_heart: if too
+  constrained)
 
 When standardization work around [AES-GCM-SIV] is complete, it will be
 [seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/31).
@@ -325,6 +336,10 @@ If you are considering using this software in a FIPS 140-2 environment, please
 check with your FIPS auditor before proceeding. It may be possible to justify
 the use of **AES-SIV** based on its NIST approved components, but we are not
 FIPS auditors and cannot give prescriptive advice here.
+
+Please note that none of this code has undergone a FIPS audit to begin with, so
+if you intend to use it in that capacity, you're on your own and should
+fork/vendor your own copy.
 
 [submitted to NIST]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/siv.pdf
 [proposed mode]: http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html
