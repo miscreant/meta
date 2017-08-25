@@ -52,17 +52,17 @@ type pmac struct {
 	// digest contains the PMAC tag-in-progress
 	digest block.Block
 
-	// offset is a block counter-specific tweak to the MAC value
+	// offset is a block specific tweak to the input message
 	offset block.Block
 
-	// buffer is input plaintext, which we process a block-at-a-time
-	buffer block.Block
+	// buf contains a part of the input message, processed a block-at-a-time
+	buf block.Block
 
-	// bufferPos marks the end of plaintext in the buffer
-	bufferPos uint
+	// pos marks the end of plaintext in the buf
+	pos uint
 
-	// counter is the number of blocks we have MAC'd so far
-	counter uint
+	// ctr is the number of blocks we have MAC'd so far
+	ctr uint
 
 	// finished is set true when we are done processing a message, and forbids
 	// any subsequent writes until we reset the internal state
@@ -111,9 +111,9 @@ func New(c cipher.Block) hash.Hash {
 func (d *pmac) Reset() {
 	d.digest.Clear()
 	d.offset.Clear()
-	d.buffer.Clear()
-	d.bufferPos = 0
-	d.counter = 0
+	d.buf.Clear()
+	d.pos = 0
+	d.ctr = 0
 	d.finished = false
 }
 
@@ -125,11 +125,11 @@ func (d *pmac) Write(msg []byte) (int, error) {
 
 	var msgPos, msgLen, remaining uint
 	msgLen = uint(len(msg))
-	remaining = block.Size - d.bufferPos
+	remaining = block.Size - d.pos
 
-	// Finish filling the internal buffer with the message
+	// Finish filling the internal buf with the message
 	if msgLen > remaining {
-		copy(d.buffer[d.bufferPos:], msg[:remaining])
+		copy(d.buf[d.pos:], msg[:remaining])
 
 		msgPos += remaining
 		msgLen -= remaining
@@ -140,7 +140,7 @@ func (d *pmac) Write(msg []byte) (int, error) {
 	// So long as we have more than a blocks worth of data, compute
 	// whole-sized blocks at a time.
 	for msgLen > block.Size {
-		copy(d.buffer[:], msg[msgPos:msgPos+block.Size])
+		copy(d.buf[:], msg[msgPos:msgPos+block.Size])
 
 		msgPos += block.Size
 		msgLen -= block.Size
@@ -149,8 +149,8 @@ func (d *pmac) Write(msg []byte) (int, error) {
 	}
 
 	if msgLen > 0 {
-		copy(d.buffer[d.bufferPos:d.bufferPos+msgLen], msg[msgPos:])
-		d.bufferPos += msgLen
+		copy(d.buf[d.pos:d.pos+msgLen], msg[msgPos:])
+		d.pos += msgLen
 	}
 
 	return len(msg), nil
@@ -163,12 +163,12 @@ func (d *pmac) Sum(in []byte) []byte {
 		panic("pmac: already finished")
 	}
 
-	if d.bufferPos == block.Size {
-		xor(d.digest[:], d.buffer[:])
+	if d.pos == block.Size {
+		xor(d.digest[:], d.buf[:])
 		xor(d.digest[:], d.lInv[:])
 	} else {
-		xor(d.digest[:], d.buffer[:d.bufferPos])
-		d.digest[d.bufferPos] ^= 0x80
+		xor(d.digest[:], d.buf[:d.pos])
+		d.digest[d.pos] ^= 0x80
 	}
 
 	d.digest.Encrypt(d.c)
@@ -181,15 +181,15 @@ func (d *pmac) Size() int { return block.Size }
 
 func (d *pmac) BlockSize() int { return block.Size }
 
-// Update the internal tag state based on the buffer contents
+// Update the internal tag state based on the buf contents
 func (d *pmac) processBuffer() {
-	xor(d.offset[:], d.l[ctz(d.counter+1)][:])
-	xor(d.buffer[:], d.offset[:])
-	d.counter++
+	xor(d.offset[:], d.l[ctz(d.ctr+1)][:])
+	xor(d.buf[:], d.offset[:])
+	d.ctr++
 
-	d.buffer.Encrypt(d.c)
-	xor(d.digest[:], d.buffer[:])
-	d.bufferPos = 0
+	d.buf.Encrypt(d.c)
+	xor(d.digest[:], d.buf[:])
+	d.pos = 0
 }
 
 // TODO: use math/bits TrailingZeros() when it becomes available
