@@ -124,6 +124,15 @@ Have questions? Want to suggest a feature or change?
 | ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | :sparkling_heart:  | [RFC 7539]        |
 | XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | None              |
 
+### Legend
+
+| Heart             | Meaning   |
+|-------------------|-----------|
+| :sparkling_heart: | Excellent |
+| :green_heart:     | Great     |
+| :yellow_heart:    | Fine      |
+| :broken_heart:    | Bad       |
+
 † Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks].
   These attacks are being addressed in newer drafts of the specification.
 
