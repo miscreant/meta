@@ -107,8 +107,8 @@ Have questions? Want to suggest a feature or change?
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-SIV           | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
-| AES-PMAC-SIV      | :green_heart:              | :green_heart:       | :green_heart:      | None              |
+| AES-SIV           | :green_heart:              | :sparkling_heart:   | :yellow_heart:     | [RFC 5297]        |
+| AES-PMAC-SIV      | :green_heart:              | :sparkling_heart:   | :green_heart:      | None              |
 | AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :sparkling_heart:♣ | Forthcoming‡      |
 | AES-GCM           | :green_heart:              | :broken_heart:      | :sparkling_heart:♣ | [NIST SP 800-38D] |
 | AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
