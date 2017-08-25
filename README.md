@@ -130,7 +130,7 @@ Have questions? Want to suggest a feature or change?
   constrained)
 
 When standardization work around [AES-GCM-SIV] is complete, it will be
-[seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/31).
+[seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
 **AES-GCM-SIV** has the advantage of the [GHASH] (technically **POLYVAL**)
 function being able to run in parallel, versus **AES-CMAC**'s sequential
 operation.
