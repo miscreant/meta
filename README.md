@@ -103,12 +103,19 @@ Have questions? Want to suggest a feature or change?
 [miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
 
 
-## Comparison of AES-SIV to other symmetric encryption ciphers
+## Cipher Comparison
+
+### Miscreant Ciphers
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
 | AES-SIV           | :green_heart:              | :sparkling_heart:   | :yellow_heart:     | [RFC 5297]        |
 | AES-PMAC-SIV      | :green_heart:              | :sparkling_heart:   | :green_heart:      | None              |
+
+### Other Constructions
+
+| Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
+|-------------------|----------------------------|---------------------|--------------------|-------------------|
 | AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :sparkling_heart:♣ | Forthcoming‡      |
 | AES-GCM           | :green_heart:              | :broken_heart:      | :sparkling_heart:♣ | [NIST SP 800-38D] |
 | AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
