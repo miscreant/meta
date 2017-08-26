@@ -10,19 +10,30 @@ type aead struct {
 	nonceSize int
 }
 
-// NewAEADAES returns an AES-SIV instance implementing cipher.AEAD interface,
-// with the given nonce size and a key which must be twice as long as an AES key,
-// either 32, 48, or 64 bytes to select AES-128 (AES-SIV-CMAC-256), AES-192
-// (AES-SIV-CMAC-384), or AES-256 (AES-SIV-CMAC-512).
+// NewAEAD returns an AES-SIV instance implementing cipher.AEAD interface,
+// with the given cipher, nonce size, and a key which must be twice as long
+// as an AES key, either 32 or 64 bytes to select AES-128 (AES-SIV-256)
+// or AES-256 (AES-SIV-512).
 //
 // Unless the given nonce size is less than zero, Seal and Open will panic when
 // passed nonce of a different size.
-func NewAEADAES(key []byte, nonceSize int) (cipher.AEAD, error) {
-	c, err := NewAES(key)
-	if err != nil {
-		return nil, err
+func NewAEAD(alg string, key []byte, nonceSize int) (cipher.AEAD, error) {
+	switch alg {
+	case "AES-SIV", "AES-CMAC-SIV":
+		c, err := NewAESCMACSIV(key)
+		if err != nil {
+			return nil, err
+		}
+		return &aead{c: c, nonceSize: nonceSize}, nil
+	case "AES-PMAC-SIV":
+		c, err := NewAESPMACSIV(key)
+		if err != nil {
+			return nil, err
+		}
+		return &aead{c: c, nonceSize: nonceSize}, nil
+	default:
+		panic("NewAEAD: unknown cipher: " + alg)
 	}
-	return &aead{c: c, nonceSize: nonceSize}, nil
 }
 
 func (a *aead) NonceSize() int { return a.nonceSize }

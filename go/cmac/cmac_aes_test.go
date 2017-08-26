@@ -78,11 +78,7 @@ func TestCMACAES(t *testing.T) {
 			t.Errorf("test %d: NewCipher: %s", i, err)
 			continue
 		}
-		d, err := New(c)
-		if err != nil {
-			t.Errorf("test %d: NewCMAC: %s", i, err)
-			continue
-		}
+		d := New(c)
 		n, err := d.Write(tt.message)
 		if err != nil || n != len(tt.message) {
 			t.Errorf("test %d: Write %d: %d, %s", i, len(tt.message), n, err)
@@ -104,10 +100,7 @@ func TestWrite(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	d, err := New(c)
-	if err != nil {
-		t.Fatal(err)
-	}
+	d := New(c)
 
 	// Test writing byte-by-byte
 	for _, b := range tt.message {
@@ -188,7 +181,7 @@ func BenchmarkCMAC_AES128(b *testing.B) {
 	out := make([]byte, 16)
 	b.SetBytes(int64(len(v)))
 	for i := 0; i < b.N; i++ {
-		d, _ := New(c)
+		d := New(c)
 		_, err := d.Write(v)
 		if err != nil {
 			panic(err)

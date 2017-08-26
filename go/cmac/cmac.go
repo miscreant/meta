@@ -33,7 +33,7 @@ type cmac struct {
 
 // New returns a new instance of a CMAC message authentication code
 // digest using the given cipher.Block.
-func New(c cipher.Block) (hash.Hash, error) {
+func New(c cipher.Block) hash.Hash {
 	if c.BlockSize() != block.Size {
 		panic("pmac: invalid cipher block size")
 	}
@@ -48,7 +48,7 @@ func New(c cipher.Block) (hash.Hash, error) {
 	copy(d.k2[:], d.k1[:])
 	d.k2.Dbl()
 
-	return d, nil
+	return d
 }
 
 // Reset clears the digest state, starting a new digest.

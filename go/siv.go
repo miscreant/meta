@@ -10,7 +10,9 @@ import (
 	"crypto/cipher"
 	"crypto/subtle"
 	"errors"
+	"github.com/miscreant/miscreant/go/block"
 	"github.com/miscreant/miscreant/go/cmac"
+	"github.com/miscreant/miscreant/go/pmac"
 	"hash"
 )
 
@@ -32,38 +34,59 @@ var (
 type Cipher struct {
 	h          hash.Hash
 	b          cipher.Block
-	tmp1, tmp2 []byte
+	tmp1, tmp2 block.Block
 }
 
-func newCipher(macBlock, ctrBlock cipher.Block) (c *Cipher, err error) {
-	c = new(Cipher)
-	c.h, err = cmac.New(macBlock)
+// NewAESCMACSIV returns a new AES-SIV cipher with the given key, which must be
+// twice as long as an AES key, either 32 or 64 bytes to select AES-128
+// (AES-CMAC-SIV-256), or AES-256 (AES-CMAC-SIV-512).
+func NewAESCMACSIV(key []byte) (c *Cipher, err error) {
+	n := len(key)
+	if n != 32 && n != 64 {
+		return nil, ErrKeySize
+	}
+
+	macBlock, err := aes.NewCipher(key[:n/2])
 	if err != nil {
 		return nil, err
 	}
+
+	ctrBlock, err := aes.NewCipher(key[n/2:])
+	if err != nil {
+		return nil, err
+	}
+
+	c = new(Cipher)
+	c.h = cmac.New(macBlock)
 	c.b = ctrBlock
-	c.tmp1 = make([]byte, c.b.BlockSize())
-	c.tmp2 = make([]byte, c.b.BlockSize())
+
 	return c, nil
 }
 
-// NewAES returns a new AES-SIV cipher with the given key, which must be
-// twice as long as an AES key, either 32, 48, or 64 bytes to select AES-128
-// (AES-SIV-CMAC-256), AES-192 (AES-SIV-CMAC-384), or AES-256 (AES-SIV-CMAC-512).
-func NewAES(key []byte) (c *Cipher, err error) {
+// NewAESPMACSIV returns a new AES-SIV cipher with the given key, which must be
+// twice as long as an AES key, either 32 or 64 bytes to select AES-128
+// (AES-PMAC-SIV-256), or AES-256 (AES-PMAC-SIV-512).
+func NewAESPMACSIV(key []byte) (c *Cipher, err error) {
 	n := len(key)
-	if n != 32 && n != 48 && n != 64 {
+	if n != 32 && n != 64 {
 		return nil, ErrKeySize
 	}
-	c1, err := aes.NewCipher(key[:n/2])
+
+	macBlock, err := aes.NewCipher(key[:n/2])
 	if err != nil {
 		return nil, err
 	}
-	c2, err := aes.NewCipher(key[n/2:])
+
+	ctrBlock, err := aes.NewCipher(key[n/2:])
 	if err != nil {
 		return nil, err
 	}
-	return newCipher(c1, c2)
+
+	c = new(Cipher)
+	c.h = pmac.New(macBlock)
+	c.b = ctrBlock
+
+	return c, nil
 }
 
 // Overhead returns the difference between plaintext and ciphertext lengths.
@@ -123,7 +146,6 @@ func (c *Cipher) Open(dst []byte, ciphertext []byte, data ...[]byte) ([]byte, er
 	// Authenticate
 	expected := c.s2v(data, out)
 	if subtle.ConstantTimeCompare(ciphertext[:len(iv)], expected) != 1 {
-		zero(out)
 		return nil, ErrNotAuthentic
 	}
 	return ret, nil
@@ -134,19 +156,19 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	h.Reset()
 
 	tmp, d := c.tmp1, c.tmp2
-	zero(tmp)
+	tmp.Clear()
 
 	// NOTE(dchest): The standalone S2V returns CMAC(1) if the number of
 	// passed vectors is zero, however in SIV contruction this case is
 	// never triggered, since we always pass plaintext as the last vector
 	// (even if it's zero-length), so we omit this case.
 
-	_, err := h.Write(tmp)
+	_, err := h.Write(tmp[:])
 	if err != nil {
 		panic(err)
 	}
 
-	d = h.Sum(d[:0])
+	copy(d[:], h.Sum(d[:0]))
 	h.Reset()
 
 	for _, v := range s {
@@ -155,28 +177,28 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 			panic(err)
 		}
 
-		tmp = h.Sum(tmp[:0])
+		copy(tmp[:], h.Sum(tmp[:0]))
 		h.Reset()
-		dbl(d)
-		xor(d, tmp)
+		d.Dbl()
+		xor(d[:], tmp[:])
 	}
 
-	zero(tmp)
+	tmp.Clear()
 
 	if len(sn) >= h.BlockSize() {
 		n := len(sn) - len(d)
-		copy(tmp, sn[n:])
+		copy(tmp[:], sn[n:])
 		_, err = h.Write(sn[:n])
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		copy(tmp, sn)
+		copy(tmp[:], sn)
 		tmp[len(sn)] = 0x80
-		dbl(d)
+		d.Dbl()
 	}
-	xor(tmp, d)
-	_, err = h.Write(tmp)
+	xor(tmp[:], d[:])
+	_, err = h.Write(tmp[:])
 	if err != nil {
 		panic(err)
 	}
@@ -184,25 +206,9 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	return h.Sum(tmp[:0])
 }
 
-func dbl(x []byte) {
-	var b byte
-	for i := len(x) - 1; i >= 0; i-- {
-		bb := x[i] >> 7
-		x[i] = x[i]<<1 | b
-		b = bb
-	}
-	x[len(x)-1] ^= byte(subtle.ConstantTimeSelect(int(b), 0x87, 0))
-}
-
 func xor(a, b []byte) {
 	for i, v := range b {
 		a[i] ^= v
-	}
-}
-
-func zero(b []byte) {
-	for i := range b {
-		b[i] = 0
 	}
 }
 
