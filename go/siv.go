@@ -1,7 +1,8 @@
-// Written in 2015 by Dmitry Chestnykh.
+// Originally written in 2015 by Dmitry Chestnykh.
+// Modified in 2017 by Tony Arcieri.
 //
-// Miscreant implements Synthetic Initialization Vector (SIV) authenticated
-// encryption using AES (RFC 5297).
+// Miscreant implements Synthetic Initialization Vector (SIV)-based
+// authenticated encryption using the AES block cipher (RFC 5297).
 
 package miscreant
 
@@ -30,10 +31,16 @@ var (
 	ErrTooManyAssociatedDataItems = errors.New("siv: too many associated data items")
 )
 
-// Cipher is an instance of AES-SIV
+// Cipher is an instance of AES-SIV, configured with either AES-CMAC or
+// AES-PMAC as a message authentication code.
 type Cipher struct {
-	h          hash.Hash
-	b          cipher.Block
+	// MAC function used to derive a synthetic IV and authenticate the message
+	h hash.Hash
+
+	// Block cipher function used to encrypt the message
+	b cipher.Block
+
+	// Internal buffers
 	tmp1, tmp2 block.Block
 }
 

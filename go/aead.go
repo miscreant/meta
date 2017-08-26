@@ -2,12 +2,54 @@
 
 package miscreant
 
-import "crypto/cipher"
+import (
+	"crypto/cipher"
+	"crypto/rand"
+	"io"
+)
+
+// Minimum nonce size for which we'll allow the generation of random nonces
+const minimumRandomNonceSize = 16
 
 // aead is a wrapper for Cipher implementing cipher.AEAD interface.
 type aead struct {
-	c         *Cipher
+	// miscreant.Cipher instance underlying this AEAD
+	c *Cipher
+
+	// Size of the nonce required
 	nonceSize int
+}
+
+// GenerateKey generates a random 32-byte or 64-byte encryption key.
+// Panics if the key size is unsupported or source of randomness fails.
+func GenerateKey(length int) []byte {
+	if length != 32 && length != 64 {
+		panic("miscreant.GenerateKey: invalid key size: " + string(length))
+	}
+
+	key := make([]byte, length)
+	_, err := io.ReadFull(rand.Reader, key[:])
+	if err != nil {
+		panic(err)
+	}
+
+	return key
+}
+
+// GenerateNonce generates a random nonce for the given `cipher.AEAD`.
+// Panics if the configured nonce size is less than 16-bytes (128-bits)
+func GenerateNonce(c cipher.AEAD) []byte {
+	if c.NonceSize() < minimumRandomNonceSize {
+		panic("miscreant.GenerateNonce: nonce size is too small: " + string(c.NonceSize()))
+	}
+
+	nonce := make([]byte, c.NonceSize())
+	_, err := io.ReadFull(rand.Reader, nonce[:])
+	if err != nil {
+		panic(err)
+	}
+
+	return nonce
 }
 
 // NewAEAD returns an AES-SIV instance implementing cipher.AEAD interface,
