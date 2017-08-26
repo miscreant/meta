@@ -25,10 +25,10 @@ type aesSIVExample struct {
 
 // Load AES-CMAC test vectors from aes_cmac.tjson
 // TODO: switch to a native Go TJSON parser when available
-func loadCMACAESExamples() []aesSIVExample {
+func loadAESSIVExamples(filename string) []aesSIVExample {
 	var examplesJSON map[string]interface{}
 
-	exampleData, err := ioutil.ReadFile("../vectors/aes_siv.tjson")
+	exampleData, err := ioutil.ReadFile("../vectors/" + filename)
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +40,7 @@ func loadCMACAESExamples() []aesSIVExample {
 	examplesArray := examplesJSON["examples:A<O>"].([]interface{})
 
 	if examplesArray == nil {
-		panic("no toplevel 'examples:A<O>' key in aes_cmac.tjson")
+		panic("no toplevel 'examples:A<O>' key in " + filename)
 	}
 
 	result := make([]aesSIVExample, len(examplesArray))
@@ -91,11 +91,11 @@ func loadCMACAESExamples() []aesSIVExample {
 	return result
 }
 
-func TestAES(t *testing.T) {
-	for i, v := range loadCMACAESExamples() {
-		c, err := NewAES(v.key)
+func TestAESCMACSIV(t *testing.T) {
+	for i, v := range loadAESSIVExamples("aes_siv.tjson") {
+		c, err := NewAESCMACSIV(v.key)
 		if err != nil {
-			t.Errorf("NewAES: %d: %s", i, err)
+			t.Errorf("NewAESCMACSIV: %d: %s", i, err)
 		}
 
 		ct, err := c.Seal(nil, v.plaintext, v.ad...)
@@ -115,12 +115,36 @@ func TestAES(t *testing.T) {
 	}
 }
 
-func TestAppend(t *testing.T) {
-	v := loadCMACAESExamples()[0]
+func TestAESPMACSIV(t *testing.T) {
+	for i, v := range loadAESSIVExamples("aes_pmac_siv.tjson") {
+		c, err := NewAESPMACSIV(v.key)
+		if err != nil {
+			t.Errorf("NewAESPMACSIV: %d: %s", i, err)
+		}
 
-	c, err := NewAES(v.key)
+		ct, err := c.Seal(nil, v.plaintext, v.ad...)
+		if err != nil {
+			t.Errorf("Seal: %d: %s", i, err)
+		}
+		if !bytes.Equal(v.ciphertext, ct) {
+			t.Errorf("Seal: %d: expected: %x\ngot: %x", i, v.ciphertext, ct)
+		}
+		pt, err := c.Open(nil, ct, v.ad...)
+		if err != nil {
+			t.Errorf("Open: %d: %s", i, err)
+		}
+		if !bytes.Equal(v.plaintext, pt) {
+			t.Errorf("Open: %d: expected: %x\ngot: %x", i, v.plaintext, pt)
+		}
+	}
+}
+
+func TestAESCMACSIVAppend(t *testing.T) {
+	v := loadAESSIVExamples("aes_siv.tjson")[0]
+
+	c, err := NewAESCMACSIV(v.key)
 	if err != nil {
-		t.Fatalf("NewAES: %s", err)
+		t.Fatalf("NewAESCMACSIV: %s", err)
 	}
 	out := []byte{1, 2, 3, 4}
 	x, err := c.Seal(out, v.plaintext, v.ad...)
@@ -162,7 +186,7 @@ func TestAppend(t *testing.T) {
 func BenchmarkSIVAES128_Seal_1K(b *testing.B) {
 	a := make([]byte, 64)
 	m := make([]byte, 1024)
-	c, _ := NewAES(make([]byte, 32))
+	c, _ := NewAESCMACSIV(make([]byte, 32))
 	out := make([]byte, 0, len(m)+c.Overhead())
 	b.SetBytes(int64(len(m)))
 	for i := 0; i < b.N; i++ {
@@ -173,7 +197,7 @@ func BenchmarkSIVAES128_Seal_1K(b *testing.B) {
 func BenchmarkSIVAES128_Seal_8K(b *testing.B) {
 	a := make([]byte, 64)
 	m := make([]byte, 8192)
-	c, _ := NewAES(make([]byte, 32))
+	c, _ := NewAESCMACSIV(make([]byte, 32))
 	b.SetBytes(int64(len(m)))
 	out := make([]byte, 0, len(m)+c.Overhead())
 	for i := 0; i < b.N; i++ {
@@ -184,7 +208,7 @@ func BenchmarkSIVAES128_Seal_8K(b *testing.B) {
 func BenchmarkSIVAES128_Open_1K(b *testing.B) {
 	a := make([]byte, 64)
 	m := make([]byte, 1024)
-	c, _ := NewAES(make([]byte, 32))
+	c, _ := NewAESCMACSIV(make([]byte, 32))
 	x, _ := c.Seal(nil, m, a)
 	out := make([]byte, 0, len(m))
 	b.SetBytes(int64(len(m)))
@@ -196,7 +220,7 @@ func BenchmarkSIVAES128_Open_1K(b *testing.B) {
 func BenchmarkSIVAES128_Open_8K(b *testing.B) {
 	a := make([]byte, 64)
 	m := make([]byte, 8192)
-	c, _ := NewAES(make([]byte, 32))
+	c, _ := NewAESCMACSIV(make([]byte, 32))
 	x, _ := c.Seal(nil, m, a)
 	out := make([]byte, 0, len(m))
 	b.SetBytes(int64(len(m)))
