@@ -1,4 +1,4 @@
-// Copyright (C) 2016 Dmitry Chestnykh
+// Copyright (C) 2016-2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
 // Ported from Go implementation
@@ -11,7 +11,8 @@
 // by Vincent Rijmen, Antoon Bosselaers, Paulo Barreto
 // (rijndael-alg-fst.c, 3.0, December 2000)
 
-import { wipe } from "../util";
+import Block from "../block";
+import { wipe } from "../wipe";
 
 // Powers of x mod poly in GF(2).
 const POWX = new Uint8Array([
@@ -71,6 +72,166 @@ let Td0: Uint32Array;
 let Td1: Uint32Array;
 let Td2: Uint32Array;
 let Td3: Uint32Array;
+
+/**
+ * Polyfill for the AES block cipher.
+ *
+ * This implementation uses lookup tables, so it's susceptible to cache-timing
+ * side-channel attacks. A constant-time version we tried was super slow (a few
+ * kilobytes per second), so we'll have to live with it.
+ *
+ * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
+ */
+export default class PolyfillAes {
+  // Key byte length.
+  private _keyLen: number;
+
+  // Expanded encryption key.
+  private _encKey: Uint32Array;
+
+  // Expanded decryption key. May be undefined if instance
+  // was created "noDecryption" option set to true.
+  private _decKey: Uint32Array | undefined;
+
+  /**
+   * Constructs AES with the given 16, 24 or 32-byte key
+   * for AES-128, AES-192, or AES-256.
+   *
+   * If noDecryption is true, decryption key will not expanded,
+   * saving time and memory for cipher modes when decryption
+   * is not used (such as AES-CTR).
+   *
+   */
+  constructor(key: Uint8Array, noDecryption = false) {
+    if (!isInitialized) {
+      initialize();
+    }
+    this._keyLen = key.length;
+    this.setKey(key, noDecryption);
+  }
+
+  /**
+   * Re-initializes this instance with the new key.
+   *
+   * This is helpful to avoid allocations.
+   */
+  public setKey(key: Uint8Array, noDecryption = false): this {
+    if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
+      throw new Error("AES: wrong key size (must be 16, 24 or 32)");
+    }
+    if (this._keyLen !== key.length) {
+      throw new Error("AES: initialized with different key size");
+    }
+
+    // If we haven't yet, allocate space for expanded keys.
+    if (!this._encKey) {
+      this._encKey = new Uint32Array(key.length + 28);
+    }
+    if (noDecryption) {
+      // Wipe decryption key, as we no longer need it.
+      if (this._decKey) {
+        wipe(this._decKey);
+      }
+    } else {
+      if (!this._decKey) {
+        this._decKey = new Uint32Array(key.length + 28);
+      }
+    }
+    expandKey(key, this._encKey, this._decKey);
+    return this;
+  }
+
+  /**
+   * Cleans expanded keys from memory, setting them to zeros.
+   */
+  public clear(): this {
+    if (this._encKey) {
+      wipe(this._encKey);
+    }
+    if (this._decKey) {
+      wipe(this._decKey);
+    }
+    return this;
+  }
+
+  /**
+   * Encrypt 16-byte block in-place, replacing its contents with ciphertext.
+   *
+   * This function should not be used to encrypt data without any
+   * cipher mode! It should only be used to implement a cipher mode.
+   * This library uses it to implement AES-SIV.
+   */
+  public encryptBlock(block: Block): this {
+    const src = block.data;
+    const dst = block.data;
+
+    let s0 = readUint32BE(src, 0);
+    let s1 = readUint32BE(src, 4);
+    let s2 = readUint32BE(src, 8);
+    let s3 = readUint32BE(src, 12);
+
+    // First round just XORs input with key.
+    s0 ^= this._encKey[0];
+    s1 ^= this._encKey[1];
+    s2 ^= this._encKey[2];
+    s3 ^= this._encKey[3];
+
+    let t0 = 0;
+    let t1 = 0;
+    let t2 = 0;
+    let t3 = 0;
+
+    // Middle rounds shuffle using tables.
+    // Number of rounds is set by length of expanded key.
+    const nr = this._encKey.length / 4 - 2; // - 2: one above, one more below
+    let k = 4;
+
+    for (let r = 0; r < nr; r++) {
+      t0 = this._encKey[k + 0] ^ Te0[(s0 >>> 24) & 0xff] ^ Te1[(s1 >>> 16) & 0xff] ^
+        Te2[(s2 >>> 8) & 0xff] ^ Te3[s3 & 0xff];
+
+      t1 = this._encKey[k + 1] ^ Te0[(s1 >>> 24) & 0xff] ^ Te1[(s2 >>> 16) & 0xff] ^
+        Te2[(s3 >>> 8) & 0xff] ^ Te3[s0 & 0xff];
+
+      t2 = this._encKey[k + 2] ^ Te0[(s2 >>> 24) & 0xff] ^ Te1[(s3 >>> 16) & 0xff] ^
+        Te2[(s0 >>> 8) & 0xff] ^ Te3[s1 & 0xff];
+
+      t3 = this._encKey[k + 3] ^ Te0[(s3 >>> 24) & 0xff] ^ Te1[(s0 >>> 16) & 0xff] ^
+        Te2[(s1 >>> 8) & 0xff] ^ Te3[s2 & 0xff];
+
+      k += 4;
+      s0 = t0;
+      s1 = t1;
+      s2 = t2;
+      s3 = t3;
+    }
+
+    // Last round uses s-box directly and XORs to produce output.
+    s0 = (SBOX0[t0 >>> 24] << 24) | (SBOX0[(t1 >>> 16) & 0xff]) << 16 |
+      (SBOX0[(t2 >>> 8) & 0xff]) << 8 | (SBOX0[t3 & 0xff]);
+
+    s1 = (SBOX0[t1 >>> 24] << 24) | (SBOX0[(t2 >>> 16) & 0xff]) << 16 |
+      (SBOX0[(t3 >>> 8) & 0xff]) << 8 | (SBOX0[t0 & 0xff]);
+
+    s2 = (SBOX0[t2 >>> 24] << 24) | (SBOX0[(t3 >>> 16) & 0xff]) << 16 |
+      (SBOX0[(t0 >>> 8) & 0xff]) << 8 | (SBOX0[t1 & 0xff]);
+
+    s3 = (SBOX0[t3 >>> 24] << 24) | (SBOX0[(t0 >>> 16) & 0xff]) << 16 |
+      (SBOX0[(t1 >>> 8) & 0xff]) << 8 | (SBOX0[t2 & 0xff]);
+
+    s0 ^= this._encKey[k + 0];
+    s1 ^= this._encKey[k + 1];
+    s2 ^= this._encKey[k + 2];
+    s3 ^= this._encKey[k + 3];
+
+    writeUint32BE(s0, dst, 0);
+    writeUint32BE(s1, dst, 4);
+    writeUint32BE(s2, dst, 8);
+    writeUint32BE(s3, dst, 12);
+
+    return this;
+  }
+}
 
 // Initialize generates encryption and decryption tables.
 function initialize() {
@@ -155,115 +316,6 @@ function writeUint32BE(value: number, out = new Uint8Array(4), offset = 0): Uint
   return out;
 }
 
-/**
- * Polyfill for the AES block cipher.
- *
- * This implementation uses lookup tables, so it's susceptible to cache-timing
- * side-channel attacks. A constant-time version we tried was super slow (a few
- * kilobytes per second), so we'll have to live with it.
- *
- * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
- */
-export default class PolyfillAes {
-  // AES block size in bytes.
-  public readonly blockSize = 16;
-
-  // Key byte length.
-  private _keyLen: number;
-
-  // Expanded encryption key.
-  private _encKey: Uint32Array;
-
-  // Expanded decryption key. May be undefined if instance
-  // was created "noDecryption" option set to true.
-  private _decKey: Uint32Array | undefined;
-
-  /**
-   * Constructs AES with the given 16, 24 or 32-byte key
-   * for AES-128, AES-192, or AES-256.
-   *
-   * If noDecryption is true, decryption key will not expanded,
-   * saving time and memory for cipher modes when decryption
-   * is not used (such as AES-CTR).
-   *
-   */
-  constructor(key: Uint8Array, noDecryption = false) {
-    if (!isInitialized) {
-      initialize();
-    }
-    this._keyLen = key.length;
-    this.setKey(key, noDecryption);
-  }
-
-  /**
-   * Re-initializes this instance with the new key.
-   *
-   * This is helpful to avoid allocations.
-   */
-  public setKey(key: Uint8Array, noDecryption = false): this {
-    if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-      throw new Error("AES: wrong key size (must be 16, 24 or 32)");
-    }
-    if (this._keyLen !== key.length) {
-      throw new Error("AES: initialized with different key size");
-    }
-
-    // If we haven't yet, allocate space for expanded keys.
-    if (!this._encKey) {
-      this._encKey = new Uint32Array(key.length + 28);
-    }
-    if (noDecryption) {
-      // Wipe decryption key, as we no longer need it.
-      if (this._decKey) {
-        wipe(this._decKey);
-      }
-    } else {
-      if (!this._decKey) {
-        this._decKey = new Uint32Array(key.length + 28);
-      }
-    }
-    expandKey(key, this._encKey, this._decKey);
-    return this;
-  }
-
-  /**
-   * Cleans expanded keys from memory, setting them to zeros.
-   */
-  public clean(): this {
-    if (this._encKey) {
-      wipe(this._encKey);
-    }
-    if (this._decKey) {
-      wipe(this._decKey);
-    }
-    return this;
-  }
-
-  // TODO(dchest): specify if blocks can be the same array.
-
-  /**
-   * Encrypt 16-byte block src into 16-byte block dst.
-   *
-   * This function should not be used to encrypt data without any
-   * cipher mode! It should only be used to implement a cipher mode.
-   * This library uses it to implement AES-SIV.
-   */
-  public encryptBlock(src: Uint8Array, dst: Uint8Array): this {
-    // Check block lengths.
-    if (src.length < this.blockSize) {
-      throw new Error("AES: source block too small");
-    }
-    if (dst.length < this.blockSize) {
-      throw new Error("AES: destination block too small");
-    }
-
-    // Encrypt block.
-    encryptBlock(this._encKey, src, dst);
-
-    return this;
-  }
-}
-
 // Apply sbox0 to each byte in w.
 function subw(w: number): number {
   return ((SBOX0[(w >>> 24) & 0xff]) << 24) |
@@ -309,136 +361,4 @@ function expandKey(key: Uint8Array, encKey: Uint32Array, decKey?: Uint32Array): 
       }
     }
   }
-}
-
-function encryptBlock(xk: Uint32Array, src: Uint8Array, dst: Uint8Array): void {
-  let s0 = readUint32BE(src, 0);
-  let s1 = readUint32BE(src, 4);
-  let s2 = readUint32BE(src, 8);
-  let s3 = readUint32BE(src, 12);
-
-  // First round just XORs input with key.
-  s0 ^= xk[0];
-  s1 ^= xk[1];
-  s2 ^= xk[2];
-  s3 ^= xk[3];
-
-  let t0 = 0;
-  let t1 = 0;
-  let t2 = 0;
-  let t3 = 0;
-
-  // Middle rounds shuffle using tables.
-  // Number of rounds is set by length of expanded key.
-  const nr = xk.length / 4 - 2; // - 2: one above, one more below
-  let k = 4;
-
-  for (let r = 0; r < nr; r++) {
-    t0 = xk[k + 0] ^ Te0[(s0 >>> 24) & 0xff] ^ Te1[(s1 >>> 16) & 0xff] ^
-      Te2[(s2 >>> 8) & 0xff] ^ Te3[s3 & 0xff];
-
-    t1 = xk[k + 1] ^ Te0[(s1 >>> 24) & 0xff] ^ Te1[(s2 >>> 16) & 0xff] ^
-      Te2[(s3 >>> 8) & 0xff] ^ Te3[s0 & 0xff];
-
-    t2 = xk[k + 2] ^ Te0[(s2 >>> 24) & 0xff] ^ Te1[(s3 >>> 16) & 0xff] ^
-      Te2[(s0 >>> 8) & 0xff] ^ Te3[s1 & 0xff];
-
-    t3 = xk[k + 3] ^ Te0[(s3 >>> 24) & 0xff] ^ Te1[(s0 >>> 16) & 0xff] ^
-      Te2[(s1 >>> 8) & 0xff] ^ Te3[s2 & 0xff];
-
-    k += 4;
-    s0 = t0;
-    s1 = t1;
-    s2 = t2;
-    s3 = t3;
-  }
-
-  // Last round uses s-box directly and XORs to produce output.
-  s0 = (SBOX0[t0 >>> 24] << 24) | (SBOX0[(t1 >>> 16) & 0xff]) << 16 |
-    (SBOX0[(t2 >>> 8) & 0xff]) << 8 | (SBOX0[t3 & 0xff]);
-
-  s1 = (SBOX0[t1 >>> 24] << 24) | (SBOX0[(t2 >>> 16) & 0xff]) << 16 |
-    (SBOX0[(t3 >>> 8) & 0xff]) << 8 | (SBOX0[t0 & 0xff]);
-
-  s2 = (SBOX0[t2 >>> 24] << 24) | (SBOX0[(t3 >>> 16) & 0xff]) << 16 |
-    (SBOX0[(t0 >>> 8) & 0xff]) << 8 | (SBOX0[t1 & 0xff]);
-
-  s3 = (SBOX0[t3 >>> 24] << 24) | (SBOX0[(t0 >>> 16) & 0xff]) << 16 |
-    (SBOX0[(t1 >>> 8) & 0xff]) << 8 | (SBOX0[t2 & 0xff]);
-
-  s0 ^= xk[k + 0];
-  s1 ^= xk[k + 1];
-  s2 ^= xk[k + 2];
-  s3 ^= xk[k + 3];
-
-  writeUint32BE(s0, dst, 0);
-  writeUint32BE(s1, dst, 4);
-  writeUint32BE(s2, dst, 8);
-  writeUint32BE(s3, dst, 12);
-}
-
-function decryptBlock(xk: Uint32Array, src: Uint8Array, dst: Uint8Array): void {
-  let s0 = readUint32BE(src, 0);
-  let s1 = readUint32BE(src, 4);
-  let s2 = readUint32BE(src, 8);
-  let s3 = readUint32BE(src, 12);
-
-  // First round just XORs input with key.
-  s0 ^= xk[0];
-  s1 ^= xk[1];
-  s2 ^= xk[2];
-  s3 ^= xk[3];
-
-  let t0 = 0;
-  let t1 = 0;
-  let t2 = 0;
-  let t3 = 0;
-
-  // Middle rounds shuffle using tables.
-  // Number of rounds is set by length of expanded key.
-  const nr = xk.length / 4 - 2; // - 2: one above, one more below
-  let k = 4;
-
-  for (let r = 0; r < nr; r++) {
-    t0 = xk[k + 0] ^ Td0[(s0 >>> 24) & 0xff] ^ Td1[(s3 >>> 16) & 0xff] ^
-      Td2[(s2 >>> 8) & 0xff] ^ Td3[s1 & 0xff];
-
-    t1 = xk[k + 1] ^ Td0[(s1 >>> 24) & 0xff] ^ Td1[(s0 >>> 16) & 0xff] ^
-      Td2[(s3 >>> 8) & 0xff] ^ Td3[s2 & 0xff];
-
-    t2 = xk[k + 2] ^ Td0[(s2 >>> 24) & 0xff] ^ Td1[(s1 >>> 16) & 0xff] ^
-      Td2[(s0 >>> 8) & 0xff] ^ Td3[s3 & 0xff];
-
-    t3 = xk[k + 3] ^ Td0[(s3 >>> 24) & 0xff] ^ Td1[(s2 >>> 16) & 0xff] ^
-      Td2[(s1 >>> 8) & 0xff] ^ Td3[s0 & 0xff];
-
-    k += 4;
-    s0 = t0;
-    s1 = t1;
-    s2 = t2;
-    s3 = t3;
-  }
-
-  // Last round uses s-box directly and XORs to produce output.
-  s0 = (SBOX1[t0 >>> 24] << 24) | (SBOX1[(t3 >>> 16) & 0xff]) << 16 |
-    (SBOX1[(t2 >>> 8) & 0xff]) << 8 | (SBOX1[t1 & 0xff]);
-
-  s1 = (SBOX1[t1 >>> 24] << 24) | (SBOX1[(t0 >>> 16) & 0xff]) << 16 |
-    (SBOX1[(t3 >>> 8) & 0xff]) << 8 | (SBOX1[t2 & 0xff]);
-
-  s2 = (SBOX1[t2 >>> 24] << 24) | (SBOX1[(t1 >>> 16) & 0xff]) << 16 |
-    (SBOX1[(t0 >>> 8) & 0xff]) << 8 | (SBOX1[t3 & 0xff]);
-
-  s3 = (SBOX1[t3 >>> 24] << 24) | (SBOX1[(t2 >>> 16) & 0xff]) << 16 |
-    (SBOX1[(t1 >>> 8) & 0xff]) << 8 | (SBOX1[t0 & 0xff]);
-
-  s0 ^= xk[k + 0];
-  s1 ^= xk[k + 1];
-  s2 ^= xk[k + 2];
-  s3 ^= xk[k + 3];
-
-  writeUint32BE(s0, dst, 0);
-  writeUint32BE(s1, dst, 4);
-  writeUint32BE(s2, dst, 8);
-  writeUint32BE(s3, dst, 12);
 }

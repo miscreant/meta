@@ -1,17 +1,14 @@
-// Copyright (C) 2016 Dmitry Chestnykh, Tony Arcieri
+// Copyright (C) 2016-2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import { ICmacLike } from "../interfaces";
-import { dbl, wipe } from "../util";
-import { defaultCryptoProvider } from "../util";
-
-/** Size of a block as used by the AES cipher */
-const AES_BLOCK_SIZE = 16;
+import Block from "../block";
+import { IMacLike } from "../interfaces";
+import { xor } from "../xor";
 
 /** WebCrypto-based implementation of the AES-CMAC message authentication code */
-export default class WebCryptoAesCmac implements ICmacLike {
+export default class WebCryptoAesCmac implements IMacLike {
   /** Create a new CMAC instance from the given key */
-  public static async importKey(keyData: Uint8Array, crypto = defaultCryptoProvider()): Promise<WebCryptoAesCmac> {
+  public static async importKey(keyData: Uint8Array, crypto: Crypto): Promise<WebCryptoAesCmac> {
     // Only AES-128 and AES-256 supported. AES-192 is not.
     if (keyData.length !== 16 && keyData.length !== 32) {
       throw new Error(`invalid key ${keyData.length} (expected 16 or 32 bytes)`);
@@ -20,74 +17,72 @@ export default class WebCryptoAesCmac implements ICmacLike {
     const key = await crypto.subtle.importKey("raw", keyData, "AES-CBC", false, ["encrypt"]);
 
     // Generate subkeys.
-    const zeroes = new Uint8Array(AES_BLOCK_SIZE);
-    const subkey1 = await encryptBlock(crypto, key, zeroes);
-    dbl(subkey1, subkey1);
+    const subkey1 = new Block();
+    const subkey2 = new Block();
 
-    const subkey2 = new Uint8Array(AES_BLOCK_SIZE);
-    dbl(subkey1, subkey2);
+    await encryptBlock(crypto, key, subkey1);
+    subkey1.dbl();
+
+    subkey2.copy(subkey1);
+    subkey2.dbl();
 
     return new WebCryptoAesCmac(key, subkey1, subkey2, crypto);
   }
 
-  public readonly blockSize = AES_BLOCK_SIZE;
-  public readonly digestLength = AES_BLOCK_SIZE;
-
-  private _state: Uint8Array;
-  private _statePos = 0;
+  private _buffer: Block;
+  private _bufferPos = 0;
   private _finished = false;
 
   constructor(
     private _key: CryptoKey,
-    private _subkey1: Uint8Array,
-    private _subkey2: Uint8Array,
-    private _crypto = defaultCryptoProvider(),
+    private _subkey1: Block,
+    private _subkey2: Block,
+    private _crypto: Crypto,
   ) {
-    this._state = new Uint8Array(AES_BLOCK_SIZE);
+    this._buffer = new Block();
   }
 
   public reset(): this {
-    wipe(this._state);
-    this._statePos = 0;
+    this._buffer.clear();
+    this._bufferPos = 0;
     this._finished = false;
     return this;
   }
 
-  public clean() {
-    wipe(this._state);
-    wipe(this._subkey1);
-    wipe(this._subkey2);
-    this._statePos = 0;
+  public clear() {
+    this.reset();
+    this._subkey1.clear();
+    this._subkey2.clear();
   }
 
   public async update(data: Uint8Array): Promise<this> {
-    const left = AES_BLOCK_SIZE - this._statePos;
+    const left = Block.SIZE - this._bufferPos;
     let dataPos = 0;
     let dataLength = data.length;
 
     if (dataLength > left) {
       for (let i = 0; i < left; i++) {
-        this._state[this._statePos + i] ^= data[i];
+        this._buffer.data[this._bufferPos + i] ^= data[i];
       }
       dataLength -= left;
       dataPos += left;
-      this._state = await encryptBlock(this._crypto, this._key, this._state);
-      this._statePos = 0;
+      await encryptBlock(this._crypto, this._key, this._buffer);
+      this._bufferPos = 0;
     }
 
     // TODO: use AES-CBC with a span of multiple blocks instead of encryptBlock
     // to encrypt many blocks in a single call to the WebCrypto API
-    while (dataLength > AES_BLOCK_SIZE) {
-      for (let i = 0; i < AES_BLOCK_SIZE; i++) {
-        this._state[i] ^= data[dataPos + i];
+    while (dataLength > Block.SIZE) {
+      for (let i = 0; i < Block.SIZE; i++) {
+        this._buffer.data[i] ^= data[dataPos + i];
       }
-      dataLength -= AES_BLOCK_SIZE;
-      dataPos += AES_BLOCK_SIZE;
-      this._state = await encryptBlock(this._crypto, this._key, this._state);
+      dataLength -= Block.SIZE;
+      dataPos += Block.SIZE;
+      await encryptBlock(this._crypto, this._key, this._buffer);
     }
 
     for (let i = 0; i < dataLength; i++) {
-      this._state[this._statePos++] ^= data[dataPos + i];
+      this._buffer.data[this._bufferPos++] ^= data[dataPos + i];
     }
 
     return this;
@@ -96,34 +91,34 @@ export default class WebCryptoAesCmac implements ICmacLike {
   public async finish(): Promise<Uint8Array> {
     if (!this._finished) {
       // Select which subkey to use.
-      const key = (this._statePos < AES_BLOCK_SIZE) ? this._subkey2 : this._subkey1;
+      const subkey = (this._bufferPos < Block.SIZE) ? this._subkey2 : this._subkey1;
 
       // XOR in the subkey.
-      for (let i = 0; i < this._state.length; i++) {
-        this._state[i] ^= key[i];
-      }
+      xor(this._buffer.data, subkey.data);
 
       // Pad if needed.
-      if (this._statePos < this._state.length) {
-        this._state[this._statePos] ^= 0x80;
+      if (this._bufferPos < Block.SIZE) {
+        this._buffer.data[this._bufferPos] ^= 0x80;
       }
 
-      // Encrypt state to get the final digest.
-      this._state = await encryptBlock(this._crypto, this._key, this._state);
+      // Encrypt buffer to get the final digest.
+      await encryptBlock(this._crypto, this._key, this._buffer);
 
       // Set finished flag.
       this._finished = true;
     }
 
-    const out = new Uint8Array(AES_BLOCK_SIZE);
-    out.set(this._state);
+    const out = new Uint8Array(Block.SIZE);
+    out.set(this._buffer.data);
     return out;
   }
 }
 
 /** Encrypt a single AES block. While ordinarily this might let us see penguins, we're using it safely */
-async function encryptBlock(crypto: Crypto, key: CryptoKey, plaintext: Uint8Array): Promise<Uint8Array> {
-  const params = { name: "AES-CBC", iv: new Uint8Array(AES_BLOCK_SIZE) };
-  const buffer = await crypto.subtle.encrypt(params, key, plaintext);
-  return new Uint8Array(buffer, 0, AES_BLOCK_SIZE);
+async function encryptBlock(crypto: Crypto, key: CryptoKey, block: Block): Promise<void> {
+  const params = { name: "AES-CBC", iv: new Uint8Array(Block.SIZE) };
+  const ctBuffer = await crypto.subtle.encrypt(params, key, block.data);
+
+  // TODO: a more efficient way to do in-place encryption?
+  block.data.set(new Uint8Array(ctBuffer, 0, Block.SIZE));
 }

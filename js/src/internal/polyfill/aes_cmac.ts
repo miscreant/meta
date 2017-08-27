@@ -1,8 +1,9 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import { ICmacLike } from "../interfaces";
-import { dbl, wipe } from "../util";
+import Block from "../block";
+import { IMacLike } from "../interfaces";
+import { xor } from "../xor";
 import PolyfillAes from "./aes";
 
 /**
@@ -11,15 +12,12 @@ import PolyfillAes from "./aes";
  * Uses a non-constant-time (lookup table-based) AES polyfill.
  * See polyfill/aes.ts for more information on the security impact.
  */
-export default class PolyfillAesCmac implements ICmacLike {
-  public readonly blockSize = 16;
-  public readonly digestLength = 16;
+export default class PolyfillAesCmac implements IMacLike {
+  private _subkey1: Block;
+  private _subkey2: Block;
 
-  private _subkey1: Uint8Array;
-  private _subkey2: Uint8Array;
-
-  private _state: Uint8Array;
-  private _statePos = 0;
+  private _buffer: Block;
+  private _bufferPos = 0;
   private _finished = false;
 
   private _cipher: PolyfillAes;
@@ -28,57 +26,57 @@ export default class PolyfillAesCmac implements ICmacLike {
     this._cipher = cipher;
 
     // Allocate space.
-    this._subkey1 = new Uint8Array(this.blockSize);
-    this._subkey2 = new Uint8Array(this.blockSize);
-    this._state = new Uint8Array(this.blockSize);
+    this._subkey1 = new Block();
+    this._subkey2 = new Block();
+    this._buffer = new Block();
 
     // Generate subkeys.
-    this._cipher.encryptBlock(this._subkey1, this._subkey1);
-    dbl(this._subkey1, this._subkey1);
-    dbl(this._subkey1, this._subkey2);
+    this._cipher.encryptBlock(this._subkey1);
+    this._subkey1.dbl();
+    this._subkey2.copy(this._subkey1);
+    this._subkey2.dbl();
   }
 
   public reset(): this {
-    wipe(this._state);
-    this._statePos = 0;
+    this._buffer.clear();
+    this._bufferPos = 0;
     this._finished = false;
     return this;
   }
 
-  public clean() {
-    wipe(this._state);
-    wipe(this._subkey1);
-    wipe(this._subkey2);
-    this._cipher.clean();
-    this._statePos = 0;
+  public clear() {
+    this.reset();
+    this._subkey1.clear();
+    this._subkey2.clear();
+    this._cipher.clear();
   }
 
   public async update(data: Uint8Array): Promise<this> {
-    const left = this.blockSize - this._statePos;
+    const left = Block.SIZE - this._bufferPos;
     let dataPos = 0;
     let dataLength = data.length;
 
     if (dataLength > left) {
       for (let i = 0; i < left; i++) {
-        this._state[this._statePos + i] ^= data[i];
+        this._buffer.data[this._bufferPos + i] ^= data[i];
       }
       dataLength -= left;
       dataPos += left;
-      this._cipher.encryptBlock(this._state, this._state);
-      this._statePos = 0;
+      this._cipher.encryptBlock(this._buffer);
+      this._bufferPos = 0;
     }
 
-    while (dataLength > this.blockSize) {
-      for (let i = 0; i < this.blockSize; i++) {
-        this._state[i] ^= data[dataPos + i];
+    while (dataLength > Block.SIZE) {
+      for (let i = 0; i < Block.SIZE; i++) {
+        this._buffer.data[i] ^= data[dataPos + i];
       }
-      dataLength -= this.blockSize;
-      dataPos += this.blockSize;
-      this._cipher.encryptBlock(this._state, this._state);
+      dataLength -= Block.SIZE;
+      dataPos += Block.SIZE;
+      this._cipher.encryptBlock(this._buffer);
     }
 
     for (let i = 0; i < dataLength; i++) {
-      this._state[this._statePos++] ^= data[dataPos + i];
+      this._buffer.data[this._bufferPos++] ^= data[dataPos + i];
     }
 
     return this;
@@ -87,27 +85,25 @@ export default class PolyfillAesCmac implements ICmacLike {
   public async finish(): Promise<Uint8Array> {
     if (!this._finished) {
       // Select which subkey to use.
-      const key = (this._statePos < this.digestLength) ? this._subkey2 : this._subkey1;
+      const subkey = (this._bufferPos < Block.SIZE) ? this._subkey2 : this._subkey1;
 
       // XOR in the subkey.
-      for (let i = 0; i < this._state.length; i++) {
-        this._state[i] ^= key[i];
-      }
+      xor(this._buffer.data, subkey.data);
 
       // Pad if needed.
-      if (this._statePos < this._state.length) {
-        this._state[this._statePos] ^= 0x80;
+      if (this._bufferPos < Block.SIZE) {
+        this._buffer.data[this._bufferPos] ^= 0x80;
       }
 
-      // Encrypt state to get the final digest.
-      this._cipher.encryptBlock(this._state, this._state);
+      // Encrypt buffer to get the final digest.
+      this._cipher.encryptBlock(this._buffer);
 
       // Set finished flag.
       this._finished = true;
     }
 
-    const out = new Uint8Array(this.digestLength);
-    out.set(this._state);
+    const out = new Uint8Array(Block.SIZE);
+    out.set(this._buffer.data);
     return out;
   }
 }
