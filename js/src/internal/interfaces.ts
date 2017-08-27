@@ -4,22 +4,20 @@
 export interface ISivLike {
   seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
   open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
-  clean(): this;
+  clear(): this;
 }
 
 /** A cipher which provides CTR (counter mode) encryption */
 export interface ICtrLike {
   encrypt(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array>;
   decrypt(iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array>;
-  clean(): this;
+  clear(): this;
 }
 
-/** An implementation of the CMAC message authentication code */
-export interface ICmacLike {
-  blockSize: number;
-  digestLength: number;
+/** An implementation of a message authentication code (MAC) */
+export interface IMacLike {
   reset(): this;
-  clean(): void;
+  clear(): void;
   update(data: Uint8Array): Promise<this>;
   finish(): Promise<Uint8Array>;
 }

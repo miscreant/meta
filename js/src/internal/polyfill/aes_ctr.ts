@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
+import Block from "../block";
 import { ICtrLike } from "../interfaces";
-import { wipe } from "../util";
 
 import PolyfillAes from "./aes";
 
@@ -16,8 +16,8 @@ import PolyfillAes from "./aes";
  * authentication. Instead, use an authenticated encryption mode, like AES-SIV!
  */
 export default class PolyfillAesCtr implements ICtrLike {
-  private _counter: Uint8Array;
-  private _buffer: Uint8Array;
+  private _counter: Block;
+  private _buffer: Block;
   private _cipher: PolyfillAes;
 
   constructor(cipher: PolyfillAes) {
@@ -25,33 +25,34 @@ export default class PolyfillAesCtr implements ICtrLike {
     this._cipher = cipher;
 
     // Allocate space for counter.
-    this._counter = new Uint8Array(cipher.blockSize);
+    this._counter = new Block();
 
     // Allocate buffer for encrypted block.
-    this._buffer = new Uint8Array(cipher.blockSize);
+    this._buffer = new Block();
   }
 
   public async encrypt(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
-    if (iv.length !== this._counter.length) {
+    if (iv.length !== Block.SIZE) {
       throw new Error("CTR: iv length must be equal to cipher block size");
     }
 
     // Copy IV to counter, overwriting it.
-    this._counter.set(iv);
+    this._counter.data.set(iv);
 
     // Set buffer position to length of buffer
     // so that the first cipher block is generated.
-    let bufpos = this._buffer.length;
+    let bufferPos = Block.SIZE;
 
     const result = new Uint8Array(plaintext.length);
 
     for (let i = 0; i < plaintext.length; i++) {
-      if (bufpos === this._buffer.length) {
-        this._cipher.encryptBlock(this._counter, this._buffer);
-        bufpos = 0;
+      if (bufferPos === Block.SIZE) {
+        this._buffer.copy(this._counter);
+        this._cipher.encryptBlock(this._buffer);
+        bufferPos = 0;
         incrementCounter(this._counter);
       }
-      result[i] = plaintext[i] ^ this._buffer[bufpos++];
+      result[i] = plaintext[i] ^ this._buffer.data[bufferPos++];
     }
 
     return result;
@@ -62,24 +63,21 @@ export default class PolyfillAesCtr implements ICtrLike {
     return this.encrypt(iv, ciphertext);
   }
 
-  public clean(): this {
-    wipe(this._buffer);
-    wipe(this._counter);
-    this._cipher.clean();
+  public clear(): this {
+    this._buffer.clear();
+    this._counter.clear();
+    this._cipher.clear();
     return this;
   }
 }
 
-function incrementCounter(counter: Uint8Array) {
+// Increment an AES-CTR mode counter, intentionally wrapping/overflowing
+function incrementCounter(counter: Block) {
   let carry = 1;
 
-  for (let i = counter.length - 1; i >= 0; i--) {
-    carry += (counter[i] & 0xff) | 0;
-    counter[i] = carry & 0xff;
+  for (let i = Block.SIZE - 1; i >= 0; i--) {
+    carry += (counter.data[i] & 0xff) | 0;
+    counter.data[i] = carry & 0xff;
     carry >>>= 8;
-  }
-
-  if (carry > 0) {
-    throw new Error("CTR: counter overflow");
   }
 }

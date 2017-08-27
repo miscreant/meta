@@ -10,7 +10,7 @@ import WebCrypto = require("node-webcrypto-ossl");
 
 import AesSiv from "../src/internal/aes_siv";
 import PolyfillCrypto from "../src/internal/polyfill";
-import IntegrityError from "../src/internal/exceptions/integrity_error";
+import IntegrityError from "../src/exceptions/integrity_error";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);
@@ -31,7 +31,7 @@ chai.use(chaiAsPromised);
       const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
-      expect(() => siv.clean()).not.to.throw();
+      expect(() => siv.clear()).not.to.throw();
     }
   }
 
@@ -44,7 +44,7 @@ chai.use(chaiAsPromised);
       const unsealed = await siv.open(sealed, v.ad, );
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
-      expect(() => siv.clean()).not.to.throw();
+      expect(() => siv.clear()).not.to.throw();
     }
   }
 
@@ -68,7 +68,7 @@ chai.use(chaiAsPromised);
     expect(opened2).not.to.be.null;
     expect(opened2!).to.eql(pt2);
 
-    expect(() => siv.clean()).not.to.throw();
+    expect(() => siv.clear()).not.to.throw();
   }
 
   @test async "should not open with incorrect key"() {

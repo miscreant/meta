@@ -25,7 +25,7 @@ import Miscreant from "../src/miscreant";
       const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
-      expect(() => siv.clean()).not.to.throw();
+      expect(() => siv.clear()).not.to.throw();
     }
   }
 
@@ -38,7 +38,7 @@ import Miscreant from "../src/miscreant";
       const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
-      expect(() => siv.clean()).not.to.throw();
+      expect(() => siv.clear()).not.to.throw();
     }
   }
 }

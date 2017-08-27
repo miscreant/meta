@@ -2,11 +2,13 @@
 // MIT License. See LICENSE file for details.
 
 import { equal } from "./constant-time";
-import { dbl, defaultCryptoProvider, wipe, xor, zeroIVBits } from "./util";
+import { wipe } from "./wipe";
+import { xor } from "./xor";
 
-import IntegrityError from "./exceptions/integrity_error";
-import NotImplementedError from "./exceptions/not_implemented_error";
-import { ICmacLike, ICtrLike, ISivLike } from "./interfaces";
+import IntegrityError from "../exceptions/integrity_error";
+import NotImplementedError from "../exceptions/not_implemented_error";
+import Block from "./block";
+import { ICtrLike, IMacLike, ISivLike } from "./interfaces";
 
 import PolyfillCrypto from "./polyfill";
 import PolyfillAes from "./polyfill/aes";
@@ -23,7 +25,7 @@ export default class AesSiv implements ISivLike {
   /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
   public static async importKey(
     keyData: Uint8Array,
-    crypto: Crypto | PolyfillCrypto = defaultCryptoProvider(),
+    crypto: Crypto | PolyfillCrypto,
   ): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
@@ -53,21 +55,18 @@ export default class AesSiv implements ISivLike {
     }
   }
 
-  public tagLength: number;
-  private _mac: ICmacLike;
+  private _mac: IMacLike;
   private _ctr: ICtrLike;
-  private _tmp1: Uint8Array;
-  private _tmp2: Uint8Array;
+  private _tmp1: Block;
+  private _tmp2: Block;
   private _crypto: Crypto | null;
 
-  constructor(mac: ICmacLike, ctr: ICtrLike, crypto: Crypto | null = defaultCryptoProvider()) {
+  constructor(mac: IMacLike, ctr: ICtrLike, crypto: Crypto | null) {
     this._mac = mac;
     this._ctr = ctr;
     this._crypto = crypto;
-    this._tmp1 = new Uint8Array(this._mac.digestLength);
-    this._tmp2 = new Uint8Array(this._mac.digestLength);
-
-    this.tagLength = this._mac.digestLength;
+    this._tmp1 = new Block();
+    this._tmp2 = new Block();
   }
 
   /** Encrypt and authenticate data using AES-SIV */
@@ -77,7 +76,7 @@ export default class AesSiv implements ISivLike {
     }
 
     // Allocate space for sealed ciphertext.
-    const resultLength = this.tagLength + plaintext.length;
+    const resultLength = Block.SIZE + plaintext.length;
     const result = new Uint8Array(resultLength);
 
     // Authenticate.
@@ -96,17 +95,17 @@ export default class AesSiv implements ISivLike {
       throw new Error("AES-SIV: too many associated data items");
     }
 
-    if (sealed.length < this.tagLength) {
+    if (sealed.length < Block.SIZE) {
       throw new IntegrityError("AES-SIV: ciphertext is truncated");
     }
 
     // Decrypt.
-    const tag = sealed.subarray(0, this.tagLength);
-    const iv = this._tmp1;
+    const tag = sealed.subarray(0, Block.SIZE);
+    const iv = this._tmp1.data;
     iv.set(tag);
     zeroIVBits(iv);
 
-    const result = await this._ctr.decrypt(iv, sealed.subarray(this.tagLength));
+    const result = await this._ctr.decrypt(iv, sealed.subarray(Block.SIZE));
 
     // Authenticate.
     const expectedTag = await this._s2v(associatedData, result);
@@ -120,12 +119,11 @@ export default class AesSiv implements ISivLike {
   }
 
   /** Make a best effort to wipe memory used by this AesSiv instance */
-  public clean(): this {
-    wipe(this._tmp1);
-    wipe(this._tmp2);
-    this._ctr.clean();
-    this._mac.clean();
-    this.tagLength = 0;
+  public clear(): this {
+    this._tmp1.clear();
+    this._tmp2.clear();
+    this._ctr.clear();
+    this._mac.clear();
 
     return this;
   }
@@ -138,39 +136,48 @@ export default class AesSiv implements ISivLike {
    */
   private async _s2v(associated_data: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
     this._mac.reset();
-    wipe(this._tmp1);
+    this._tmp1.clear();
 
     // Note: the standalone S2V returns CMAC(1) if the number of passed
     // vectors is zero, however in SIV construction this case is never
     // triggered, since we always pass plaintext as the last vector (even
     // if it's zero-length), so we omit this case.
-    await this._mac.update(this._tmp1);
-    wipe(this._tmp2);
-    this._tmp2 = await this._mac.finish();
+    await this._mac.update(this._tmp1.data);
+    this._tmp2.clear();
+    this._tmp2.data.set(await this._mac.finish());
     this._mac.reset();
 
     for (const ad of associated_data) {
       await this._mac.update(ad);
-      wipe(this._tmp1);
-      this._tmp1 = await this._mac.finish();
+      this._tmp1.clear();
+      this._tmp1.data.set(await this._mac.finish());
       this._mac.reset();
-      dbl(this._tmp2, this._tmp2);
-      xor(this._tmp2, this._tmp1);
+      this._tmp2.dbl();
+      xor(this._tmp2.data, this._tmp1.data);
     }
 
-    wipe(this._tmp1);
+    this._tmp1.clear();
 
-    if (plaintext.length >= this._mac.blockSize) {
-      const n = plaintext.length - this._mac.blockSize;
-      this._tmp1.set(plaintext.subarray(n));
+    if (plaintext.length >= Block.SIZE) {
+      const n = plaintext.length - Block.SIZE;
+      this._tmp1.data.set(plaintext.subarray(n));
       await this._mac.update(plaintext.subarray(0, n));
     } else {
-      this._tmp1.set(plaintext);
-      this._tmp1[plaintext.length] = 0x80;
-      dbl(this._tmp2, this._tmp2);
+      this._tmp1.data.set(plaintext);
+      this._tmp1.data[plaintext.length] = 0x80;
+      this._tmp2.dbl();
     }
-    xor(this._tmp1, this._tmp2);
-    await this._mac.update(this._tmp1);
+    xor(this._tmp1.data, this._tmp2.data);
+    await this._mac.update(this._tmp1.data);
     return this._mac.finish();
   }
+}
+
+/** Zero out the top bits in the last 32-bit words of the IV */
+function zeroIVBits(iv: Uint8Array) {
+  // "We zero-out the top bit in each of the last two 32-bit words
+  // of the IV before assigning it to Ctr"
+  //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
+  iv[iv.length - 8] &= 0x7f;
+  iv[iv.length - 4] &= 0x7f;
 }
