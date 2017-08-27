@@ -19,11 +19,6 @@ import PolyfillAes from "../src/internal/polyfill/aes";
     expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(/^AES/);
   }
 
-  @test "should not accept different key in setKey()"() {
-    const cipher = new PolyfillAes(new Uint8Array(32));
-    expect(() => cipher.setKey(new Uint8Array(16))).to.throw(/^AES/);
-  }
-
   @test "should correctly encrypt blocks"() {
     for (let v of PolyfillAesSpec.vectors) {
       const cipher = new PolyfillAes(v.key);

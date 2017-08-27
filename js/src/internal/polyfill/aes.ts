@@ -80,64 +80,28 @@ let Td3: Uint32Array;
  * side-channel attacks. A constant-time version we tried was super slow (a few
  * kilobytes per second), so we'll have to live with it.
  *
- * Key size: 16, 24 or 32 bytes, block size: 16 bytes.
+ * Key size: 16 or 32 bytes, block size: 16 bytes.
  */
 export default class PolyfillAes {
-  // Key byte length.
-  private _keyLen: number;
-
   // Expanded encryption key.
   private _encKey: Uint32Array;
 
-  // Expanded decryption key. May be undefined if instance
-  // was created "noDecryption" option set to true.
-  private _decKey: Uint32Array | undefined;
-
   /**
-   * Constructs AES with the given 16, 24 or 32-byte key
-   * for AES-128, AES-192, or AES-256.
-   *
-   * If noDecryption is true, decryption key will not expanded,
-   * saving time and memory for cipher modes when decryption
-   * is not used (such as AES-CTR).
-   *
+   * Constructs AES with the given 16 or 32-byte key
+   * for AES-128 or AES-256.
    */
-  constructor(key: Uint8Array, noDecryption = false) {
+  constructor(key: Uint8Array) {
     if (!isInitialized) {
       initialize();
     }
-    this._keyLen = key.length;
-    this.setKey(key, noDecryption);
-  }
 
-  /**
-   * Re-initializes this instance with the new key.
-   *
-   * This is helpful to avoid allocations.
-   */
-  public setKey(key: Uint8Array, noDecryption = false): this {
-    if (key.length !== 16 && key.length !== 24 && key.length !== 32) {
-      throw new Error("AES: wrong key size (must be 16, 24 or 32)");
-    }
-    if (this._keyLen !== key.length) {
-      throw new Error("AES: initialized with different key size");
+    if (key.length !== 16 && key.length !== 32) {
+      throw new Error("AES: wrong key size (must be 16 or 32)");
     }
 
-    // If we haven't yet, allocate space for expanded keys.
-    if (!this._encKey) {
-      this._encKey = new Uint32Array(key.length + 28);
-    }
-    if (noDecryption) {
-      // Wipe decryption key, as we no longer need it.
-      if (this._decKey) {
-        wipe(this._decKey);
-      }
-    } else {
-      if (!this._decKey) {
-        this._decKey = new Uint32Array(key.length + 28);
-      }
-    }
-    expandKey(key, this._encKey, this._decKey);
+    this._encKey = new Uint32Array(key.length + 28);
+
+    expandKey(key, this._encKey);
     return this;
   }
 
@@ -147,9 +111,6 @@ export default class PolyfillAes {
   public clear(): this {
     if (this._encKey) {
       wipe(this._encKey);
-    }
-    if (this._decKey) {
-      wipe(this._decKey);
     }
     return this;
   }
@@ -329,7 +290,7 @@ function rotw(w: number): number {
   return (w << 8) | (w >>> 24);
 }
 
-function expandKey(key: Uint8Array, encKey: Uint32Array, decKey?: Uint32Array): void {
+function expandKey(key: Uint8Array, encKey: Uint32Array): void {
   const nk = key.length / 4 | 0;
   const n = encKey.length;
   for (let i = 0; i < nk; i++) {
@@ -343,22 +304,5 @@ function expandKey(key: Uint8Array, encKey: Uint32Array, decKey?: Uint32Array): 
       t = subw(t);
     }
     encKey[i] = encKey[i - nk] ^ t;
-  }
-
-  if (decKey) {
-    // Derive decryption key from encryption key.
-    // Reverse the 4-word round key sets from enc to produce dec.
-    // All sets but the first and last get the MixColumn transform applied.
-    for (let i = 0; i < n; i += 4) {
-      const ei = n - i - 4;
-      for (let j = 0; j < 4; j++) {
-        let x = encKey[ei + j];
-        if (i > 0 && i + 4 < n) {
-          x = Td0[SBOX0[(x >>> 24) & 0xff]] ^ Td1[SBOX0[(x >>> 16) & 0xff]] ^
-            Td2[SBOX0[(x >>> 8) & 0xff]] ^ Td3[SBOX0[x & 0xff]];
-        }
-        decKey[i + j] = x;
-      }
-    }
   }
 }
