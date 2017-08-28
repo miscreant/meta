@@ -15,11 +15,7 @@ export default class Miscreant {
     alg: string,
     provider: ICryptoProvider = Miscreant.webCryptoProvider(),
   ): Promise<ISivLike> {
-    if (alg === "AES-SIV") {
-      return AesSiv.importKey(provider, keyData);
-    } else {
-      throw new Error(`unsupported algorithm: ${alg}`);
-    }
+    return AesSiv.importKey(provider, alg, keyData);
   }
 
   /**

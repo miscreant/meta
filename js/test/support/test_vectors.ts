@@ -24,6 +24,29 @@ export class AesSivExample {
   }
 }
 
+/** AES-PMAC-SIV test vectors */
+export class AesPmacSivExample {
+  static readonly DEFAULT_EXAMPLES_PATH = "../vectors/aes_pmac_siv.tjson";
+
+  public readonly name: string;
+  public readonly key: Uint8Array;
+  public readonly ad: Uint8Array[];
+  public readonly plaintext: Uint8Array;
+  public readonly ciphertext: Uint8Array;
+
+  static async loadAll(): Promise<AesPmacSivExample[]> {
+    return AesPmacSivExample.loadFromFile(AesPmacSivExample.DEFAULT_EXAMPLES_PATH);
+  }
+
+  static async loadFromFile(filename: string): Promise<AesPmacSivExample[]> {
+    let tjson = TJSON.parse(await fs.readFile(filename, "utf8"));
+    return tjson["examples"].map((ex: any) => {
+      let obj = Object.create(AesPmacSivExample.prototype);
+      return Object.assign(obj, ex);
+    });
+  }
+}
+
 /** AES (raw block function) test vectors */
 export class AesExample {
   static readonly DEFAULT_EXAMPLES_PATH = "../vectors/aes.tjson";
