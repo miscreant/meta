@@ -117,7 +117,7 @@ encryptor/decryptor.
 #### Syntax
 
 ```
-Miscreant.importKey(keyData, algorithm[, crypto = window.crypto])
+Miscreant.importKey(keyData, algorithm[, provider = Miscreant.webCryptoProvider()])
 ```
 
 #### Parameters
@@ -127,8 +127,8 @@ Miscreant.importKey(keyData, algorithm[, crypto = window.crypto])
   SIV uses two distinct AES keys to perform its operations.
 * **algorithm**: a string describing the algorithm to use. The only algorithm
   presently supported is `"AES-SIV"`.
-* **crypto**: a cryptography provider that implements the WebCrypto API's
-  [Crypto] interface.
+* **provider**: a cryptography provider that implements Miscreant's
+  [ICryptoProvider] interface.
 
 #### Return Value
 
@@ -274,14 +274,13 @@ understand the security concerns, and would like to use it anyway, call the
 following to obtain a `PolyfillCrypto` instance:
 
 ```
-Miscreant.getCryptoProvider("polyfill")
+Miscreant.polyfillCryptoProvider()
 ```
 
 You can pass it to `Miscreant.importKey()` like so:
 
 ```
-const polyfillCrypto = Miscreant.getCryptoProvider("polyfill");
-const key = Miscreant.importKey(keyData, "AES-SIV", polyfillCrypto);
+const key = Miscreant.importKey(keyData, "AES-SIV", Miscreant.polyfillCryptoProvider());
 ```
 
 ## Contributing
