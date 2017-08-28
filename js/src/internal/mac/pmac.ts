@@ -2,10 +2,10 @@
 // MIT License. See LICENSE file for details.
 
 import Block from "../block";
-import { select } from "../constant-time";
-import { ctz } from "../ctz";
 import { IBlockCipher, ICryptoProvider, IMacLike } from "../interfaces";
-import { xor } from "../xor";
+import { select } from "../util/constant-time";
+import { ctz } from "../util/ctz";
+import { xor } from "../util/xor";
 
 // Number of L blocks to precompute (i.e. µ in the PMAC paper)
 // TODO: dynamically compute these as needed
@@ -53,8 +53,7 @@ export default class Pmac implements IMacLike {
     const l = new Array<Block>(PRECOMPUTED_BLOCKS);
 
     for (let i = 0; i < PRECOMPUTED_BLOCKS; i++) {
-      l[i] = new Block();
-      l[i].copy(tmp);
+      l[i] = tmp.clone();
       tmp.dbl();
     }
 
@@ -64,8 +63,7 @@ export default class Pmac implements IMacLike {
      *     a>>1 if lastbit(a)=0
      *     (a>>1) ⊕ 10¹²⁰1000011 if lastbit(a)=1
      */
-    const lInv = new Block();
-    lInv.copy(l[0]);
+    const lInv = l[0].clone();
     const lastBit = lInv.data[Block.SIZE - 1] & 0x01;
 
     for (let i = Block.SIZE - 1; i > 0; i--) {
@@ -193,9 +191,7 @@ export default class Pmac implements IMacLike {
     await this._cipher.encryptBlock(this._tag);
     this._finished = true;
 
-    const out = new Uint8Array(Block.SIZE);
-    out.set(this._tag.data);
-    return out;
+    return this._tag.clone().data;
   }
 
   // Update the internal tag state based on the buffer contents

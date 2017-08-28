@@ -13,7 +13,7 @@
 
 import Block from "../block";
 import { IBlockCipher } from "../interfaces";
-import { wipe } from "../wipe";
+import { wipe } from "../util/wipe";
 
 // Powers of x mod poly in GF(2).
 const POWX = new Uint8Array([
