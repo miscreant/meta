@@ -408,6 +408,19 @@ Support is forthcoming, sorry!
 Please see the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
 to follow progress on adding support.
 
+## Code of Conduct
+
+We abide by the [Contributor Covenant][cc] and ask that you do as well.
+
+For more information, please see [CODE_OF_CONDUCT.md].
+
+[cc]: https://contributor-covenant.org
+[CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
+
 ## Copyright
 
 Copyright (c) 2017 [The Miscreant Developers][AUTHORS].

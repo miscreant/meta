@@ -145,6 +145,15 @@ ciphertext = siv.seal(message, [nonce])
 plaintext = siv.open(message, [nonce])
 ```
 
+## Code of Conduct
+
+We abide by the [Contributor Covenant][cc] and ask that you do as well.
+
+For more information, please see [CODE_OF_CONDUCT.md].
+
+[cc]: https://contributor-covenant.org
+[CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
