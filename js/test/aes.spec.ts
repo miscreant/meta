@@ -16,7 +16,7 @@ import PolyfillAes from "../src/internal/polyfill/aes";
   }
 
   @test "should not accept wrong key length"() {
-    expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(/^AES/);
+    expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(/invalid key length/);
   }
 
   @test "should correctly encrypt blocks"() {

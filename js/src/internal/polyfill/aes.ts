@@ -12,6 +12,7 @@
 // (rijndael-alg-fst.c, 3.0, December 2000)
 
 import Block from "../block";
+import { IBlockCipher } from "../interfaces";
 import { wipe } from "../wipe";
 
 // Powers of x mod poly in GF(2).
@@ -82,27 +83,29 @@ let Td3: Uint32Array;
  *
  * Key size: 16 or 32 bytes, block size: 16 bytes.
  */
-export default class PolyfillAes {
+export default class PolyfillAes implements IBlockCipher {
   // Expanded encryption key.
   private _encKey: Uint32Array;
+
+  // A placeholder promise we always return to match the WebCrypto API
+  private _emptyPromise: Promise<this>;
 
   /**
    * Constructs AES with the given 16 or 32-byte key
    * for AES-128 or AES-256.
    */
-  constructor(key: Uint8Array) {
+  constructor(keyData: Uint8Array) {
     if (!isInitialized) {
       initialize();
     }
 
-    if (key.length !== 16 && key.length !== 32) {
-      throw new Error("AES: wrong key size (must be 16 or 32)");
+    // Only AES-128 and AES-256 supported. AES-192 is not.
+    if (keyData.length !== 16 && keyData.length !== 32) {
+      throw new Error(`Miscreant: invalid key length: ${keyData.length} (expected 16 or 32 bytes)`);
     }
 
-    this._encKey = new Uint32Array(key.length + 28);
-
-    expandKey(key, this._encKey);
-    return this;
+    this._encKey = expandKey(keyData);
+    this._emptyPromise = Promise.resolve(this);
   }
 
   /**
@@ -122,7 +125,7 @@ export default class PolyfillAes {
    * cipher mode! It should only be used to implement a cipher mode.
    * This library uses it to implement AES-SIV.
    */
-  public encryptBlock(block: Block): this {
+  public encryptBlock(block: Block): Promise<this> {
     const src = block.data;
     const dst = block.data;
 
@@ -190,7 +193,7 @@ export default class PolyfillAes {
     writeUint32BE(s2, dst, 8);
     writeUint32BE(s3, dst, 12);
 
-    return this;
+    return this._emptyPromise;
   }
 }
 
@@ -290,19 +293,26 @@ function rotw(w: number): number {
   return (w << 8) | (w >>> 24);
 }
 
-function expandKey(key: Uint8Array, encKey: Uint32Array): void {
+function expandKey(key: Uint8Array): Uint32Array {
+  const encKey = new Uint32Array(key.length + 28);
   const nk = key.length / 4 | 0;
   const n = encKey.length;
+
   for (let i = 0; i < nk; i++) {
     encKey[i] = readUint32BE(key, i * 4);
   }
+
   for (let i = nk; i < n; i++) {
     let t = encKey[i - 1];
+
     if (i % nk === 0) {
       t = subw(rotw(t)) ^ (POWX[i / nk - 1] << 24);
     } else if (nk > 6 && i % nk === 4) {
       t = subw(t);
     }
+
     encKey[i] = encKey[i - nk] ^ t;
   }
+
+  return encKey;
 }

@@ -6,10 +6,9 @@ import { expect } from "chai";
 import { AesCmacExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-
-import PolyfillAes from "../src/internal/polyfill/aes";
-import PolyfillAesCmac from "../src/internal/polyfill/aes_cmac";
-import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
+import PolyfillCryptoProvider from "../src/internal/polyfill/provider";
+import WebCryptoProvider from "../src/internal/webcrypto/provider";
+import Cmac from "../src/internal/mac/cmac";
 
 @suite class PolyfillAesCmacSpec {
   static vectors: AesCmacExample[];
@@ -19,8 +18,10 @@ import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
   }
 
   @test async "passes the AES-CMAC test vectors"() {
+    const polyfillProvider = new PolyfillCryptoProvider();
+
     for (let v of PolyfillAesCmacSpec.vectors) {
-      const mac = new PolyfillAesCmac(new PolyfillAes(v.key));
+      const mac = await Cmac.importKey(polyfillProvider, v.key);
       await mac.update(v.message);
       expect(await mac.finish()).to.eql(v.tag);
     }
@@ -35,8 +36,10 @@ import WebCryptoAesCmac from "../src/internal/webcrypto/aes_cmac";
   }
 
   @test async "passes the AES-CMAC test vectors"() {
+    const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
+
     for (let v of PolyfillAesCmacSpec.vectors) {
-      const mac = await WebCryptoAesCmac.importKey(v.key, new WebCrypto());
+      const mac = await Cmac.importKey(webCryptoProvider, v.key);
       await mac.update(v.message);
       expect(await mac.finish()).to.eql(v.tag);
     }

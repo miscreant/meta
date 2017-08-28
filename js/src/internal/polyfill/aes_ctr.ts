@@ -31,7 +31,14 @@ export default class PolyfillAesCtr implements ICtrLike {
     this._buffer = new Block();
   }
 
-  public async encrypt(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
+  public clear(): this {
+    this._buffer.clear();
+    this._counter.clear();
+    this._cipher.clear();
+    return this;
+  }
+
+  public async encryptCtr(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
     if (iv.length !== Block.SIZE) {
       throw new Error("CTR: iv length must be equal to cipher block size");
     }
@@ -56,18 +63,6 @@ export default class PolyfillAesCtr implements ICtrLike {
     }
 
     return result;
-  }
-
-  public async decrypt(iv: Uint8Array, ciphertext: Uint8Array): Promise<Uint8Array> {
-    // AES-CTR decryption is identical to encryption
-    return this.encrypt(iv, ciphertext);
-  }
-
-  public clear(): this {
-    this._buffer.clear();
-    this._counter.clear();
-    this._cipher.clear();
-    return this;
   }
 }
 

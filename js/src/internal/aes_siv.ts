@@ -6,16 +6,10 @@ import { wipe } from "./wipe";
 import { xor } from "./xor";
 
 import IntegrityError from "../exceptions/integrity_error";
-import NotImplementedError from "../exceptions/not_implemented_error";
 import Block from "./block";
-import { ICtrLike, IMacLike, ISivLike } from "./interfaces";
+import { ICryptoProvider, ICtrLike, IMacLike, ISivLike } from "./interfaces";
 
-import PolyfillCrypto from "./polyfill";
-import PolyfillAes from "./polyfill/aes";
-import PolyfillAesCmac from "./polyfill/aes_cmac";
-import PolyfillAesCtr from "./polyfill/aes_ctr";
-import WebCryptoAesCmac from "./webcrypto/aes_cmac";
-import WebCryptoAesCtr from "./webcrypto/aes_ctr";
+import Cmac from "./mac/cmac";
 
 /** Maximum number of associated data items */
 const MAX_ASSOCIATED_DATA = 126;
@@ -24,8 +18,8 @@ const MAX_ASSOCIATED_DATA = 126;
 export default class AesSiv implements ISivLike {
   /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
   public static async importKey(
+    provider: ICryptoProvider,
     keyData: Uint8Array,
-    crypto: Crypto | PolyfillCrypto,
   ): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
@@ -35,36 +29,20 @@ export default class AesSiv implements ISivLike {
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
     const encKey = keyData.subarray(keyData.length / 2 | 0);
 
-    if (crypto instanceof PolyfillCrypto) {
-      const mac = new PolyfillAesCmac(new PolyfillAes(macKey));
-      const ctr = new PolyfillAesCtr(new PolyfillAes(encKey));
-      return new AesSiv(mac, ctr, null);
-    } else {
-      const mac = await WebCryptoAesCmac.importKey(macKey, crypto);
+    const mac = await Cmac.importKey(provider, macKey);
+    const ctr = await provider.importAesCtrKey(encKey);
 
-      try {
-        const ctr = await WebCryptoAesCtr.importKey(encKey, crypto);
-        return new AesSiv(mac, ctr, crypto);
-      } catch (e) {
-        if (e.message.includes("unsupported")) {
-          throw new NotImplementedError("AES-SIV: unsupported crypto backend (CTR missing). Use PolyfillCrypto.");
-        } else {
-          throw e;
-        }
-      }
-    }
+    return new AesSiv(mac, ctr);
   }
 
   private _mac: IMacLike;
   private _ctr: ICtrLike;
   private _tmp1: Block;
   private _tmp2: Block;
-  private _crypto: Crypto | null;
 
-  constructor(mac: IMacLike, ctr: ICtrLike, crypto: Crypto | null) {
+  constructor(mac: IMacLike, ctr: ICtrLike) {
     this._mac = mac;
     this._ctr = ctr;
-    this._crypto = crypto;
     this._tmp1 = new Block();
     this._tmp2 = new Block();
   }
@@ -85,7 +63,7 @@ export default class AesSiv implements ISivLike {
 
     // Encrypt.
     zeroIVBits(iv);
-    result.set(await this._ctr.encrypt(iv, plaintext), iv.length);
+    result.set(await this._ctr.encryptCtr(iv, plaintext), iv.length);
     return result;
   }
 
@@ -105,7 +83,8 @@ export default class AesSiv implements ISivLike {
     iv.set(tag);
     zeroIVBits(iv);
 
-    const result = await this._ctr.decrypt(iv, sealed.subarray(Block.SIZE));
+    // NOTE: "encryptCtr" is intentional. CTR encryption/decryption are the same
+    const result = await this._ctr.encryptCtr(iv, sealed.subarray(Block.SIZE));
 
     // Authenticate.
     const expectedTag = await this._s2v(associatedData, result);
