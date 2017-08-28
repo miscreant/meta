@@ -3,7 +3,7 @@
 
 import Block from "../block";
 import { IBlockCipher, ICryptoProvider, IMacLike } from "../interfaces";
-import { xor } from "../xor";
+import { xor } from "../util/xor";
 
 /**
  * The AES-CMAC message authentication code
@@ -15,12 +15,10 @@ export default class Cmac implements IMacLike {
 
     // Generate subkeys.
     const subkey1 = new Block();
-    const subkey2 = new Block();
-
     await cipher.encryptBlock(subkey1);
     subkey1.dbl();
 
-    subkey2.copy(subkey1);
+    const subkey2 = subkey1.clone();
     subkey2.dbl();
 
     return new Cmac(cipher, subkey1, subkey2);
@@ -104,8 +102,6 @@ export default class Cmac implements IMacLike {
       this._finished = true;
     }
 
-    const out = new Uint8Array(Block.SIZE);
-    out.set(this._buffer.data);
-    return out;
+    return this._buffer.clone().data;
   }
 }

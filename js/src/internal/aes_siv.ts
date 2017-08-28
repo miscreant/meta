@@ -1,9 +1,9 @@
 // Copyright (C) 2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import { equal } from "./constant-time";
-import { wipe } from "./wipe";
-import { xor } from "./xor";
+import { equal } from "./util/constant-time";
+import { wipe } from "./util/wipe";
+import { xor } from "./util/xor";
 
 import IntegrityError from "../exceptions/integrity_error";
 import Block from "./block";

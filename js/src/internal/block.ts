@@ -1,5 +1,5 @@
-import { select } from "./constant-time";
-import { wipe } from "./wipe";
+import { select } from "./util/constant-time";
+import { wipe } from "./util/wipe";
 
 /** An AES block (128-bits) */
 export default class Block {
@@ -30,6 +30,15 @@ export default class Block {
    */
   public clear() {
     wipe(this.data);
+  }
+
+  /**
+   * Make a copy of this block, returning a new block
+   */
+  public clone(): Block {
+    const ret = new Block();
+    ret.copy(this);
+    return ret;
   }
 
   /** Copy the contents of another block into this one */
