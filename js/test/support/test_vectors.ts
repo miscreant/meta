@@ -88,6 +88,27 @@ export class AesCmacExample {
   }
 }
 
+/** AES-PMAC test vectors */
+export class AesPmacExample {
+  static readonly DEFAULT_EXAMPLES_PATH = "../vectors/aes_pmac.tjson";
+
+  public readonly key: Uint8Array;
+  public readonly message: Uint8Array;
+  public readonly tag: Uint8Array;
+
+  static async loadAll(): Promise<AesPmacExample[]> {
+    return AesPmacExample.loadFromFile(AesPmacExample.DEFAULT_EXAMPLES_PATH);
+  }
+
+  static async loadFromFile(filename: string): Promise<AesPmacExample[]> {
+    let tjson = TJSON.parse(await fs.readFile(filename, "utf8"));
+    return tjson["examples"].map((ex: any) => {
+      let obj = Object.create(AesPmacExample.prototype);
+      return Object.assign(obj, ex);
+    });
+  }
+}
+
 /** dbl() test vectors */
 export class DblExample {
   static readonly DEFAULT_EXAMPLES_PATH = "../vectors/dbl.tjson";

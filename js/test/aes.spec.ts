@@ -2,11 +2,17 @@
 // MIT License. See LICENSE file for details.
 
 import { suite, test } from "mocha-typescript";
-import { expect } from "chai";
+import * as chai from "chai";
+import * as chaiAsPromised from "chai-as-promised";
 import { AesExample } from "./support/test_vectors";
 import Block from "../src/internal/block";
 
+import WebCrypto = require("node-webcrypto-ossl");
+import WebCryptoAes from "../src/internal/webcrypto/aes";
 import PolyfillAes from "../src/internal/polyfill/aes";
+
+let expect = chai.expect;
+chai.use(chaiAsPromised);
 
 @suite class PolyfillAesSpec {
   static vectors: AesExample[];
@@ -45,5 +51,30 @@ import PolyfillAes from "../src/internal/polyfill/aes";
 
     let expected = new Uint8Array([58, 111, 217, 50, 246, 8, 131, 95, 31, 86, 217, 220, 31, 206, 207, 163]);
     expect(block.data).to.eql(expected);
+  }
+}
+
+@suite class WebCryptoAesSpec {
+  static vectors: AesExample[];
+
+  static async before() {
+    this.vectors = await AesExample.loadAll();
+  }
+
+  @test "should not accept wrong key length"() {
+    const crypto = new WebCrypto();
+    expect(WebCryptoAes.importKey(crypto, new Uint8Array(10))).to.be.rejectedWith(Error);
+  }
+
+  @test async "should correctly encrypt blocks"() {
+    const crypto = new WebCrypto();
+
+    for (let v of WebCryptoAesSpec.vectors) {
+      const cipher = await WebCryptoAes.importKey(crypto, v.key);
+      const block = new Block();
+      block.data.set(v.src);
+      await cipher.encryptBlock(block);
+      expect(block.data).to.eql(v.dst);
+    }
   }
 }
