@@ -125,8 +125,12 @@ Miscreant.importKey(keyData, algorithm[, provider = Miscreant.webCryptoProvider(
 * **keyData**: a [Uint8Array] containing the encryption key to use.
   Key must be 32-bytes (for AES-128) or 64-bytes (for AES-256), as
   SIV uses two distinct AES keys to perform its operations.
-* **algorithm**: a string describing the algorithm to use. The only algorithm
-  presently supported is `"AES-SIV"`.
+* **algorithm**: a string describing the algorithm to use. The following
+  algorithms are supported:
+  * `"AES-SIV"`: CMAC-based construction described in [RFC 5297]. Slower but
+  standardized and more common.
+  * `"AES-PMAC-SIV"`: PMAC-based construction. Supports potentially faster
+  implementations, but is non-standard and only available in Miscreant libraries.
 * **provider**: a cryptography provider that implements Miscreant's
   [ICryptoProvider] interface.
 
@@ -154,7 +158,7 @@ decrease security.
 let keyData = new Uint32Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
 ```
 
 ### seal()
@@ -189,7 +193,7 @@ The **seal()** method returns a [Promise] that, when fulfilled, returns a
 let keyData = new Uint8Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
 
 // Encrypt plaintext
 
@@ -202,7 +206,8 @@ let ciphertext = await key.seal([nonce], plaintext);
 
 ### open()
 
-The **open()** method decrypts a message which has been encrypted using **AES-SIV**.
+The **open()** method decrypts a message which has been encrypted using
+**AES-SIV** or **AES-PMAC-SIV**.
 
 #### Syntax
 
@@ -232,7 +237,7 @@ will be rejected with an **IntegrityError**.
 let keyData = new Uint8Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-SIV");
+let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
 
 // Encrypt plaintext
 
@@ -280,7 +285,7 @@ Miscreant.polyfillCryptoProvider()
 You can pass it to `Miscreant.importKey()` like so:
 
 ```
-const key = Miscreant.importKey(keyData, "AES-SIV", Miscreant.polyfillCryptoProvider());
+const key = Miscreant.importKey(keyData, "AES-PMAC-SIV", Miscreant.polyfillCryptoProvider());
 ```
 
 ## Code of Conduct

@@ -109,7 +109,7 @@ export default class Pmac implements IMacLike {
    * finished is set true when we are done processing a message, and forbids
    * any subsequent writes until we reset the internal state
    */
-  private _finished: boolean;
+  private _finished: boolean = false;
 
   constructor(cipher: IBlockCipher, l: Block[], lInv: Block) {
     this._cipher = cipher;
@@ -126,14 +126,14 @@ export default class Pmac implements IMacLike {
     this._buffer.clear();
     this._bufferPos = 0;
     this._counter = 0;
+    this._offset.clear();
+    this._tag.clear();
     this._finished = false;
     return this;
   }
 
   public clear() {
     this.reset();
-    this._offset.clear();
-    this._tag.clear();
     this._cipher.clear();
   }
 

@@ -6,10 +6,12 @@ import { wipe } from "./util/wipe";
 import { xor } from "./util/xor";
 
 import IntegrityError from "../exceptions/integrity_error";
+import NotImplementedError from "../exceptions/not_implemented_error";
 import Block from "./block";
 import { ICryptoProvider, ICtrLike, IMacLike, ISivLike } from "./interfaces";
 
 import Cmac from "./mac/cmac";
+import Pmac from "./mac/pmac";
 
 /** Maximum number of associated data items */
 const MAX_ASSOCIATED_DATA = 126;
@@ -19,6 +21,7 @@ export default class AesSiv implements ISivLike {
   /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
   public static async importKey(
     provider: ICryptoProvider,
+    alg: string,
     keyData: Uint8Array,
   ): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
@@ -29,9 +32,23 @@ export default class AesSiv implements ISivLike {
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
     const encKey = keyData.subarray(keyData.length / 2 | 0);
 
-    const mac = await Cmac.importKey(provider, macKey);
-    const ctr = await provider.importAesCtrKey(encKey);
+    let mac: IMacLike;
 
+    switch (alg) {
+      case "AES-SIV":
+        mac = await Cmac.importKey(provider, macKey);
+        break;
+      case "AES-CMAC-SIV":
+        mac = await Cmac.importKey(provider, macKey);
+        break;
+      case "AES-PMAC-SIV":
+        mac = await Pmac.importKey(provider, macKey);
+        break;
+      default:
+        throw new NotImplementedError(`Miscreant: algorithm not supported: ${alg}`);
+    }
+
+    const ctr = await provider.importAesCtrKey(encKey);
     return new AesSiv(mac, ctr);
   }
 
