@@ -1,9 +1,12 @@
+# encoding: binary
 # frozen_string_literal: true
 
-require "miscreant/internals/aes"
-require "miscreant/internals/aes/siv"
-require "miscreant/internals/aes/cmac"
+require "miscreant/internals/block"
+require "miscreant/internals/siv"
 require "miscreant/internals/util"
+require "miscreant/internals/aes/block_cipher"
+require "miscreant/internals/aes/ctr"
+require "miscreant/internals/mac/cmac"
 
 module Miscreant
   # Internal functionality not intended for direct consumption
