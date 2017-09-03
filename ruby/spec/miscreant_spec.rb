@@ -1,3 +1,4 @@
+# encoding: binary
 # frozen_string_literal: true
 
 RSpec.describe Miscreant do
