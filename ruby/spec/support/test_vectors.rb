@@ -67,6 +67,27 @@ class Miscreant::Internals::MAC::CMAC::Example
   end
 end
 
+class Miscreant::Internals::MAC::PMAC::Example
+  attr_reader :name, :key, :message, :tag
+
+  # Default file to load examples from
+  DEFAULT_EXAMPLES = File.expand_path("../../../../vectors/aes_pmac.tjson", __FILE__)
+
+  def self.load_file(filename = DEFAULT_EXAMPLES)
+    examples = TJSON.load_file(filename).fetch("examples")
+    raise ParseError, "expected a toplevel array of examples" unless examples.is_a?(Array)
+
+    examples.map { |example| new(example) }
+  end
+
+  def initialize(attrs)
+    @name = attrs.fetch("name")
+    @key = attrs.fetch("key")
+    @message = attrs.fetch("message")
+    @tag = attrs.fetch("tag")
+  end
+end
+
 class Miscreant::Internals::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
