@@ -18,11 +18,12 @@ module Miscreant
       # Create a new AES-SIV instance
       #
       # @param key [String] 32-byte or 64-byte Encoding::BINARY cryptographic key
-      def initialize(key)
+      # @param mac [:CMAC, :PMAC] (optional) MAC function to use (default CMAC)
+      def initialize(key, mac_class = :CMAC)
         Util.validate_bytestring(key, length: [32, 64])
         length = key.length / 2
 
-        @mac = MAC::CMAC.new(key[0, length])
+        @mac = MAC.const_get(mac_class).new(key[0, length])
         @ctr = AES::CTR.new(key[length..-1])
       end
 
