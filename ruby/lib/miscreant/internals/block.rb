@@ -8,14 +8,36 @@ module Miscreant
       # Size of an AES block in bytes
       SIZE = 16
 
+      # Minimal irreducible polynomial for a 128-bit block size
+      R = 0x87
+
       attr_reader :data
 
+      # Create a new Block, optionally from the given data
       def initialize(data = nil)
         if data
           @data = Util.validate_bytestring(data, length: SIZE)
         else
           @data = "\0".b * SIZE
         end
+      end
+
+      # Inspect the contents of the block in hex
+      def inspect
+        "#<#{self.class} data:\"#{@data.unpack('H*').first}\">"
+      end
+
+      # Retrieve the value of the byte at the given index as an integer
+      def [](n)
+        raise IndexError, "n must be zero or greater (got #{n})" if n < 0
+        raise IndexError, "n must be less than #{SIZE} (got #{n})" unless n < SIZE
+
+        @data.getbyte(n)
+      end
+
+      # Set the value of the byte at the given index as an integer
+      def []=(n, byte)
+        @data.setbyte(n, byte)
       end
 
       # Reset the value of this block to all zeroes
@@ -45,7 +67,7 @@ module Miscreant
         end
 
         @data = words.reverse.pack("N4")
-        @data[-1] = (@data[-1].ord ^ Util.select(overflow, 0x87, 0)).chr
+        @data[-1] = (@data[-1].ord ^ Util.ct_select(overflow, R, 0)).chr
         self
       end
 
@@ -73,7 +95,7 @@ module Miscreant
         end
 
         SIZE.times do |i|
-          @data.setbyte(i, @data.getbyte(i) ^ value.getbyte(i))
+          self[i] ^= value.getbyte(i)
         end
       end
     end
