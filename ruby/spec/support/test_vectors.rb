@@ -91,8 +91,19 @@ end
 class Miscreant::Internals::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
-  # Default file to load examples from
-  DEFAULT_EXAMPLES = File.expand_path("../../../../vectors/aes_siv.tjson", __FILE__)
+  # AES-SIV (RFC 5297) examples
+  CMAC_EXAMPLES = File.expand_path("../../../../vectors/aes_siv.tjson", __FILE__)
+
+  # AES-PMAC-SIV examples
+  PMAC_EXAMPLES = File.expand_path("../../../../vectors/aes_pmac_siv.tjson", __FILE__)
+
+  def self.load_cmac_examples
+    load_file(CMAC_EXAMPLES)
+  end
+
+  def self.load_pmac_examples
+    load_file(PMAC_EXAMPLES)
+  end
 
   def self.load_file(filename = DEFAULT_EXAMPLES)
     examples = TJSON.load_file(filename).fetch("examples")
