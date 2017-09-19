@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "miscreant/internals/block"
-require "miscreant/internals/siv"
 require "miscreant/internals/util"
 require "miscreant/internals/aes/block_cipher"
 require "miscreant/internals/aes/ctr"

@@ -1,0 +1,58 @@
+{
+    "examples:A<O>":[
+        {
+            "name:s":"AES-SIV Nonce-based Authenticated Encryption Example #1",
+            "alg:s":"AES-SIV",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:d16":"",
+            "nonce:d16":"101112131415161718191a1b1c1d1e1f2021222324252627",
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"4b3d0f15ae9ffa9e65b949421582ef70e410910d6446c7759ebff9b5385a"
+        },
+        {
+            "name:s":"AES-SIV Nonce-based Authenticated Encryption Example #2",
+            "alg:s":"AES-SIV",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f06f6e6d6c6b6a69686766656463626160f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f",
+            "ad:d16":"",
+            "nonce:d16":"101112131415161718191a1b1c1d1e1f2021222324252627",
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"e618d2d6a86b50a8d7df82ab34aa950ab319d7fc15f7cd1ea99b1a033f20"
+        },
+        {
+            "name:s":"AES-SIV Authenticted Encryption with Associated Data Example",
+            "alg:s":"AES-SIV",
+            "key:d16":"7f7e7d7c7b7a79787776757473727170404142434445464748494a4b4c4d4e4f",
+            "ad:d16":"00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddccbbaa99887766554433221100",
+            "nonce:d16":"09f911029d74e35bd84156c5635688c0",
+            "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
+            "ciphertext:d16":"85825e22e90cf2ddda2c548dc7c1b6310dcdaca0cebf9dc6cb90583f5bf1506e02cd48832b00e4e598b2b22a53e6199d4df0c1666a35a0433b250dc134d776"
+        },
+        {
+            "name:s":"AES-PMAC-SIV Nonce-based Authenticated Encryption Example #1",
+            "alg:s":"AES-PMAC-SIV",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:d16":"",
+            "nonce:d16":"101112131415161718191a1b1c1d1e1f2021222324252627",
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"3e6acab1cc2f4a847f8fa605e7e1ce55d9200b444571f8b8956eb3df5498"
+        },
+        {
+            "name:s":"AES-PMAC-SIV Nonce-based Authenticated Encryption Example #2",
+            "alg:s":"AES-PMAC-SIV",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f06f6e6d6c6b6a69686766656463626160f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f",
+            "ad:d16":"",
+            "nonce:d16":"101112131415161718191a1b1c1d1e1f2021222324252627",
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"0623a7275afd5082035e43b0dcafe3a891c2b8eed2b1a07f0dd25180e072"
+        },
+        {
+            "name:s":"AES-PMAC-SIV Authenticted Encryption with Associated Data Example",
+            "alg:s":"AES-PMAC-SIV",
+            "key:d16":"7f7e7d7c7b7a79787776757473727170404142434445464748494a4b4c4d4e4f",
+            "ad:d16":"00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddccbbaa99887766554433221100",
+            "nonce:d16":"09f911029d74e35bd84156c5635688c0",
+            "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
+            "ciphertext:d16":"1463d1119b2a2797241bb1674633dff13b9de11e5e2f526048b36c40c7722667b2957018023bf0e52792b703a01e88aacd49898cecfce943d7f61a2337a097"
+        }
+    ]
+}

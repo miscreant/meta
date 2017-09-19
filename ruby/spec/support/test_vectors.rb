@@ -88,7 +88,7 @@ class Miscreant::Internals::MAC::PMAC::Example
   end
 end
 
-class Miscreant::Internals::SIV::Example
+class Miscreant::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
   # AES-SIV (RFC 5297) examples
@@ -116,6 +116,30 @@ class Miscreant::Internals::SIV::Example
     @name = attrs.fetch("name")
     @key = attrs.fetch("key")
     @ad = attrs.fetch("ad")
+    @plaintext = attrs.fetch("plaintext")
+    @ciphertext = attrs.fetch("ciphertext")
+  end
+end
+
+class Miscreant::AEAD::Example
+  attr_reader :name, :alg, :key, :ad, :nonce, :plaintext, :ciphertext
+
+  # Default file to load examples from
+  DEFAULT_EXAMPLES = File.expand_path("../../../../vectors/aes_siv_aead.tjson", __FILE__)
+
+  def self.load_file(filename = DEFAULT_EXAMPLES)
+    examples = TJSON.load_file(filename).fetch("examples")
+    raise ParseError, "expected a toplevel array of examples" unless examples.is_a?(Array)
+
+    examples.map { |example| new(example) }
+  end
+
+  def initialize(attrs)
+    @name = attrs.fetch("name")
+    @alg = attrs.fetch("alg")
+    @key = attrs.fetch("key")
+    @ad = attrs.fetch("ad")
+    @nonce = attrs.fetch("nonce")
     @plaintext = attrs.fetch("plaintext")
     @ciphertext = attrs.fetch("ciphertext")
   end
