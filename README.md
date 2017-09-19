@@ -64,14 +64,14 @@ The following constructions are provided by **Miscreant**:
   and defends against reordering and truncation attacks. Unlike **CHAIN**,
   **STREAM** supports parallelization and seeking, allowing chunks within
   a message to be encrypted and decrypted in any order the user wants.
-  **STREAM** achieves a slightly lower definition of security for an online
-  encryption scheme (OAE1) as compared to **CHAIN**.
+  **STREAM** provides nonce-based online authenticated encryption (nOAE),
+  which the [CHAIN/STREAM] paper proves is equivalent to OAE2.
 
 Though not yet described in an RFC, **CHAIN** and **STREAM** were designed by
 [Phil Rogaway] (who also created **AES-SIV**) and are described in the paper
 [Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance], which
 contains a rigorous security analysis proving them secure under the definitions
-of OAE2 and OAE1 respectively.
+of OAE2 and nOAE respectively.
 
 _NOTE:_ this library does not yet support **CHAIN** and **STREAM**! Please see
 the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
@@ -269,8 +269,8 @@ full hardware acceleration and should still remain very fast.
 The **CHAIN** construction achieves the best-possible security for an online
 [authenticated encryption] scheme (OAE2).
 
-The **STREAM** construction provides a weaker definition of online
-[authenticated encryption] (OAE1) but supports parallel encryption/decryption
+The **STREAM** construction provides nonce-based online
+[authenticated encryption] (nOAE) and supports parallel encryption/decryption
 as well as random access while defending against reordering and truncation
 attacks.
 
