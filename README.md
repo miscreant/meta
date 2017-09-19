@@ -305,6 +305,10 @@ same key before the "birthday bound" is hit and repeated IVs become probable
 enough to be a security concern. Though this number is relatively large, it is
 not outside the realm of possibility.
 
+(Note that the [1k-PMAC_Plus] construction might be able to address this)
+
+[1k-PMAC_Plus]: https://github.com/miscreant/miscreant/issues/76
+
 ### 5. Q: Are there any disadvantages to the SIV approach in general?
 
 A: SIV encryption requires making a complete pass over the input in order to
