@@ -261,10 +261,15 @@ headers including optional associated data and nonce.
 
 ### 3. Q: What's the tl;dr for why I should use this?
 
-A: It provides stronger security properties at the cost of a small performance
-hit as compared to **AES-GCM**. We hope to have benchmarks soon so we can show
-exactly how much performance is lost, however the scheme is still amenable to
-full hardware acceleration and should still remain very fast.
+A: It provides stronger security properties as compared to **AES-GCM**.
+On Intel-based CPUs there is a ~50% performance hit, however on devices without
+hardware acceleration for GCM's GHASH function (e.g. IoT/embedded), the
+performance should be much better.
+
+We hope to have benchmarks soon so we can show exactly how much performance is
+lost/gained over **AES-GCM** and **AES-GCM-SIV** on various platforms, however
+the scheme is still amenable to full hardware acceleration/parallelization
+(at least in **AES-PMAC-SIV**'s case)  and should still remain very fast.
 
 The **CHAIN** construction achieves the best-possible security for an online
 [authenticated encryption] scheme (OAE2).
