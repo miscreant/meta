@@ -41,7 +41,7 @@ module Miscreant
       #
       # @return [String] encrypted ciphertext
       def seal(plaintext, associated_data = [])
-        Util.validate_bytestring(plaintext)
+        raise TypeError, "expected String, got #{plaintext.class}" unless plaintext.is_a?(String)
         v = _s2v(associated_data, plaintext)
         ciphertext = @ctr.encrypt(_zero_iv_bits(v), plaintext)
         v + ciphertext
@@ -55,7 +55,7 @@ module Miscreant
       # @raise [Miscreant::IntegrityError] ciphertext and/or associated data are corrupt or tampered with
       # @return [String] decrypted plaintext
       def open(ciphertext, associated_data = [])
-        Util.validate_bytestring(ciphertext)
+        raise TypeError, "expected String, got #{ciphertext.class}" unless ciphertext.is_a?(String)
         v = ciphertext[0, Block::SIZE]
         plaintext = @ctr.encrypt(_zero_iv_bits(v), ciphertext[Block::SIZE..-1])
         t = _s2v(associated_data, plaintext)
