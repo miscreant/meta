@@ -81,27 +81,24 @@ Or install it yourself as:
 
 ## API
 
-### Miscreant::AES::SIV
+### Miscreant::AEAD
 
-The `Miscreant::AES::SIV` class provides the main interface to the **AES-SIV**
+The `Miscreant::AEAD` class provides the main interface to the **AES-SIV**
 misuse resistant authenticated encryption function.
 
-To make a new instance, pass in a 32-byte or 64-byte key. Note that these
-options are twice the size of what you might be expecting (AES-SIV uses two
-AES keys).
-
-You can generate a random key using the `generate_key` method (default 32 bytes):
+To make a new instance, pass in a binary-encoded 32-byte or 64-byte key.
+Note that these options are twice the size of what you might be expecting
+(AES-SIV uses two AES keys).
 
 ```ruby
-key_bytes = Miscreant::AES::SIV.generate_key
-key = Miscreant::AES::SIV.new(key_bytes)
-# => #<Miscreant::AES::SIV:0x007fe0109e85e8>
+secret_key = SecureRandom.random_bytes(32).b
+encryptor = Miscreant::AEAD.new("AES-SIV", secret_key)
 ```
 
 #### Encryption (#seal)
 
-The `Miscreant::AES::SIV#seal` method encrypts a message along with a set of
-*associated data* message headers.
+The `Miscreant::AEAD#seal` method encrypts a binary-encoded message along with
+a set of *associated data* message headers.
 
 It's recommended to include a unique "nonce" value with each message. This
 prevents those who may be observing your ciphertexts from being able to tell
@@ -113,19 +110,20 @@ attackers.
 Example:
 
 ```ruby
-message = "Hello, world!"
+message = "Hello, world!".b
 nonce = SecureRandom.random_bytes(16)
 ciphertext = key.seal(message, nonce)
 ```
 
 #### Decryption (#open)
 
-The `Miscreant::AES::SIV#open` method decrypts a ciphertext with the given key.
+The `Miscreant::AEAD#open` method decrypts a binary-encoded ciphertext with the
+given key.
 
 Example:
 
 ```ruby
-message = "Hello, world!"
+message = "Hello, world!".b
 nonce = SecureRandom.random_bytes(16)
 ciphertext = key.seal(message, nonce)
 plaintext = key.open(ciphertext, nonce)
