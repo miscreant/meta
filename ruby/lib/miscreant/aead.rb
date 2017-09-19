@@ -1,3 +1,4 @@
+# encoding: binary
 # frozen_string_literal: true
 
 module Miscreant
@@ -31,7 +32,7 @@ module Miscreant
       else raise ArgumentError, "unsupported algorithm: #{alg.inspect}"
       end
 
-      @siv = Internals::SIV.new(key, mac)
+      @siv = SIV.new(key, mac)
     end
 
     # Inspect this AES-SIV instance
