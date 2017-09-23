@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-RSpec.describe Miscreant::SIV do
+RSpec.describe Miscreant::AES::SIV do
   let(:example_key) { "\x01".b * 32 }
   let(:example_ad) { ["INVALID".b] }
 

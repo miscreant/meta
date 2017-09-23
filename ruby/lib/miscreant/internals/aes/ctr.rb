@@ -10,7 +10,7 @@ module Miscreant
         #
         # @param key [String] 16-byte or 32-byte Encoding::BINARY cryptographic key
         def initialize(key)
-          Util.validate_bytestring(key, length: [16, 32])
+          Util.validate_bytestring("key", key, length: [16, 32])
           @cipher = OpenSSL::Cipher::AES.new(key.bytesize * 8, :CTR)
           @cipher.encrypt
           @cipher.key = key
@@ -28,7 +28,7 @@ module Miscreant
         # @param iv [String] initial counter value as a 16-byte Encoding::BINARY string
         # @param message [String] message to be encrypted
         def encrypt(iv, message)
-          Util.validate_bytestring(iv, length: Block::SIZE)
+          Util.validate_bytestring("IV", iv, length: Block::SIZE)
           return "".b if message.empty?
 
           @cipher.iv = iv

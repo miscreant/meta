@@ -88,7 +88,7 @@ class Miscreant::Internals::MAC::PMAC::Example
   end
 end
 
-class Miscreant::SIV::Example
+class Miscreant::AES::SIV::Example
   attr_reader :name, :key, :ad, :plaintext, :ciphertext
 
   # AES-SIV (RFC 5297) examples

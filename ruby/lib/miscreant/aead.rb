@@ -8,6 +8,25 @@ module Miscreant
   # This is the one you probably want to use. This class provides a high-level
   # interface to Miscreant's misuse-resistant encryption.
   class AEAD
+    # Generate a new random AES-SIV key of the given size
+    #
+    # @param size [Integer] size of key in bytes (32 or 64)
+    #
+    # @return [String] newly generated AES-SIV key
+    def self.generate_key(size = 32)
+      raise ArgumentError, "key size must be 32 or 64 bytes" unless [32, 64].include?(size)
+      AES::SIV.generate_key(size)
+    end
+
+    # Generate a random "nonce" (i.e. number used once) value
+    #
+    # @param size [Integer] size of nonce in bytes (default 16)
+    #
+    # @return [String] newly generated nonce value
+    def self.generate_nonce(size = 16)
+      SecureRandom.random_bytes(size)
+    end
+
     # Create a new AEAD encryptor instance.
     #
     # You will need to select an algorithm to use, passed as a string:
@@ -22,7 +41,7 @@ module Miscreant
     # @param alg ["AES-SIV", "AES-PMAC-SIV"] cryptographic algorithm to use
     # @param key [String] 32-byte or 64-byte random Encoding::BINARY secret key
     def initialize(alg, key)
-      Internals::Util.validate_bytestring(key, length: [32, 64])
+      Internals::Util.validate_bytestring("key", key, length: [32, 64])
 
       case alg
       when "AES-SIV", "AES-CMAC-SIV"
@@ -32,7 +51,7 @@ module Miscreant
       else raise ArgumentError, "unsupported algorithm: #{alg.inspect}"
       end
 
-      @siv = SIV.new(key, mac)
+      @siv = AES::SIV.new(key, mac)
     end
 
     # Inspect this AES-SIV instance

@@ -92,7 +92,7 @@ module Miscreant
         #
         # @return [String] PMAC tag
         def digest(message)
-          Util.validate_bytestring(message)
+          Util.validate_bytestring("message", message)
 
           offset = Block.new
           tmp = Block.new

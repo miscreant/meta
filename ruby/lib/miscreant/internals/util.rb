@@ -59,15 +59,15 @@ module Miscreant
       end
 
       # Ensure a string is a valid bytestring (potentially of a given length)
-      def validate_bytestring(string, length: nil)
-        raise TypeError, "expected String, got #{string.class}" unless string.is_a?(String)
-        raise ArgumentError, "value must be Encoding::BINARY" unless string.encoding == Encoding::BINARY
+      def validate_bytestring(name, string, length: nil)
+        raise TypeError, "expected String for #{name}, got #{string.class}" unless string.is_a?(String)
+        raise ArgumentError, "#{name} must be Encoding::BINARY" unless string.encoding == Encoding::BINARY
 
         case length
         when Array
-          raise ArgumentError, "value must be #{length.join(' or ')} bytes long" unless length.include?(string.bytesize)
+          raise ArgumentError, "#{name} must be #{length.join(' or ')} bytes long" unless length.include?(string.bytesize)
         when Integer
-          raise ArgumentError, "value must be #{length}-bytes long" unless string.bytesize == length
+          raise ArgumentError, "#{name} must be #{length}-bytes long" unless string.bytesize == length
         else
           raise TypeError, "bad length parameter: #{length.inspect} (#{length.class}" unless length.nil?
         end

@@ -38,7 +38,7 @@ module Miscreant
         #
         # @return [String] CMAC tag
         def digest(message)
-          Util.validate_bytestring(message)
+          Util.validate_bytestring("message", message)
 
           if message.empty? || message.length % Block::SIZE != 0
             message = Util.pad(message, Block::SIZE)

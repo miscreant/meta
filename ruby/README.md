@@ -91,7 +91,7 @@ Note that these options are twice the size of what you might be expecting
 (AES-SIV uses two AES keys).
 
 ```ruby
-secret_key = SecureRandom.random_bytes(32).b
+secret_key = Miscreant::AEAD.generate_key
 encryptor = Miscreant::AEAD.new("AES-SIV", secret_key)
 ```
 
@@ -110,8 +110,8 @@ attackers.
 Example:
 
 ```ruby
-message = "Hello, world!".b
-nonce = SecureRandom.random_bytes(16)
+message = "Hello, world!"
+nonce = Miscreant::AEAD.generate_nonce
 ciphertext = key.seal(message, nonce)
 ```
 
@@ -123,8 +123,8 @@ given key.
 Example:
 
 ```ruby
-message = "Hello, world!".b
-nonce = SecureRandom.random_bytes(16)
+message = "Hello, world!"
+nonce = Miscreant::AEAD.generate_nonce
 ciphertext = key.seal(message, nonce)
 plaintext = key.open(ciphertext, nonce)
 ```

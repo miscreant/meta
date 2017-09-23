@@ -17,7 +17,7 @@ module Miscreant
         # @raise [TypeError] the key was not a String
         # @raise [ArgumentError] the key was the wrong length or encoding
         def initialize(key)
-          Util.validate_bytestring(key, length: [16, 32])
+          Util.validate_bytestring("key", key, length: [16, 32])
 
           @cipher = OpenSSL::Cipher.new("AES-#{key.length * 8}-ECB")
           @cipher.encrypt
@@ -39,7 +39,7 @@ module Miscreant
         # @raise [TypeError] the message was not a String
         # @raise [ArgumentError] the message was the wrong length
         def encrypt(message)
-          Util.validate_bytestring(message, length: Block::SIZE)
+          Util.validate_bytestring("message", message, length: Block::SIZE)
           @cipher.update(message) + @cipher.final
         end
       end

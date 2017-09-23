@@ -16,7 +16,7 @@ module Miscreant
       # Create a new Block, optionally from the given data
       def initialize(data = nil)
         if data
-          @data = Util.validate_bytestring(data, length: SIZE)
+          @data = Util.validate_bytestring("block data", data, length: SIZE)
         else
           @data = "\0".b * SIZE
         end
@@ -90,7 +90,7 @@ module Miscreant
         when Block
           value = value.data
         when String
-          Util.validate_bytestring(value, length: SIZE)
+          Util.validate_bytestring("value", value, length: SIZE)
         else raise TypeError, "invalid XOR input: #{value.class}"
         end
 

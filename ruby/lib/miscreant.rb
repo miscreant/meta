@@ -6,7 +6,7 @@ require "securerandom"
 
 require "miscreant/version"
 require "miscreant/aead"
-require "miscreant/siv"
+require "miscreant/aes/siv"
 require "miscreant/internals"
 
 # Miscreant: A misuse-resistant symmetric encryption library
