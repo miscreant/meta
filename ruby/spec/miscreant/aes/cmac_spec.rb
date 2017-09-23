@@ -1,7 +1,7 @@
 # encoding: binary
 # frozen_string_literal: true
 
-RSpec.describe Miscreant::Internals::MAC::CMAC do
+RSpec.describe Miscreant::AES::CMAC do
   let(:example_key) { ("\x01" * 16).b }
 
   describe "inspect" do

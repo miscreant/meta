@@ -27,7 +27,14 @@ module Miscreant
         Internals::Util.validate_bytestring("key", key, length: [32, 64])
         length = key.length / 2
 
-        @mac = Internals::MAC.const_get(mac_class).new(key[0, length])
+        case mac_class
+        when :CMAC
+          @mac = CMAC.new(key[0, length])
+        when :PMAC
+          @mac = PMAC.new(key[0, length])
+        else raise ArgumentError, "bad MAC class: #{mac_class} (expected :CMAC or :PMAC)"
+        end
+
         @ctr = Internals::AES::CTR.new(key[length..-1])
       end
 

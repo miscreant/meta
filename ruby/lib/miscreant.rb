@@ -6,6 +6,8 @@ require "securerandom"
 
 require "miscreant/version"
 require "miscreant/aead"
+require "miscreant/aes/cmac"
+require "miscreant/aes/pmac"
 require "miscreant/aes/siv"
 require "miscreant/internals"
 

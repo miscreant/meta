@@ -47,7 +47,7 @@ class Miscreant::Internals::AES::CTR::Example
   end
 end
 
-class Miscreant::Internals::MAC::CMAC::Example
+class Miscreant::AES::CMAC::Example
   attr_reader :key, :message, :tag
 
   # Default file to load examples from
@@ -67,7 +67,7 @@ class Miscreant::Internals::MAC::CMAC::Example
   end
 end
 
-class Miscreant::Internals::MAC::PMAC::Example
+class Miscreant::AES::PMAC::Example
   attr_reader :name, :key, :message, :tag
 
   # Default file to load examples from
