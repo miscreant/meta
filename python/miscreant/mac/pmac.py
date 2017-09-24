@@ -1,6 +1,6 @@
 """pmac.py: The Parallel Message Authentication Code (PMAC)"""
 
-from .. import (block, util)
+from .. import (block, ct, ctz)
 from ..block import Block
 
 from cryptography.hazmat.backends import default_backend
@@ -61,12 +61,12 @@ class PMAC(object):
         last_bit = self.l_inv.data[block.SIZE - 1] & 1
 
         for i in reversed(range(1, block.SIZE)):
-            carry = util.ct_select(self.l_inv.data[i - 1] & 1, 0x80, 0)
+            carry = ct.select(self.l_inv.data[i - 1] & 1, 0x80, 0)
             self.l_inv.data[i] = (self.l_inv.data[i] >> 1) | carry
 
         self.l_inv.data[0] >>= 1
-        self.l_inv.data[0] ^= util.ct_select(last_bit, 0x80, 0)
-        self.l_inv.data[block.SIZE - 1] ^= util.ct_select(last_bit, block.R >> 1, 0)
+        self.l_inv.data[0] ^= ct.select(last_bit, 0x80, 0)
+        self.l_inv.data[block.SIZE - 1] ^= ct.select(last_bit, block.R >> 1, 0)
 
         # digest contains the PMAC tag-in-progress
         self.digest = Block()
@@ -142,7 +142,7 @@ class PMAC(object):
         return bytes(self.digest.data)
 
     def __process_buffer(self):
-        self.offset.xor_in_place(self.l[util.ctz(self.counter + 1)])
+        self.offset.xor_in_place(self.l[ctz.trailing_zeroes(self.counter + 1)])
         self.buffer.xor_in_place(self.offset)
         self.counter += 1
 

@@ -1,7 +1,7 @@
 """block.py: A 128-bit block (i.e. for AES)"""
 
 from struct import (pack, unpack)
-from . import util
+from . import ct
 
 # Size of an AES block in bytes
 SIZE = 16
@@ -60,7 +60,7 @@ class Block(object):
             output_words.append(new_word)
 
         self.data = bytearray(pack(b"!LLLL", *reversed(output_words)))
-        self.data[-1] ^= util.ct_select(overflow, R, 0)
+        self.data[-1] ^= ct.select(overflow, R, 0)
 
     def encrypt(self, cipher):
         """Encrypt this block in-place with the given cipher"""
@@ -73,12 +73,13 @@ class Block(object):
 
         if isinstance(value, Block):
             value = value.data
-        else:
-            if not isinstance(value, bytes) and not isinstance(value, bytearray):
-                raise TypeError("value must be bytes or bytearray")
+        elif isinstance(value, bytes):
+            value = bytearray(value)
+        elif not isinstance(value, bytearray):
+            raise TypeError("value must be bytes or bytearray")
 
-            if len(value) != SIZE:
-                raise ValueError("value must be 16-bytes")
+        if len(value) != SIZE:
+            raise ValueError("value must be 16-bytes")
 
         for i in range(SIZE):
             self.data[i] ^= value[i]
