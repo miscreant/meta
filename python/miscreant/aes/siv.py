@@ -9,13 +9,8 @@ from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
 
-from .. import (util, exceptions)
-
-#: Size of an AES block (i.e. input/output from the AES function)
-AES_BLOCK_SIZE = 16
-
-#: A bytestring of all zeroes, the same length as an AES block
-AES_ZERO_BLOCK = b"\0" * AES_BLOCK_SIZE
+from .. import (block, exceptions)
+from ..block import Block
 
 class SIV(object):
     """The AES-SIV misuse resistant authenticated encryption cipher"""
@@ -60,8 +55,8 @@ class SIV(object):
         if associated_data is None:
             associated_data = []
 
-        v = ciphertext[0:AES_BLOCK_SIZE]
-        ciphertext = ciphertext[AES_BLOCK_SIZE:]
+        v = ciphertext[0:block.SIZE]
+        ciphertext = ciphertext[block.SIZE:]
         plaintext = self.__transform(v, ciphertext)
 
         t = self.__s2v(associated_data, plaintext)
@@ -75,9 +70,16 @@ class SIV(object):
         if not data:
             return b""
 
+        # "We zero-out the top bit in each of the last two 32-bit words
+        # of the IV before assigning it to Ctr"
+        # -- http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf
+        iv = bytearray(v)
+        iv[8] = iv[8] & 0x7f
+        iv[12] = iv[12] & 0x7f
+
         encryptor = Cipher(
             algorithms.AES(self.enc_key),
-            modes.CTR(util.zero_iv_bits(v)),
+            modes.CTR(bytes(iv)),
             backend=default_backend()
         ).encryptor()
 
@@ -95,24 +97,33 @@ class SIV(object):
         # vectors is zero, however in SIV construction this case is never
         # triggered, since we always pass plaintext as the last vector (even
         # if it's zero-length), so we omit this case.
-        d = self.__mac(AES_ZERO_BLOCK)
+        d = Block()
+        d.xor_in_place(self.__mac(d.data))
 
         for ad in associated_data:
             if not isinstance(ad, bytes):
                 raise TypeError("associated data must be bytes")
 
-            d = util.dbl(d)
-            d = util.xor(d, self.__mac(ad))
+            d.dbl()
+            d.xor_in_place(self.__mac(ad))
 
-        if len(plaintext) >= AES_BLOCK_SIZE:
-            d = util.xorend(plaintext, d)
+        if len(plaintext) >= block.SIZE:
+            mac = cmac.CMAC(algorithms.AES(self.mac_key), backend=default_backend())
+            difference = len(plaintext) - block.SIZE
+            mac.update(plaintext[:difference])
+            d.xor_in_place(plaintext[difference:])
+            mac.update(bytes(d.data))
+            return mac.finalize()
         else:
-            d = util.dbl(d)
-            d = util.xor(d, util.pad(plaintext, AES_BLOCK_SIZE))
-
-        return self.__mac(d)
+            d.dbl()
+            pt_length = len(plaintext)
+            pt_bytearray = bytearray(plaintext)
+            for i in range(pt_length):
+                d.data[i] ^= pt_bytearray[i]
+            d.data[pt_length] ^= 0x80
+            return self.__mac(d.data)
 
     def __mac(self, input):
         mac = cmac.CMAC(algorithms.AES(self.mac_key), backend=default_backend())
-        mac.update(input)
+        mac.update(bytes(input))
         return mac.finalize()
