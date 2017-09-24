@@ -21,7 +21,7 @@ class SIV(object):
     """The AES-SIV misuse resistant authenticated encryption cipher"""
 
     @staticmethod
-    def generate_key(size = 32):
+    def generate_key(size=32):
         """Generate a new random AES-SIV key of the given size"""
         if size != 32 and size != 64:
             raise ValueError("key size must be 32 or 64 bytes")
@@ -40,19 +40,25 @@ class SIV(object):
         self.mac_key = key[0:length]
         self.enc_key = key[length:]
 
-    def seal(self, plaintext, associated_data = []):
-        """Encrypt a message using AES-SIV, authenticating it along with the associated data"""
+    def seal(self, plaintext, associated_data=None):
+        """Encrypt a message using AES-SIV, authenticating and the associated data"""
         if not isinstance(plaintext, bytes):
             raise TypeError("plaintext must be bytes")
+
+        if associated_data is None:
+            associated_data = []
 
         v = self.__s2v(associated_data, plaintext)
         ciphertext = self.__transform(v, plaintext)
         return v + ciphertext
 
-    def open(self, ciphertext, associated_data = []):
-        """Verify and decrypt an AES-SIV ciphertext, authenticating it along with the associated data"""
+    def open(self, ciphertext, associated_data=None):
+        """Verify and decrypt an AES-SIV ciphertext, authenticating and the associated data"""
         if not isinstance(ciphertext, bytes):
             raise TypeError("ciphertext must be bytes")
+
+        if associated_data is None:
+            associated_data = []
 
         v = ciphertext[0:AES_BLOCK_SIZE]
         ciphertext = ciphertext[AES_BLOCK_SIZE:]
@@ -110,4 +116,3 @@ class SIV(object):
         mac = cmac.CMAC(algorithms.AES(self.mac_key), backend=default_backend())
         mac.update(input)
         return mac.finalize()
-
