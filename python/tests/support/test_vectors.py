@@ -6,6 +6,59 @@ import binascii
 import json
 from collections import namedtuple
 
+class AESExample(namedtuple("AESExample", ["key", "src", "dst"])):
+    @staticmethod
+    def load():
+        """Load message examples from vectors/aes.tjson"""
+        return AESExample.load_from_file("../vectors/aes.tjson")
+
+    @staticmethod
+    def load_from_file(filename):
+        """Load message examples from the specified file"""
+        examples_file = open(filename, "r")
+        examples_text = examples_file.read()
+        examples_file.close()
+
+        examples_tjson = json.loads(examples_text)
+        examples = examples_tjson[u"examples:A<O>"]
+
+        result = []
+        for example in examples:
+            result.append(AESExample(
+                key=binascii.unhexlify(example[u"key:d16"]),
+                src=binascii.unhexlify(example[u"src:d16"]),
+                dst=binascii.unhexlify(example[u"dst:d16"])
+            ))
+
+        return result
+
+class PMACExample(namedtuple("PMACExample", ["name", "key", "message", "tag"])):
+    @staticmethod
+    def load():
+        """Load message examples from vectors/aes_pmac.tjson"""
+        return PMACExample.load_from_file("../vectors/aes_pmac.tjson")
+
+    @staticmethod
+    def load_from_file(filename):
+        """Load message examples from the specified file"""
+        examples_file = open(filename, "r")
+        examples_text = examples_file.read()
+        examples_file.close()
+
+        examples_tjson = json.loads(examples_text)
+        examples = examples_tjson[u"examples:A<O>"]
+
+        result = []
+        for example in examples:
+            result.append(PMACExample(
+                name=example[u"name:s"],
+                key=binascii.unhexlify(example[u"key:d16"]),
+                message=binascii.unhexlify(example[u"message:d16"]),
+                tag=binascii.unhexlify(example[u"tag:d16"])
+            ))
+
+        return result
+
 class SIVExample(namedtuple("SIVExample", ["name", "key", "ad", "plaintext", "ciphertext"])):
     @staticmethod
     def load():

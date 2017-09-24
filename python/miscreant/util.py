@@ -1,11 +1,36 @@
 """util.py: Utility functions"""
 
-import array, sys
-from struct import *
+import sys
+from struct import (pack, unpack)
 
-def select(subject, result_if_one, result_if_zero):
+# Lookup table for the number of trailing zeroes in a byte
+CTZ_TABLE = [
+    8, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    7, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    6, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    5, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0,
+    4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0
+]
+
+def ct_select(subject, result_if_one, result_if_zero):
     """Perform a constant time(-ish) branch operation"""
     return (~(subject - 1) & result_if_one) | ((subject - 1) & result_if_zero)
+
+
+def ctz(value):
+    """Count the number of trailing zeros in a given 8-bit integer"""
+    return CTZ_TABLE[value]
 
 
 def dbl(value):
@@ -21,7 +46,7 @@ def dbl(value):
         output_words.append(new_word)
 
     result = bytearray(pack(b"!LLLL", *reversed(output_words)))
-    result[-1] ^= select(overflow, 0x87, 0)
+    result[-1] ^= ct_select(overflow, 0x87, 0)
 
     return bytes(result)
 
@@ -45,7 +70,7 @@ def xorend(a, b):
     """XOR the second value into the end of the first"""
     difference = len(a) - len(b)
 
-    left  = a[:difference]
+    left = a[:difference]
     right = a[difference:]
 
     return left + xor(right, b)
