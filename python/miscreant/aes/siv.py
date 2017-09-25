@@ -23,7 +23,7 @@ class SIV(object):
 
         return os.urandom(size)
 
-    def __init__(self, key):
+    def __init__(self, key, mac=cmac.CMAC):
         """Create a new SIV object"""
         if not isinstance(key, bytes):
             raise TypeError("key must be bytes")
@@ -34,6 +34,7 @@ class SIV(object):
         length = len(key) >> 1
         self.mac_key = key[0:length]
         self.enc_key = key[length:]
+        self.mac_alg = mac
 
     def seal(self, plaintext, associated_data=None):
         """Encrypt a message using AES-SIV, authenticating and the associated data"""
@@ -108,7 +109,7 @@ class SIV(object):
             d.xor_in_place(self.__mac(ad))
 
         if len(plaintext) >= block.SIZE:
-            mac = cmac.CMAC(algorithms.AES(self.mac_key), backend=default_backend())
+            mac = self.mac_alg(algorithms.AES(self.mac_key), backend=default_backend())
             difference = len(plaintext) - block.SIZE
             mac.update(plaintext[:difference])
             d.xor_in_place(plaintext[difference:])
@@ -124,6 +125,6 @@ class SIV(object):
             return self.__mac(d.data)
 
     def __mac(self, input):
-        mac = cmac.CMAC(algorithms.AES(self.mac_key), backend=default_backend())
+        mac = self.mac_alg(algorithms.AES(self.mac_key), backend=default_backend())
         mac.update(bytes(input))
         return mac.finalize()

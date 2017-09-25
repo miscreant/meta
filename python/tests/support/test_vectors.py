@@ -87,6 +87,12 @@ class SIVExample(namedtuple("SIVExample", ["name", "key", "ad", "plaintext", "ci
 
         return result
 
+class PMACSIVExample(SIVExample):
+    @staticmethod
+    def load():
+        """Load message examples from vectors/aes_pmac_siv.tjson"""
+        return SIVExample.load_from_file("../vectors/aes_pmac_siv.tjson")
+
 class DblExample(namedtuple("DblExample", ["input", "output"])):
     @staticmethod
     def load():
