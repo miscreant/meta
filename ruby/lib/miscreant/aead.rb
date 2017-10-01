@@ -75,7 +75,7 @@ module Miscreant
       @siv.seal(plaintext, [ad, nonce])
     end
 
-    # Verify and decrypt aciphertext, authenticating it along with the associated data
+    # Verify and decrypt a ciphertext, authenticating it along with the associated data
     #
     # @param ciphertext [String] an Encoding::BINARY string to decrypt
     # @param nonce [String] a unique-per-message value
