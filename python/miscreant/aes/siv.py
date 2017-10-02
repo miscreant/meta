@@ -66,9 +66,9 @@ class SIV(object):
 
         return plaintext
 
-    def __transform(self, v, data):
+    def __transform(self, v, message):
         """Performs raw unauthenticted encryption or decryption of the message"""
-        if not data:
+        if not message:
             return b""
 
         # "We zero-out the top bit in each of the last two 32-bit words
@@ -84,7 +84,7 @@ class SIV(object):
             backend=default_backend()
         ).encryptor()
 
-        return encryptor.update(data) + encryptor.finalize()
+        return encryptor.update(message) + encryptor.finalize()
 
     def __s2v(self, associated_data, plaintext):
         """
@@ -115,16 +115,16 @@ class SIV(object):
             d.xor_in_place(plaintext[difference:])
             mac.update(bytes(d.data))
             return mac.finalize()
-        else:
-            d.dbl()
-            pt_length = len(plaintext)
-            pt_bytearray = bytearray(plaintext)
-            for i in range(pt_length):
-                d.data[i] ^= pt_bytearray[i]
-            d.data[pt_length] ^= 0x80
-            return self.__mac(d.data)
 
-    def __mac(self, input):
+        d.dbl()
+        pt_length = len(plaintext)
+        pt_bytearray = bytearray(plaintext)
+        for i in range(pt_length):
+            d.data[i] ^= pt_bytearray[i]
+        d.data[pt_length] ^= 0x80
+        return self.__mac(d.data)
+
+    def __mac(self, message):
         mac = self.mac_alg(algorithms.AES(self.mac_key), backend=default_backend())
-        mac.update(bytes(input))
+        mac.update(bytes(message))
         return mac.finalize()
