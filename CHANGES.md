@@ -1,4 +1,6 @@
-# 0.2.0 (2017-10-01)
+# [0.2.0] (2017-10-01)
+
+[0.2.0]: https://github.com/miscreant/miscreant/compare/v0.1.0...v0.2.0
 
 * AES-PMAC-SIV support (all languages)
 * AEAD APIs with test vectors: Go, Ruby, Python
