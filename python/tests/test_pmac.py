@@ -17,8 +17,11 @@ from .support.test_vectors import PMACExample
 from cryptography.hazmat.primitives.ciphers import algorithms
 
 class TestPMAC(unittest.TestCase):
-    # Ensure seal passes all AES-PMAC test vectors
+    """Tests for the Parallel Message Authentication Code"""
+    
     def test_pmac(self):
+        """Ensure the 'seal' method passes all AES-PMAC test vectors"""
+
         for ex in PMACExample.load():
             pmac = PMAC(algorithms.AES(ex.key))
             pmac.update(ex.message)

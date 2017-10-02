@@ -1,12 +1,12 @@
 """pmac.py: The Parallel Message Authentication Code (PMAC)"""
 
-from .. import (block, ct, ctz)
-from ..block import Block
-
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import (
     Cipher, modes
 )
+
+from .. import (block, ct, ctz)
+from ..block import Block
 
 # Number of L blocks to precompute
 # TODO: dynamically compute these as needed
