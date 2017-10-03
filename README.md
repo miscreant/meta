@@ -406,8 +406,7 @@ for more information.
 
 ### 11. Q: This project mentions security proofs several times. Where do I find them?
 
-A: Please see the paper
-[Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem](http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf).
+A: Please see the paper [Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem]
 
 ### 12. Q: Where are CHAIN/STREAM? I can't find them!
 
@@ -425,6 +424,34 @@ For more information, please see [CODE_OF_CONDUCT.md].
 
 [cc]: https://contributor-covenant.org
 [CODE_OF_CONDUCT.md]: https://github.com/miscreant/miscreant/blob/master/CODE_OF_CONDUCT.md
+
+## Key Rap
+
+The paper describing AES-SIV,
+[Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem]
+contains this explanatory rap song at the end, which goes out to all the
+chronic IV misusing miscreants in the land:
+
+> Yo! We’z gonna’ take them keys an’ whatever you pleaze
+> We gonna’ wrap ’em all up looks like some ran’om gup
+> Make somethin’ gnarly and funky won’t fool no half-wit junkie
+> So the game’s like AE but there’s one major hitch
+> No coins can be pitched there’s no state to enrich
+> the IV’s in a ditch dead drunk on cheap wine
+> Now NIST and X9 and their friends at the fort
+> suggest that you stick it in a six-layer torte
+> S/MIME has a scheme there’s even one more
+> So many ways that it’s hard to keep score
+> And maybe they work and maybe they’re fine
+> but I want some proofs for spendin’ my time
+> After wrappin’ them keys gonna’ help out some losers
+> chronic IV abusers don’t read no directions
+> risk a deadly infection If a rusty IV’s drippin’ into yo’ veins
+> and ya never do manage to get it exchanged
+> Then we got ya somethin’ and it comes at low cost
+> When you screw up again not all ’ill be lost
+
+[Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem]: http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf
 
 ## Contributing
 
