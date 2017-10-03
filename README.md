@@ -329,7 +329,9 @@ second, they are a bit different from what is typically referred to as
 "MAC-then-encrypt". SIV modes cryptographically bind the encryption and
 authentication together by using the authentication tag as an input to the
 encryption cipher, making them provably secure for all the same classes of
-attacks as encrypt-then-MAC modes.
+attacks as encrypt-then-MAC modes. You can think of SIV modes as being a
+completely different class of combining encryption and a MAC, which can
+be described as something like "encrypt-with-MAC" or "encrypt-under-MAC".
 
 Another common source of problems with MAC-then-encrypt is padding oracles,
 which are commonly seen with CBC modes. **AES-SIV** is based on CTR mode, which
@@ -348,7 +350,15 @@ bulletproof solution to preventing exposure of unauthenticated plaintexts.
 To some degree you will always be trusting the implementation quality of a
 particular library to ensure it operates in a secure manner.
 
-### 7. Q: Is this algorithm NIST approved / FIPS compliant?
+### 7: Q: Why did you implement the same algorithms 5 times instead of just implementing it in Rust and then wrapping the Rust version, which has better security and performance?
+
+A: We certainly plan on making bindings to the Rust implementation available as optional backends for the other language versions. So we are picking both options.
+
+Miscreant is directly implemented in the respective language to make it more portable and easier to install. While the Rust implementation is the best the library presently offers, it has a lot of drawbacks: first, you have to install Rust to compile it. Second, it requires a nightly Rust compiler, which means the implementation must keep up with nightly changes to Rust. Third, the Rust implementation only supports the Intel [AES-NI] extension, and therefore won't work on anything but modern Intel CPUs.
+
+[AES-NI]: https://www.intel.com/content/www/us/en/architecture-and-technology/advanced-encryption-standard--aes-/data-protection-aes-general-technology.html
+
+### 8. Q: Is this algorithm NIST approved / FIPS compliant?
 
 A: **AES-SIV** is the combination of two NIST approved algorithms:
 **AES-CTR** encryption as described in [NIST SP 800-38A], and
@@ -369,14 +379,18 @@ fork/vendor your own copy.
 [submitted to NIST]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/siv.pdf
 [proposed mode]: http://csrc.nist.gov/groups/ST/toolkit/BCM/modes_development.html
 
-### 8. Q: Are there any patent concerns around AES-SIV mode?
+### 9. Q: Are there any patent concerns around the AES-SIV/AES-PMAC-SIV modes?
 
-A: No, there are [no IP rights concerns] with **AES-SIV** mode. To the best of
-our knowledge, the algorithm is entirely in the public domain. 
+A: No, there are [no IP rights concerns] with either the **AES-SIV** mode or
+**AES-PMAC-SIV** modes (see the "[What about patents?]" section of Rogaway's PMAC
+FAQ for imformation about PMAC).
+
+To the best of our knowledge, the algorithm is entirely in the public domain. 
 
 [no IP rights concerns]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/ip.pdf
+[What About Patents?]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
 
-### 9. Q: Why not wait for the winner of the CAESAR competition to be announced?
+### 10. Q: Why not wait for the winner of the CAESAR competition to be announced?
 
 A: The [CAESAR] competition (to select a next generation authentication encryption
 cipher) seems to be taking much longer than was originally expected. Even when
@@ -387,28 +401,26 @@ Meanwhile [RFC 5297] is nearly a decade old, and **AES-SIV** has seen some
 organic usage. While not entirely optimal by the metrics of the CAESAR
 competition, it's a boring, uncontroversial solution we can use off-the-shelf today.
 
+Furthermore, Miscreant has a big advantage over any of the CAESAR contestants: simplicity.
+The Rust version, for example, which provides both **AES-SIV** and a fully parallelized
+implementation of **AES-PMAC-SIV**, implementing all parts of the constituent algorithms
+from scratch on top of the AES block encryption function alone, is a little more than 800
+lines of code.
+
 [CAESAR]: https://competitions.cr.yp.to/caesar-submissions.html
 
-### 10. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV)
+### 11. Q: Do you plan on supporting additional ciphers? (e.g. AES-GCM-SIV, HS1-SIV)
 
-A: We are working on adding support for an **AES-SIV** construction based on
-[AES-PMAC] instead of **AES-CMAC** which we are calling **AES-PMAC-SIV**.
-Though this is a novel construction, it retains all of the original security
-properties of the original **AES-SIV** construction, but is fully
-parallelizable/vectorizable and therefore provides better performance.
+A: In the future, we may consider adding support for **AES-GCM-SIV**.
 
-In the future, we may consider adding support for **AES-GCM-SIV**.
-
-Please see [Issue #31: Support a faster construction than AES-SIV](https://github.com/miscreant/miscreant/issues/31)
+Please see [Issue #60: AES-GCM-SIV](https://github.com/miscreant/miscreant/issues/60)
 for more information.
 
-[AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
-
-### 11. Q: This project mentions security proofs several times. Where do I find them?
+### 12. Q: This project mentions security proofs several times. Where do I find them?
 
 A: Please see the paper [Deterministic Authenticated-Encryption: A Provable-Security Treatment of the Key-Wrap Problem]
 
-### 12. Q: Where are CHAIN/STREAM? I can't find them!
+### 13. Q: Where are CHAIN/STREAM? I can't find them!
 
 A: The many claims of support in the READMEs are actually lies! They are not implemented yet.
 Support is forthcoming, sorry!
