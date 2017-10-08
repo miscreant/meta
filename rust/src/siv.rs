@@ -154,7 +154,7 @@ impl<C: BlockCipher, M: Mac<C>> Siv<C, M> {
     }
 
     /// The S2V operation consists of the doubling and XORing of the outputs
-    /// of the pseudo-random function CMAC.
+    /// of a pseudo-random function (CMAC or PMAC).
     ///
     /// See Section 2.4 of RFC 5297 for more information
     fn s2v<I, T>(&mut self, associated_data: I, plaintext: &[u8]) -> Tag
