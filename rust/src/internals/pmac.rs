@@ -124,9 +124,14 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         let mut msg_len: usize = msg.len();
         let remaining: usize = 8 * BLOCK_SIZE - self.buffer_pos;
 
-        // Finish filling the 8 * block internal buffer with the message
+        // Finish filling the 8 * block internal buffer with the message and
+        // then perform a vectorized AES operation, XORing the results into
+        // the tag.
         if msg_len > remaining {
-            self.buffer.as_mut()[self.buffer_pos..].copy_from_slice(&msg[..remaining]);
+            xor::in_place(
+                &mut self.buffer.as_mut()[self.buffer_pos..],
+                &msg[..remaining],
+            );
 
             msg_pos = msg_pos.checked_add(remaining).expect("overflow");
             msg_len = msg_len.checked_sub(remaining).expect("underflow");
@@ -137,7 +142,8 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         // So long as we have more than 8 * blocks worth of data, compute
         // whole-sized blocks at a time.
         while msg_len > 8 * BLOCK_SIZE {
-            self.buffer.as_mut().copy_from_slice(
+            xor::in_place(
+                self.buffer.as_mut(),
                 array_ref!(msg, msg_pos, 8 * BLOCK_SIZE),
             );
 
@@ -150,7 +156,10 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
         if msg_len > 0 {
             let buf_end = self.buffer_pos.checked_add(msg_len).expect("overflow");
 
-            self.buffer.as_mut()[self.buffer_pos..buf_end].copy_from_slice(&msg[msg_pos..]);
+            xor::in_place(
+                &mut self.buffer.as_mut()[self.buffer_pos..buf_end],
+                &msg[msg_pos..],
+            );
 
             self.buffer_pos = self.buffer_pos.checked_add(msg_len).expect("overflow");
         }
@@ -212,9 +221,9 @@ impl<C: BlockCipher> Pmac<C> {
             self.offset.xor_in_place(
                 self.l[(self.counter + 1).trailing_zeros() as usize].as_ref(),
             );
-            xor::in_place(chunk, self.offset.as_ref());
-
             self.counter = self.counter.checked_add(1).expect("overflow");
+
+            chunk.copy_from_slice(self.offset.as_ref());
         }
 
         self.cipher.encrypt8(&mut self.buffer);
@@ -223,6 +232,7 @@ impl<C: BlockCipher> Pmac<C> {
             self.tag.xor_in_place(&chunk);
         }
 
+        self.buffer.clear();
         self.buffer_pos = 0;
     }
 }
