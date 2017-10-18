@@ -68,7 +68,7 @@ Use this library at your own risk.
 should use for most purposes unless you have highly specific needs that are
 covered more specifically by one of the other APIs described below.
 
-#### Creating a cipher instance: `newAEAD()`
+#### Creating a cipher instance: `NewAEAD()`
 
 To initialize a `cipher.AEAD`, you will need to select one of the ciphers
 below to initialize it with:
@@ -120,7 +120,7 @@ import "github.com/miscreant/miscreant/go"
 k := miscreant.GenerateKey(32)
 
 // Create a new cipher.AEAD instance with PMAC as the MAC
-c := miscreant.newAEAD("AES-PMAC-SIV", k, 16)
+c := miscreant.NewAEAD("AES-PMAC-SIV", k, 16)
 
 // Plaintext to be encrypted
 pt := []byte("Hello, world!")
