@@ -23,8 +23,6 @@ impl Block {
     }
 
     /// Copy the contents of the other block into this one
-    ///
-    /// Panics if the two blocks are the same
     #[inline]
     pub fn copy_from_block(&mut self, other: &Block) {
         let block = NativeEndian::read_u128(&other.0);
