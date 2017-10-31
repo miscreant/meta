@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="miscreant",
@@ -11,7 +11,7 @@ setup(
     author="Tony Arcieri",
     author_email="bascule@gmail.com",
     url="https://github.com/miscreant/miscreant/tree/master/python/",
-    packages=["miscreant"],
+    packages=find_packages(exclude=["tests"]),
     package_dir={"miscreant": "miscreant"},
     include_package_data=True,
     install_requires=["cryptography>=2.0"],
