@@ -10,14 +10,16 @@ import WebCrypto = require("node-webcrypto-ossl");
 
 import Miscreant from "../src/miscreant";
 
-@suite class MiscreantAesSivSpec {
+@suite
+class MiscreantAesSivSpec {
   static vectors: AesSivExample[];
 
   static async before() {
     this.vectors = await AesSivExample.loadAll();
   }
 
-  @test async "AES-SIV: should correctly seal and open with PolyfillCrypto"() {
+  @test
+  async "AES-SIV: should correctly seal and open with PolyfillCrypto"() {
     const polyfillProvider = Miscreant.polyfillCryptoProvider();
     for (let v of MiscreantAesSivSpec.vectors) {
       const siv = await Miscreant.importKey(v.key, "AES-SIV", polyfillProvider);
@@ -31,11 +33,16 @@ import Miscreant from "../src/miscreant";
     }
   }
 
-  @test async "AES-SIV: should correctly seal and open with WebCrypto"() {
+  @test
+  async "AES-SIV: should correctly seal and open with WebCrypto"() {
     const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
 
     for (let v of MiscreantAesSivSpec.vectors) {
-      const siv = await Miscreant.importKey(v.key, "AES-SIV", webCryptoProvider);
+      const siv = await Miscreant.importKey(
+        v.key,
+        "AES-SIV",
+        webCryptoProvider
+      );
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -47,17 +54,23 @@ import Miscreant from "../src/miscreant";
   }
 }
 
-@suite class MiscreantAesPmacSivSpec {
+@suite
+class MiscreantAesPmacSivSpec {
   static vectors: AesPmacSivExample[];
 
   static async before() {
     this.vectors = await AesPmacSivExample.loadAll();
   }
 
-  @test async "AES-PMAC-SIV: should correctly seal and open with PolyfillCrypto"() {
+  @test
+  async "AES-PMAC-SIV: should correctly seal and open with PolyfillCrypto"() {
     const polyfillProvider = Miscreant.polyfillCryptoProvider();
     for (let v of MiscreantAesPmacSivSpec.vectors) {
-      const siv = await Miscreant.importKey(v.key, "AES-PMAC-SIV", polyfillProvider);
+      const siv = await Miscreant.importKey(
+        v.key,
+        "AES-PMAC-SIV",
+        polyfillProvider
+      );
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -68,11 +81,16 @@ import Miscreant from "../src/miscreant";
     }
   }
 
-  @test async "AES-PMAC-SIV: should correctly seal and open with WebCrypto"() {
+  @test
+  async "AES-PMAC-SIV: should correctly seal and open with WebCrypto"() {
     const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
 
     for (let v of MiscreantAesPmacSivSpec.vectors) {
-      const siv = await Miscreant.importKey(v.key, "AES-PMAC-SIV", webCryptoProvider);
+      const siv = await Miscreant.importKey(
+        v.key,
+        "AES-PMAC-SIV",
+        webCryptoProvider
+      );
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 

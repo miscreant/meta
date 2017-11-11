@@ -29,13 +29,26 @@ export default class WebCryptoAes implements IBlockCipher {
    * @param {Uint8Array} keyData - the AES secret key
    * @returns {Promise<WebCryptoAes}
    */
-  public static async importKey(crypto: Crypto, keyData: Uint8Array): Promise<WebCryptoAes> {
+  public static async importKey(
+    crypto: Crypto,
+    keyData: Uint8Array
+  ): Promise<WebCryptoAes> {
     // Only AES-128 and AES-256 supported. AES-192 is not.
     if (keyData.length !== 16 && keyData.length !== 32) {
-      throw new Error(`Miscreant: invalid key length: ${keyData.length} (expected 16 or 32 bytes)`);
+      throw new Error(
+        `Miscreant: invalid key length: ${
+          keyData.length
+        } (expected 16 or 32 bytes)`
+      );
     }
 
-    const key = await crypto.subtle.importKey("raw", keyData, "AES-CBC", false, ["encrypt"]);
+    const key = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      "AES-CBC",
+      false,
+      ["encrypt"]
+    );
     return new WebCryptoAes(crypto, key);
   }
 
@@ -45,10 +58,7 @@ export default class WebCryptoAes implements IBlockCipher {
   // A placeholder promise we always return to match the WebCrypto API
   private _emptyPromise: Promise<this>;
 
-  constructor(
-    private _crypto: Crypto,
-    private _key: CryptoKey,
-  ) {
+  constructor(private _crypto: Crypto, private _key: CryptoKey) {
     this._emptyPromise = Promise.resolve(this);
   }
 
@@ -68,7 +78,11 @@ export default class WebCryptoAes implements IBlockCipher {
    */
   public async encryptBlock(block: Block): Promise<this> {
     const params = { name: "AES-CBC", iv: this._iv.data };
-    const ctBlock = await this._crypto.subtle.encrypt(params, this._key, block.data);
+    const ctBlock = await this._crypto.subtle.encrypt(
+      params,
+      this._key,
+      block.data
+    );
 
     // TODO: a more efficient way to do in-place encryption?
     block.data.set(new Uint8Array(ctBlock, 0, Block.SIZE));

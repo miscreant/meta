@@ -49,7 +49,10 @@ export interface IMacLike {
  * A cipher which provides a SIV-like interface and properties
  */
 export interface ISivLike {
-  seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
+  seal(
+    plaintext: Uint8Array,
+    associatedData: Uint8Array[]
+  ): Promise<Uint8Array>;
   open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
   clear(): this;
 }

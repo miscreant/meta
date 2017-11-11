@@ -5,9 +5,7 @@ import WebCryptoAesCtr from "./aes_ctr";
 
 /** Placeholder backend for using pure JavaScript crypto implementations */
 export default class WebCryptoProvider implements ICryptoProvider {
-  constructor(
-    private crypto: Crypto,
-  ) {
+  constructor(private crypto: Crypto) {
     // This class doesn't do anything, it just signals that polyfill impls should be used
   }
 
@@ -20,7 +18,9 @@ export default class WebCryptoProvider implements ICryptoProvider {
       return await WebCryptoAesCtr.importKey(this.crypto, keyData);
     } catch (e) {
       if (e.message.includes("unsupported")) {
-        throw new NotImplementedError("WebCryptoProvider: AES-CTR unsupported. Use PolyfillCryptoProvider.");
+        throw new NotImplementedError(
+          "WebCryptoProvider: AES-CTR unsupported. Use PolyfillCryptoProvider."
+        );
       } else {
         throw e;
       }

@@ -11,4 +11,7 @@ const src = byteSeq(16);
 const dst = new Uint8Array(16);
 
 report("AES-256 init", benchmark(() => new AES(key)));
-report("AES-256 encrypt", benchmark(() => cipher.encryptBlock(src, dst), src.length));
+report(
+  "AES-256 encrypt",
+  benchmark(() => cipher.encryptBlock(src, dst), src.length)
+);

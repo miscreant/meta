@@ -3,9 +3,9 @@
 set -e
 
 cd js
-yarn global add typescript typescript-formatter tslint mocha
+yarn global add typescript prettier tslint mocha
 yarn install
 yarn test
-tsfmt --verify $(find {src,test} -name "*.ts")
+prettier --list-different "./**/*.ts"
 tslint -c tslint.json "src/**/*.ts"
 
