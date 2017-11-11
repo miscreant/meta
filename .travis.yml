@@ -7,34 +7,32 @@ branches:
 matrix:
   fast_finish: true
   include:
-  - env: SUITE="go"
-    language: go
-    go: 1.8
-  - env: SUITE="js" CXX=clang
-    language: node_js
-    node_js: 7
-  - env: SUITE="js" CXX=clang
-    language: node_js
+  - language: go
+    go: 1.9
+    script: ci/go.sh
+  - language: node_js
     node_js: 8
-  - env: SUITE="python"
-    language: python
+    env: CXX=clang
+    script: ci/js.sh
+  - language: python
     python: 2.7
-  - env: SUITE="python"
-    language: python
+    script: ci/python.sh
+  - language: python
     python: 3.6
-  - env: SUITE="ruby"
-    language: ruby
-    rvm: 2.4.1
-  - env: SUITE="ruby"
-    language: ruby
+    script: ci/python.sh
+  - language: ruby
+    rvm: 2.4.2
+    script: ci/ruby.sh
+  - language: ruby
     rvm: 2.3.3
-  - env: SUITE="ruby"
-    language: ruby
+    script: ci/ruby.sh
+  - language: ruby
     rvm: 2.2.2
+    script: ci/ruby.sh
   # TODO: support stable Rust
-  - env: SUITE="rust"
-    language: rust
+  - language: rust
     rust: nightly
+    script: ci/ruby.sh
 
 compiler: clang
 
