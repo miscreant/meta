@@ -1,5 +1,3 @@
-script: . ./ci.sh
-
 branches:
   only:
     - master
@@ -11,8 +9,7 @@ matrix:
     go: 1.9
     script: ci/go.sh
   - language: node_js
-    node_js: 8
-    env: CXX=clang
+    node_js: 9
     script: ci/js.sh
   - language: python
     python: 2.7
@@ -24,26 +21,10 @@ matrix:
     rvm: 2.4.2
     script: ci/ruby.sh
   - language: ruby
-    rvm: 2.3.3
-    script: ci/ruby.sh
-  - language: ruby
     rvm: 2.2.2
     script: ci/ruby.sh
   # TODO: support stable Rust
   - language: rust
     rust: nightly
-    script: ci/ruby.sh
+    script: ci/rust.sh
 
-compiler: clang
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.6
-    packages:
-      - g++-4.8
-      - llvm-3.6
-      - libstdc++-4.9-dev
-      - llvm-3.6-dev
-      - clang-3.6

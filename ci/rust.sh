@@ -4,3 +4,4 @@ set -e
 
 cd rust
 cargo test
+
