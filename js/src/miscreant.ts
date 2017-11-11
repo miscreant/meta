@@ -13,7 +13,7 @@ export default class Miscreant {
   public static async importKey(
     keyData: Uint8Array,
     alg: string,
-    provider: ICryptoProvider = Miscreant.webCryptoProvider(),
+    provider: ICryptoProvider = Miscreant.webCryptoProvider()
   ): Promise<ISivLike> {
     return AesSiv.importKey(provider, alg, keyData);
   }
@@ -24,13 +24,17 @@ export default class Miscreant {
    * Cryptography providers returned by this function should implement
    * cryptography natively and not rely on JavaScript polyfills.
    */
-  public static webCryptoProvider(crypto: Crypto = window.crypto): WebCryptoProvider {
+  public static webCryptoProvider(
+    crypto: Crypto = window.crypto
+  ): WebCryptoProvider {
     try {
       return new WebCryptoProvider(crypto);
     } catch (e) {
       // Handle the case where window is undefined because we're not in a browser
       if (e instanceof ReferenceError) {
-        throw new NotImplementedError("Miscreant: window.crypto unavailable in this environment");
+        throw new NotImplementedError(
+          "Miscreant: window.crypto unavailable in this environment"
+        );
       } else {
         throw e;
       }

@@ -38,7 +38,10 @@ export default class PolyfillAesCtr implements ICtrLike {
     return this;
   }
 
-  public async encryptCtr(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array> {
+  public async encryptCtr(
+    iv: Uint8Array,
+    plaintext: Uint8Array
+  ): Promise<Uint8Array> {
     if (iv.length !== Block.SIZE) {
       throw new Error("CTR: iv length must be equal to cipher block size");
     }

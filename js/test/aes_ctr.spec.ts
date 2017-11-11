@@ -11,14 +11,16 @@ import PolyfillAes from "../src/internal/polyfill/aes";
 import PolyfillAesCtr from "../src/internal/polyfill/aes_ctr";
 import WebCryptoAesCtr from "../src/internal/webcrypto/aes_ctr";
 
-@suite class PolyfillAesCtrSpec {
+@suite
+class PolyfillAesCtrSpec {
   static vectors: AesCtrExample[];
 
   static async before() {
     this.vectors = await AesCtrExample.loadAll();
   }
 
-  @test async "passes the AES-CTR test vectors"() {
+  @test
+  async "passes the AES-CTR test vectors"() {
     for (let v of PolyfillAesCtrSpec.vectors) {
       const ctrPolyfill = new PolyfillAesCtr(new PolyfillAes(v.key));
       let ciphertext = await ctrPolyfill.encryptCtr(v.iv, v.plaintext);
@@ -27,14 +29,16 @@ import WebCryptoAesCtr from "../src/internal/webcrypto/aes_ctr";
   }
 }
 
-@suite class WebCryptoAesCtrSpec {
+@suite
+class WebCryptoAesCtrSpec {
   static vectors: AesCtrExample[];
 
   static async before() {
     this.vectors = await AesCtrExample.loadAll();
   }
 
-  @test async "passes the AES-CTR test vectors"() {
+  @test
+  async "passes the AES-CTR test vectors"() {
     for (let v of WebCryptoAesCtrSpec.vectors) {
       const ctrNative = await WebCryptoAesCtr.importKey(new WebCrypto(), v.key);
       let ciphertext = await ctrNative.encryptCtr(v.iv, v.plaintext);

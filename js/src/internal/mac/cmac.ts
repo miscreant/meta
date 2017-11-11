@@ -10,7 +10,10 @@ import { xor } from "../util/xor";
  */
 export default class Cmac implements IMacLike {
   /** Create a new CMAC instance from the given key */
-  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<Cmac> {
+  public static async importKey(
+    provider: ICryptoProvider,
+    keyData: Uint8Array
+  ): Promise<Cmac> {
     const cipher = await provider.importAesKey(keyData);
 
     // Generate subkeys.
@@ -31,7 +34,7 @@ export default class Cmac implements IMacLike {
   constructor(
     private _cipher: IBlockCipher,
     private _subkey1: Block,
-    private _subkey2: Block,
+    private _subkey2: Block
   ) {
     this._buffer = new Block();
   }
@@ -85,7 +88,8 @@ export default class Cmac implements IMacLike {
   public async finish(): Promise<Uint8Array> {
     if (!this._finished) {
       // Select which subkey to use.
-      const subkey = (this._bufferPos < Block.SIZE) ? this._subkey2 : this._subkey1;
+      const subkey =
+        this._bufferPos < Block.SIZE ? this._subkey2 : this._subkey1;
 
       // XOR in the subkey.
       xor(this._buffer.data, subkey.data);

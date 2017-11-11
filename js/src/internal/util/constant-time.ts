@@ -12,7 +12,11 @@
  * Supports only 32-bit integers, so resultIfOne or resultIfZero are not
  * integers, they'll be converted to them with bitwise operations.
  */
-export function select(subject: number, resultIfOne: number, resultIfZero: number): number {
+export function select(
+  subject: number,
+  resultIfOne: number,
+  resultIfZero: number
+): number {
   return (~(subject - 1) & resultIfOne) | ((subject - 1) & resultIfZero);
 }
 
@@ -31,7 +35,7 @@ export function compare(a: Uint8Array, b: Uint8Array): number {
   for (let i = 0; i < a.length; i++) {
     result |= a[i] ^ b[i];
   }
-  return (1 & ((result - 1) >>> 8));
+  return 1 & ((result - 1) >>> 8);
 }
 
 /**

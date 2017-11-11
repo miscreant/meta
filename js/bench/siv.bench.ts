@@ -13,15 +13,30 @@ const key = byteSeq(64);
 const ad = [byteSeq(12)];
 const siv = new SIV(AES, key);
 
-report("AES-SIV seal 8K", benchmark(() => siv.seal(ad, buf8192), buf8192.length));
-report("AES-SIV seal 1111", benchmark(() => siv.seal(ad, buf1111), buf1111.length));
+report(
+  "AES-SIV seal 8K",
+  benchmark(() => siv.seal(ad, buf8192), buf8192.length)
+);
+report(
+  "AES-SIV seal 1111",
+  benchmark(() => siv.seal(ad, buf1111), buf1111.length)
+);
 
 const sealed8192 = siv.seal(ad, buf8192);
 const sealed1111 = siv.seal(ad, buf1111);
 
-report("AES-SIV open 8K", benchmark(() => siv.open(ad, sealed8192), buf8192.length));
-report("AES-SIV open 1111", benchmark(() => siv.open(ad, sealed1111), buf1111.length));
+report(
+  "AES-SIV open 8K",
+  benchmark(() => siv.open(ad, sealed8192), buf8192.length)
+);
+report(
+  "AES-SIV open 1111",
+  benchmark(() => siv.open(ad, sealed1111), buf1111.length)
+);
 
 sealed8192[0] ^= sealed8192[0];
 
-report("AES-SIV open (bad)", benchmark(() => siv.open(ad, sealed8192), buf8192.length));
+report(
+  "AES-SIV open (bad)",
+  benchmark(() => siv.open(ad, sealed8192), buf8192.length)
+);

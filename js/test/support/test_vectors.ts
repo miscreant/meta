@@ -35,7 +35,9 @@ export class AesPmacSivExample {
   public readonly ciphertext: Uint8Array;
 
   static async loadAll(): Promise<AesPmacSivExample[]> {
-    return AesPmacSivExample.loadFromFile(AesPmacSivExample.DEFAULT_EXAMPLES_PATH);
+    return AesPmacSivExample.loadFromFile(
+      AesPmacSivExample.DEFAULT_EXAMPLES_PATH
+    );
   }
 
   static async loadFromFile(filename: string): Promise<AesPmacSivExample[]> {

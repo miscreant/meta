@@ -22,15 +22,17 @@ export default class AesSiv implements ISivLike {
   public static async importKey(
     provider: ICryptoProvider,
     alg: string,
-    keyData: Uint8Array,
+    keyData: Uint8Array
   ): Promise<AesSiv> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
-      throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
+      throw new Error(
+        `AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`
+      );
     }
 
-    const macKey = keyData.subarray(0, keyData.length / 2 | 0);
-    const encKey = keyData.subarray(keyData.length / 2 | 0);
+    const macKey = keyData.subarray(0, (keyData.length / 2) | 0);
+    const encKey = keyData.subarray((keyData.length / 2) | 0);
 
     let mac: IMacLike;
 
@@ -45,7 +47,9 @@ export default class AesSiv implements ISivLike {
         mac = await Pmac.importKey(provider, macKey);
         break;
       default:
-        throw new NotImplementedError(`Miscreant: algorithm not supported: ${alg}`);
+        throw new NotImplementedError(
+          `Miscreant: algorithm not supported: ${alg}`
+        );
     }
 
     const ctr = await provider.importAesCtrKey(encKey);
@@ -65,7 +69,10 @@ export default class AesSiv implements ISivLike {
   }
 
   /** Encrypt and authenticate data using AES-SIV */
-  public async seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array> {
+  public async seal(
+    plaintext: Uint8Array,
+    associatedData: Uint8Array[]
+  ): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }
@@ -85,7 +92,10 @@ export default class AesSiv implements ISivLike {
   }
 
   /** Decrypt and authenticate data using AES-SIV */
-  public async open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array> {
+  public async open(
+    sealed: Uint8Array,
+    associatedData: Uint8Array[]
+  ): Promise<Uint8Array> {
     if (associatedData.length > MAX_ASSOCIATED_DATA) {
       throw new Error("AES-SIV: too many associated data items");
     }
@@ -130,7 +140,10 @@ export default class AesSiv implements ISivLike {
    *
    * See Section 2.4 of RFC 5297 for more information
    */
-  private async _s2v(associated_data: Uint8Array[], plaintext: Uint8Array): Promise<Uint8Array> {
+  private async _s2v(
+    associated_data: Uint8Array[],
+    plaintext: Uint8Array
+  ): Promise<Uint8Array> {
     this._mac.reset();
     this._tmp1.clear();
 

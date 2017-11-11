@@ -67,16 +67,24 @@ export function benchmark(fn: () => any, bytes?: number): Results {
     iterations,
     msPerOp: avg,
     opsPerSecond: 1000 / avg,
-    bytesPerSecond: bytes ? 1000 * (bytes * iterations) / (avg * iterations) : undefined
+    bytesPerSecond: bytes
+      ? 1000 * (bytes * iterations) / (avg * iterations)
+      : undefined
   };
 }
 
-export function benchmarkAsync(fn: (done: () => void) => any,
-  doneCallback: (results: Results) => void, bytes?: number) {
-
+export function benchmarkAsync(
+  fn: (done: () => void) => any,
+  doneCallback: (results: Results) => void,
+  bytes?: number
+) {
   let elapsed = 0;
 
-  function run(todo: number, startTime: number, runDone: (diff: number) => void) {
+  function run(
+    todo: number,
+    startTime: number,
+    runDone: (diff: number) => void
+  ) {
     fn(() => {
       todo -= 1;
       if (todo > 0) {
@@ -92,7 +100,9 @@ export function benchmarkAsync(fn: (done: () => void) => any,
       // If diff is too small, double the number of iterations
       // and start over without recording results.
       if (diff < 1) {
-        setTimeout(() => { next(iterations, runsPerIteration * 2); }, 0);
+        setTimeout(() => {
+          next(iterations, runsPerIteration * 2);
+        }, 0);
         return;
       }
 
@@ -106,7 +116,9 @@ export function benchmarkAsync(fn: (done: () => void) => any,
           iterations,
           msPerOp: avg,
           opsPerSecond: 1000 / avg,
-          bytesPerSecond: bytes ? 1000 * (bytes * iterations) / (avg * iterations) : undefined
+          bytesPerSecond: bytes
+            ? 1000 * (bytes * iterations) / (avg * iterations)
+            : undefined
         });
         return;
       }
@@ -120,16 +132,14 @@ export function benchmarkAsync(fn: (done: () => void) => any,
   run(1, getTime(), () => next());
 }
 
-export function benchmarkPromise(fn: () => Promise<any>, bytes?: number): Promise<Results> {
+export function benchmarkPromise(
+  fn: () => Promise<any>,
+  bytes?: number
+): Promise<Results> {
   return new Promise(resolve => {
-    benchmarkAsync(
-      done => fn().then(done),
-      results => resolve(results),
-      bytes
-    );
+    benchmarkAsync(done => fn().then(done), results => resolve(results), bytes);
   });
 }
-
 
 export function report(name: string, results: Results) {
   const ops = results.iterations + " ops";
@@ -139,11 +149,15 @@ export function report(name: string, results: Results) {
     ? (results.bytesPerSecond / 1024 / 1024).toFixed(2) + " MiB/s"
     : "";
   console.log(
-    pad(name, 30, true) + " " +
-    pad(ops, 20) + " " +
-    pad(msPerOp, 20) + " " +
-    pad(opsPerSecond, 20) + " " +
-    pad(mibPerSecond, 15)
+    pad(name, 30, true) +
+      " " +
+      pad(ops, 20) +
+      " " +
+      pad(msPerOp, 20) +
+      " " +
+      pad(opsPerSecond, 20) +
+      " " +
+      pad(mibPerSecond, 15)
   );
 }
 

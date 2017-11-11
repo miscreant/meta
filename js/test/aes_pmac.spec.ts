@@ -10,14 +10,16 @@ import PolyfillCryptoProvider from "../src/internal/polyfill/provider";
 import WebCryptoProvider from "../src/internal/webcrypto/provider";
 import Pmac from "../src/internal/mac/pmac";
 
-@suite class PolyfillAesPmacSpec {
+@suite
+class PolyfillAesPmacSpec {
   static vectors: AesPmacExample[];
 
   static async before() {
     this.vectors = await AesPmacExample.loadAll();
   }
 
-  @test async "passes the AES-PMAC test vectors"() {
+  @test
+  async "passes the AES-PMAC test vectors"() {
     const polyfillProvider = new PolyfillCryptoProvider();
 
     for (let v of PolyfillAesPmacSpec.vectors) {
@@ -28,14 +30,16 @@ import Pmac from "../src/internal/mac/pmac";
   }
 }
 
-@suite class WebCryptoAesPmacSpec {
+@suite
+class WebCryptoAesPmacSpec {
   static vectors: AesPmacExample[];
 
   static async before() {
     this.vectors = await AesPmacExample.loadAll();
   }
 
-  @test async "passes the AES-PMAC test vectors"() {
+  @test
+  async "passes the AES-PMAC test vectors"() {
     const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
 
     for (let v of PolyfillAesPmacSpec.vectors) {

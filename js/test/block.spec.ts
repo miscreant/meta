@@ -4,14 +4,16 @@ import Block from "../src/internal/block";
 
 import { DblExample } from "./support/test_vectors";
 
-@suite class DblSpec {
+@suite
+class DblSpec {
   static vectors: DblExample[];
 
   static async before() {
     this.vectors = await DblExample.loadAll();
   }
 
-  @test async "passes the AES-CMAC test vectors"() {
+  @test
+  async "passes the AES-CMAC test vectors"() {
     let block = new Block();
 
     for (let v of DblSpec.vectors) {

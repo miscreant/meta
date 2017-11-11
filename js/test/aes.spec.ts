@@ -14,18 +14,23 @@ import PolyfillAes from "../src/internal/polyfill/aes";
 let expect = chai.expect;
 chai.use(chaiAsPromised);
 
-@suite class PolyfillAesSpec {
+@suite
+class PolyfillAesSpec {
   static vectors: AesExample[];
 
   static async before() {
     this.vectors = await AesExample.loadAll();
   }
 
-  @test "should not accept wrong key length"() {
-    expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(/invalid key length/);
+  @test
+  "should not accept wrong key length"() {
+    expect(() => new PolyfillAes(new Uint8Array(10))).to.throw(
+      /invalid key length/
+    );
   }
 
-  @test "should correctly encrypt blocks"() {
+  @test
+  "should correctly encrypt blocks"() {
     for (let v of PolyfillAesSpec.vectors) {
       const cipher = new PolyfillAes(v.key);
       const block = new Block();
@@ -35,7 +40,8 @@ chai.use(chaiAsPromised);
     }
   }
 
-  @test "should correctly encrypt many blocks with different keys"() {
+  @test
+  "should correctly encrypt many blocks with different keys"() {
     let key = new Uint8Array(32);
     let block = new Block();
     const newKey = new Uint8Array(32);
@@ -49,24 +55,46 @@ chai.use(chaiAsPromised);
       key.set(newKey);
     }
 
-    let expected = new Uint8Array([58, 111, 217, 50, 246, 8, 131, 95, 31, 86, 217, 220, 31, 206, 207, 163]);
+    let expected = new Uint8Array([
+      58,
+      111,
+      217,
+      50,
+      246,
+      8,
+      131,
+      95,
+      31,
+      86,
+      217,
+      220,
+      31,
+      206,
+      207,
+      163
+    ]);
     expect(block.data).to.eql(expected);
   }
 }
 
-@suite class WebCryptoAesSpec {
+@suite
+class WebCryptoAesSpec {
   static vectors: AesExample[];
 
   static async before() {
     this.vectors = await AesExample.loadAll();
   }
 
-  @test "should not accept wrong key length"() {
+  @test
+  "should not accept wrong key length"() {
     const crypto = new WebCrypto();
-    expect(WebCryptoAes.importKey(crypto, new Uint8Array(10))).to.be.rejectedWith(Error);
+    expect(
+      WebCryptoAes.importKey(crypto, new Uint8Array(10))
+    ).to.be.rejectedWith(Error);
   }
 
-  @test async "should correctly encrypt blocks"() {
+  @test
+  async "should correctly encrypt blocks"() {
     const crypto = new WebCrypto();
 
     for (let v of WebCryptoAesSpec.vectors) {

@@ -15,5 +15,11 @@ const iv = new Uint8Array(16);
 const cipher = new AES(key);
 const ctr = new CTR(cipher, iv);
 
-report("AES-CTR 8K", benchmark(() => ctr.streamXOR(buf8192, buf8192), buf8192.length));
-report("AES-CTR 1111", benchmark(() => ctr.streamXOR(buf1111, buf1111), buf1111.length));
+report(
+  "AES-CTR 8K",
+  benchmark(() => ctr.streamXOR(buf8192, buf8192), buf8192.length)
+);
+report(
+  "AES-CTR 1111",
+  benchmark(() => ctr.streamXOR(buf1111, buf1111), buf1111.length)
+);

@@ -19,7 +19,10 @@ const PRECOMPUTED_BLOCKS: number = 31;
  */
 export default class Pmac implements IMacLike {
   /** Create a new CMAC instance from the given key */
-  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<Pmac> {
+  public static async importKey(
+    provider: ICryptoProvider,
+    keyData: Uint8Array
+  ): Promise<Pmac> {
     const cipher = await provider.importAesKey(keyData);
 
     /**
@@ -168,7 +171,10 @@ export default class Pmac implements IMacLike {
     }
 
     if (dataLength > 0) {
-      this._buffer.data.set(data.slice(dataPos, dataPos + dataLength), this._bufferPos);
+      this._buffer.data.set(
+        data.slice(dataPos, dataPos + dataLength),
+        this._bufferPos
+      );
       this._bufferPos += dataLength;
     }
 
