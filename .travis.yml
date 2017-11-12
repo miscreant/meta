@@ -1,3 +1,5 @@
+script: ./ci.sh
+
 branches:
   only:
     - master
@@ -7,24 +9,24 @@ matrix:
   include:
   - language: go
     go: 1.9
-    script: ci/go.sh
+    before_script: cd go
   - language: node_js
     node_js: 9
-    script: ci/js.sh
+    before_script: cd js
   - language: python
     python: 2.7
-    script: ci/python.sh
+    before_script: cd python
   - language: python
     python: 3.6
-    script: ci/python.sh
+    before_script: cd python
   - language: ruby
     rvm: 2.4.2
-    script: ci/ruby.sh
+    before_script: cd ruby
   - language: ruby
     rvm: 2.2.2
-    script: ci/ruby.sh
+    before_script: cd ruby
   # TODO: support stable Rust
   - language: rust
     rust: nightly
-    script: ci/rust.sh
+    before_script: cd rust
 

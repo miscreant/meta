@@ -2,7 +2,6 @@
 
 set -e
 
-cd js
 yarn global add typescript typescript-formatter tslint mocha
 yarn install
 yarn test

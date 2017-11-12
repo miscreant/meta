@@ -2,7 +2,6 @@
 
 set -e
 
-cd go
 go get -u github.com/golang/lint/golint
 go get -u github.com/kisielk/errcheck
 go vet ./...
