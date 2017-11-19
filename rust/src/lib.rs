@@ -29,8 +29,10 @@ extern crate subtle;
 #[cfg(feature = "bench")]
 mod bench;
 
-// TODO: reduce visibility by gating it on e.g. #[cfg(debug_assertions)]
+#[cfg(debug_assertions)]
 pub mod internals;
-pub mod siv;
+#[cfg(not(debug_assertions))]
+pub(crate) mod internals;
 
+pub mod siv;
 pub use siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
