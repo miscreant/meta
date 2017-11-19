@@ -2,9 +2,9 @@
 
 mod aes;
 mod block;
-pub mod block_cipher;
-pub mod ctr;
-pub mod mac;
+mod block_cipher;
+mod ctr;
+mod mac;
 mod xor;
 
 pub use self::aes::{Aes128, Aes256};

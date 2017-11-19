@@ -1,8 +1,7 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
-use internals::{BLOCK_SIZE, Block};
-use internals::ctr::{Aes128Ctr, Aes256Ctr, Ctr};
-use internals::mac::{Aes128Cmac, Aes128Pmac, Aes256Cmac, Aes256Pmac, Mac};
+use internals::{Aes128Cmac, Aes128Ctr, Aes128Pmac, Aes256Cmac, Aes256Ctr, Aes256Pmac};
+use internals::{BLOCK_SIZE, Block, Ctr, Mac};
 use subtle::Equal;
 
 /// Maximum number of associated data items
