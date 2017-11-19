@@ -2,7 +2,7 @@ extern crate ring;
 
 use self::ring::aead;
 use {Aes128Siv, Aes128PmacSiv};
-use internals::{Aes128, Block, Cmac, Ctr, Pmac, Mac};
+use internals::{Aes128Cmac, Aes128Ctr, Aes128Pmac, Block, Ctr, Mac};
 use test::Bencher;
 
 // WARNING: Do not ever actually use a key of all zeroes
@@ -17,7 +17,7 @@ const NONCE: [u8; 12] = [0u8; 12];
 
 #[bench]
 fn bench_aes_cmac_128_mac_128_bytes(b: &mut Bencher) {
-    let mut cmac = Cmac::new(Aes128::new(&KEY_128_BIT));
+    let mut cmac = Aes128Cmac::new(&KEY_128_BIT);
 
     // 128 bytes input + 16 bytes tag
     let buffer = [0u8; 144];
@@ -32,7 +32,7 @@ fn bench_aes_cmac_128_mac_128_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_cmac_128_mac_1024_bytes(b: &mut Bencher) {
-    let mut cmac = Cmac::new(Aes128::new(&KEY_128_BIT));
+    let mut cmac = Aes128Cmac::new(&KEY_128_BIT);
 
     // 1024 bytes input + 16 bytes tag
     let buffer = [0u8; 1040];
@@ -47,7 +47,7 @@ fn bench_aes_cmac_128_mac_1024_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_cmac_128_mac_16384_bytes(b: &mut Bencher) {
-    let mut cmac = Cmac::new(Aes128::new(&KEY_128_BIT));
+    let mut cmac = Aes128Cmac::new(&KEY_128_BIT);
 
     // 16384 bytes input + 16 bytes tag
     let buffer = [0u8; 16400];
@@ -66,47 +66,35 @@ fn bench_aes_cmac_128_mac_16384_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_ctr_128_encrypt_128_bytes(b: &mut Bencher) {
-    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
-    let mut iv = Block::new();
+    let ctr = Aes128Ctr::new(&KEY_128_BIT);
+    let iv = Block::new();
 
     // 128 bytes input + 16 bytes tag
     let mut buffer = [0u8; 144];
     b.bytes = 128;
-
-    b.iter(|| {
-        ctr.transform(&mut iv, &mut buffer);
-        ctr.reset();
-    });
+    b.iter(|| ctr.xor_in_place(&iv, &mut buffer));
 }
 
 #[bench]
 fn bench_aes_ctr_128_encrypt_1024_bytes(b: &mut Bencher) {
-    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
-    let mut iv = Block::new();
+    let ctr = Aes128Ctr::new(&KEY_128_BIT);
+    let iv = Block::new();
 
     // 1024 bytes input + 16 bytes tag
     let mut buffer = [0u8; 1040];
     b.bytes = 1024;
-
-    b.iter(|| {
-        ctr.transform(&mut iv, &mut buffer);
-        ctr.reset();
-    });
+    b.iter(|| ctr.xor_in_place(&iv, &mut buffer));
 }
 
 #[bench]
 fn bench_aes_ctr_128_encrypt_16384_bytes(b: &mut Bencher) {
-    let mut ctr = Ctr::new(Aes128::new(&KEY_128_BIT));
-    let mut iv = Block::new();
+    let ctr = Aes128Ctr::new(&KEY_128_BIT);
+    let iv = Block::new();
 
     // 16384 bytes input + 16 bytes tag
     let mut buffer = [0u8; 16400];
     b.bytes = 16384;
-
-    b.iter(|| {
-        ctr.transform(&mut iv, &mut buffer);
-        ctr.reset();
-    });
+    b.iter(|| ctr.xor_in_place(&iv, &mut buffer));
 }
 
 //
@@ -115,7 +103,7 @@ fn bench_aes_ctr_128_encrypt_16384_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_pmac_128_mac_128_bytes(b: &mut Bencher) {
-    let mut pmac = Pmac::new(Aes128::new(&KEY_128_BIT));
+    let mut pmac = Aes128Pmac::new(&KEY_128_BIT);
 
     // 128 bytes input + 16 bytes tag
     let buffer = [0u8; 144];
@@ -130,7 +118,7 @@ fn bench_aes_pmac_128_mac_128_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_pmac_128_mac_1024_bytes(b: &mut Bencher) {
-    let mut pmac = Pmac::new(Aes128::new(&KEY_128_BIT));
+    let mut pmac = Aes128Pmac::new(&KEY_128_BIT);
 
     // 1024 bytes input + 16 bytes tag
     let buffer = [0u8; 1040];
@@ -145,7 +133,7 @@ fn bench_aes_pmac_128_mac_1024_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_pmac_128_mac_16384_bytes(b: &mut Bencher) {
-    let mut pmac = Pmac::new(Aes128::new(&KEY_128_BIT));
+    let mut pmac = Aes128Pmac::new(&KEY_128_BIT);
 
     // 16384 bytes input + 16 bytes tag
     let buffer = [0u8; 16400];

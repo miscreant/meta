@@ -3,8 +3,9 @@ extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
-use miscreant::internals::{Aes128, Aes256, Block, BlockCipher, Cmac, Ctr, Mac, Pmac};
-use miscreant::internals::BLOCK_SIZE;
+use miscreant::internals::{Aes128, Aes128Cmac, Aes128Ctr, Aes128Pmac};
+use miscreant::internals::{Aes256, Aes256Cmac, Aes256Ctr, Aes256Pmac};
+use miscreant::internals::{BLOCK_SIZE, Block, BlockCipher, Ctr, Mac};
 
 mod test_vectors;
 use test_vectors::{AesExample, AesCmacExample, AesCtrExample, AesPmacExample, AesSivExample,
@@ -41,16 +42,12 @@ fn aes_cmac_examples() {
     for example in examples {
         let result = match example.key.len() {
             16 => {
-                let aes = Aes128::new(array_ref!(example.key, 0, 16));
-                let mut aes_cmac = Cmac::new(aes);
-
+                let mut aes_cmac = Aes128Cmac::new(array_ref!(example.key, 0, 16));
                 aes_cmac.update(&example.message);
                 aes_cmac.finish()
             }
             32 => {
-                let aes = Aes256::new(array_ref!(example.key, 0, 32));
-                let mut aes_cmac = Cmac::new(aes);
-
+                let mut aes_cmac = Aes256Cmac::new(array_ref!(example.key, 0, 32));
                 aes_cmac.update(&example.message);
                 aes_cmac.finish()
             }
@@ -70,16 +67,14 @@ fn aes_ctr_examples() {
 
         match example.key.len() {
             16 => {
-                let aes = Aes128::new(array_ref!(example.key, 0, 16));
-                let mut aes_ctr = Ctr::new(aes);
-                let mut iv = Block::from(&example.iv[..]);
-                aes_ctr.transform(&mut iv, &mut buffer);
+                let aes_ctr = Aes128Ctr::new(array_ref!(example.key, 0, 16));
+                let iv = Block::from(&example.iv[..]);
+                aes_ctr.xor_in_place(&iv, &mut buffer);
             }
             32 => {
-                let aes = Aes256::new(array_ref!(example.key, 0, 32));
-                let mut aes_ctr = Ctr::new(aes);
-                let mut iv = Block::from(&example.iv[..]);
-                aes_ctr.transform(&mut iv, &mut buffer);
+                let aes_ctr = Aes256Ctr::new(array_ref!(example.key, 0, 32));
+                let iv = Block::from(&example.iv[..]);
+                aes_ctr.xor_in_place(&iv, &mut buffer);
             }
             _ => panic!("unexpected key size: {}", example.key.len()),
         };
@@ -95,16 +90,12 @@ fn aes_pmac_examples() {
     for example in examples {
         let result = match example.key.len() {
             16 => {
-                let aes = Aes128::new(array_ref!(example.key, 0, 16));
-                let mut aes_pmac = Pmac::new(aes);
-
+                let mut aes_pmac = Aes128Pmac::new(array_ref!(example.key, 0, 16));
                 aes_pmac.update(&example.message);
                 aes_pmac.finish()
             }
             32 => {
-                let aes = Aes256::new(array_ref!(example.key, 0, 32));
-                let mut aes_pmac = Pmac::new(aes);
-
+                let mut aes_pmac = Aes256Pmac::new(array_ref!(example.key, 0, 32));
                 aes_pmac.update(&example.message);
                 aes_pmac.finish()
             }

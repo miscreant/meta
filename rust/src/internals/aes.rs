@@ -17,7 +17,7 @@ impl Aes128 {
     /// Create a new AES-128 cipher instance from the given key
     #[inline]
     pub fn new(key: &[u8; 16]) -> Self {
-        Self { cipher: Aes128Ni::new(key) }
+        Self { cipher: Aes128Ni::init(key) }
     }
 }
 
@@ -47,7 +47,7 @@ impl Aes256 {
     /// Create a new AES-256 cipher instance from the given key
     #[inline]
     pub fn new(key: &[u8; 32]) -> Self {
-        Self { cipher: Aes256Ni::new(key) }
+        Self { cipher: Aes256Ni::init(key) }
     }
 }
 

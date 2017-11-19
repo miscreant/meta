@@ -1,13 +1,33 @@
-//! `internals/cmac.rs`: Cipher-based Message Authentication Code
+//! `internals/mac/cmac.rs`: Cipher-based Message Authentication Code
 
-use super::{BLOCK_SIZE, Block, BlockCipher, Mac, xor};
 use clear_on_drop::clear::Clear;
+use internals::{Aes128, Aes256, BLOCK_SIZE, Block, BlockCipher, Mac, xor};
+
+/// AES-CMAC with a 128-bit key
+pub type Aes128Cmac = Cmac<Aes128>;
+
+impl Aes128Cmac {
+    /// Create a new AES-CMAC instance with a 128-bit key
+    pub fn new(key: &[u8; 16]) -> Self {
+        Self::init(Aes128::new(key))
+    }
+}
+
+/// AES-CMAC with a 256-bit key
+pub type Aes256Cmac = Cmac<Aes256>;
+
+impl Aes256Cmac {
+    /// Create a new AES-CMAC instance with a 256-bit key
+    pub fn new(key: &[u8; 32]) -> Self {
+        Self::init(Aes256::new(key))
+    }
+}
 
 type Tag = Block;
 
 /// Cipher-based Message Authentication Code
-pub struct Cmac<C: BlockCipher> {
-    cipher: C,
+pub struct Cmac<T: BlockCipher> {
+    cipher: T,
     subkey1: Block,
     subkey2: Block,
     buffer: Block,
@@ -15,10 +35,10 @@ pub struct Cmac<C: BlockCipher> {
     finished: bool,
 }
 
-impl<C: BlockCipher> Mac<C> for Cmac<C> {
+impl<T: BlockCipher> Cmac<T> {
     /// Create a new CMAC instance with the given cipher
     #[inline]
-    fn new(cipher: C) -> Self {
+    fn init(cipher: T) -> Self {
         let mut subkey1 = Block::new();
         cipher.encrypt(&mut subkey1);
         subkey1.dbl();
@@ -35,7 +55,9 @@ impl<C: BlockCipher> Mac<C> for Cmac<C> {
             finished: false,
         }
     }
+}
 
+impl<T: BlockCipher> Mac for Cmac<T> {
     /// Reset a CMAC instance back to its initial buffer
     #[inline]
     fn reset(&mut self) {
