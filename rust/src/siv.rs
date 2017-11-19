@@ -1,7 +1,8 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
-use internals::{Aes128, Aes256};
-use internals::{BLOCK_SIZE, Block, BlockCipher, Cmac, Ctr, Mac, Pmac};
+use internals::{BLOCK_SIZE, Block};
+use internals::ctr::{Aes128Ctr, Aes256Ctr, Ctr};
+use internals::mac::{Aes128Cmac, Aes128Pmac, Aes256Cmac, Aes256Pmac, Mac};
 use subtle::Equal;
 
 /// Maximum number of associated data items
@@ -14,64 +15,64 @@ const ZERO_BLOCK: &[u8; BLOCK_SIZE] = &[0u8; BLOCK_SIZE];
 type Tag = Block;
 
 /// The SIV misuse resistant block cipher mode of operation
-pub struct Siv<C: BlockCipher, M: Mac<C>> {
+pub struct Siv<C: Ctr, M: Mac> {
     mac: M,
-    ctr: Ctr<C>,
+    ctr: C,
 }
 
 /// AES-CMAC-SIV with a 128-bit key
-pub type Aes128Siv = Siv<Aes128, Cmac<Aes128>>;
+pub type Aes128Siv = Siv<Aes128Ctr, Aes128Cmac>;
 
 impl Aes128Siv {
     /// Create a new AES-SIV instance with a 32-byte key
     pub fn new(key: &[u8; 32]) -> Self {
         Self {
-            mac: Cmac::new(Aes128::new(array_ref!(key, 0, 16))),
-            ctr: Ctr::new(Aes128::new(array_ref!(key, 16, 16))),
+            mac: Aes128Cmac::new(array_ref!(key, 0, 16)),
+            ctr: Aes128Ctr::new(array_ref!(key, 16, 16)),
         }
     }
 }
 
 /// AES-CMAC-SIV with a 256-bit key
-pub type Aes256Siv = Siv<Aes256, Cmac<Aes256>>;
+pub type Aes256Siv = Siv<Aes256Ctr, Aes256Cmac>;
 
 impl Aes256Siv {
     /// Create a new AES-SIV instance with a 64-byte key
     pub fn new(key: &[u8; 64]) -> Self {
         Self {
-            mac: Cmac::new(Aes256::new(array_ref!(key, 0, 32))),
-            ctr: Ctr::new(Aes256::new(array_ref!(key, 32, 32))),
+            mac: Aes256Cmac::new(array_ref!(key, 0, 32)),
+            ctr: Aes256Ctr::new(array_ref!(key, 32, 32)),
         }
     }
 }
 
 /// AES-PMAC-SIV with a 128-bit key
-pub type Aes128PmacSiv = Siv<Aes128, Pmac<Aes128>>;
+pub type Aes128PmacSiv = Siv<Aes128Ctr, Aes128Pmac>;
 
 impl Aes128PmacSiv {
     /// Create a new AES-SIV instance with a 32-byte key
     pub fn new(key: &[u8; 32]) -> Self {
         Self {
-            mac: Pmac::new(Aes128::new(array_ref!(key, 0, 16))),
-            ctr: Ctr::new(Aes128::new(array_ref!(key, 16, 16))),
+            mac: Aes128Pmac::new(array_ref!(key, 0, 16)),
+            ctr: Aes128Ctr::new(array_ref!(key, 16, 16)),
         }
     }
 }
 
 /// AES-SIV with a 256-bit key
-pub type Aes256PmacSiv = Siv<Aes256, Pmac<Aes256>>;
+pub type Aes256PmacSiv = Siv<Aes256Ctr, Aes256Pmac>;
 
 impl Aes256PmacSiv {
     /// Create a new AES-SIV instance with a 64-byte key
     pub fn new(key: &[u8; 64]) -> Self {
         Self {
-            mac: Pmac::new(Aes256::new(array_ref!(key, 0, 32))),
-            ctr: Ctr::new(Aes256::new(array_ref!(key, 32, 32))),
+            mac: Aes256Pmac::new(array_ref!(key, 0, 32)),
+            ctr: Aes256Ctr::new(array_ref!(key, 32, 32)),
         }
     }
 }
 
-impl<C: BlockCipher, M: Mac<C>> Siv<C, M> {
+impl<C: Ctr, M: Mac> Siv<C, M> {
     /// Encrypt the given plaintext in-place, replacing it with the SIV tag and
     /// ciphertext. Requires a buffer with 16-bytes additional space.
     ///
@@ -111,8 +112,7 @@ impl<C: BlockCipher, M: Mac<C>> Siv<C, M> {
         plaintext[..BLOCK_SIZE].copy_from_slice(iv.as_ref());
 
         zero_iv_bits(&mut iv);
-        self.ctr.transform(&mut iv, &mut plaintext[BLOCK_SIZE..]);
-        self.ctr.reset();
+        self.ctr.xor_in_place(&iv, &mut plaintext[BLOCK_SIZE..]);
     }
 
     /// Decrypt the given ciphertext in-place, authenticating it against the
@@ -134,19 +134,12 @@ impl<C: BlockCipher, M: Mac<C>> Siv<C, M> {
 
         let mut iv = Block::from(&ciphertext[..BLOCK_SIZE]);
         zero_iv_bits(&mut iv);
-
-        self.ctr.transform(&mut iv, &mut ciphertext[BLOCK_SIZE..]);
-        self.ctr.reset();
+        self.ctr.xor_in_place(&iv, &mut ciphertext[BLOCK_SIZE..]);
 
         let actual_tag = self.s2v(associated_data, &ciphertext[BLOCK_SIZE..]);
-
         if actual_tag.ct_eq(&Block::from(&ciphertext[..BLOCK_SIZE])) != 1 {
-            let mut iv = Block::from(&ciphertext[..BLOCK_SIZE]);
-
             // Re-encrypt the decrypted plaintext to avoid revealing it
-            self.ctr.transform(&mut iv, &mut ciphertext[BLOCK_SIZE..]);
-            self.ctr.reset();
-
+            self.ctr.xor_in_place(&iv, &mut ciphertext[BLOCK_SIZE..]);
             return Err(());
         }
 

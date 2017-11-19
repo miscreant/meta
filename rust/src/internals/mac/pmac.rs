@@ -1,10 +1,30 @@
-//! `internals/pmac.rs`: Parallel Message Authentication Code
-//! Defined in http://web.cs.ucdavis.edu/~rogaway/ocb/pmac.pdf
+//! `internals/mac/pmac.rs`: Parallel Message Authentication Code
+//! Defined in <http://web.cs.ucdavis.edu/~rogaway/ocb/pmac.pdf>
 
-use super::{BLOCK_SIZE, Block, Block8, BlockCipher, Mac, xor};
-use super::block::R;
 use byteorder::{BigEndian, ByteOrder};
 use clear_on_drop::clear::Clear;
+use internals::{Aes128, Aes256, BLOCK_SIZE, BlockCipher, Mac, xor};
+use internals::block::{Block, Block8, R};
+
+/// AES-PMAC with a 128-bit key
+pub type Aes128Pmac = Pmac<Aes128>;
+
+impl Aes128Pmac {
+    /// Create a new AES-PMAC instance with a 128-bit key
+    pub fn new(key: &[u8; 16]) -> Self {
+        Self::init(Aes128::new(key))
+    }
+}
+
+/// AES-PMAC with a 256-bit key
+pub type Aes256Pmac = Pmac<Aes256>;
+
+impl Aes256Pmac {
+    /// Create a new AES-PMAC instance with a 256-bit key
+    pub fn new(key: &[u8; 32]) -> Self {
+        Self::init(Aes256::new(key))
+    }
+}
 
 type Tag = Block;
 
@@ -13,9 +33,9 @@ type Tag = Block;
 const PRECOMPUTED_BLOCKS: usize = 31;
 
 /// Parallel Message Authentication Code
-pub struct Pmac<C: BlockCipher> {
+pub struct Pmac<T: BlockCipher> {
     // C is the block cipher we're using (i.e. AES-128 or AES-256)
-    cipher: C,
+    cipher: T,
 
     // L is defined as follows (quoted from the PMAC paper):
     //
@@ -66,10 +86,10 @@ pub struct Pmac<C: BlockCipher> {
     finished: bool,
 }
 
-impl<C: BlockCipher> Mac<C> for Pmac<C> {
+impl<T: BlockCipher> Pmac<T> {
     /// Create a new PMAC instance with the given cipher
     #[inline]
-    fn new(cipher: C) -> Self {
+    fn init(cipher: T) -> Self {
         let mut l: [Block; PRECOMPUTED_BLOCKS] = Default::default();
         let mut tmp = Block::new();
 
@@ -102,7 +122,9 @@ impl<C: BlockCipher> Mac<C> for Pmac<C> {
             finished: false,
         }
     }
+}
 
+impl<T: BlockCipher> Mac for Pmac<T> {
     /// Reset a PMAC instance back to its initial state
     #[inline]
     fn reset(&mut self) {

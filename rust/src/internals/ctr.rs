@@ -1,92 +1,56 @@
 //! `internals/ctr.rs`: Counter Mode encryption/decryption
 
-use super::{BLOCK_SIZE, Block, Block8, BlockCipher, xor};
-use byteorder::{BigEndian, ByteOrder};
-use clear_on_drop::clear::Clear;
+use super::{Block, BLOCK_SIZE};
 
-/// Counter Mode encryption/decryption
-pub struct Ctr<C: BlockCipher> {
-    cipher: C,
-    buffer: Block8,
-    buffer_pos: usize,
+extern crate aesni;
+
+use self::aesni::CtrAes128 as CtrAesNi128;
+use self::aesni::CtrAes256 as CtrAesNi256;
+
+/// Common interface to counter mode encryption/decryption
+pub trait Ctr {
+    /// XOR the CTR keystream into the given buffer
+    fn xor_in_place(&self, iv: &Block, buf: &mut [u8]);
 }
 
-impl<C: BlockCipher> Ctr<C> {
-    /// Create a new CTR instance with the given cipher
+/// AES-CTR with a 128-bit key
+#[derive(Clone)]
+pub struct Aes128Ctr {
+    key: [u8; 16],
+}
+
+impl Aes128Ctr {
+    /// Create a new AES-128-CTR instance from the given key
     #[inline]
-    pub fn new(cipher: C) -> Self {
-        Self {
-            cipher: cipher,
-            buffer: Block8::new(),
-            buffer_pos: 8 * BLOCK_SIZE,
-        }
+    pub fn new(key: &[u8; 16]) -> Self {
+        Self { key: *key }
     }
+}
 
-    /// Reset the internal cipher state back to its initial values
-    pub fn reset(&mut self) {
-        self.buffer.clear();
-        self.buffer_pos = 8 * BLOCK_SIZE;
+impl Ctr for Aes128Ctr {
+    fn xor_in_place(&self, iv: &Block, buf: &mut [u8]) {
+        let mut ctr = CtrAesNi128::new(&self.key, array_ref!(iv.as_ref(), 0, BLOCK_SIZE));
+        ctr.xor(buf);
     }
+}
 
-    /// Encrypt/decrypt the given data in-place, updating the internal cipher state
-    ///
-    /// Accepts a mutable counter value, which is also updated in-place
-    pub fn transform(&mut self, counter: &mut Block, msg: &mut [u8]) {
-        let mut ctr = BigEndian::read_u128(counter.as_ref());
+/// AES-CTR with a 256-bit key
+#[derive(Clone)]
+pub struct Aes256Ctr {
+    key: [u8; 32],
+}
 
-        let mut msg_pos: usize = 0;
-        let mut msg_len: usize = msg.len();
-        let remaining: usize = 8 * BLOCK_SIZE - self.buffer_pos;
-
-        if msg_len > remaining {
-            xor::in_place(
-                &mut msg[..remaining],
-                &self.buffer.as_ref()[self.buffer_pos..],
-            );
-
-            msg_pos = msg_pos.checked_add(remaining).expect("overflow");
-            msg_len = msg_len.checked_sub(remaining).expect("underflow");
-
-            self.fill_buffer(&mut ctr);
-        }
-
-        while msg_len > 8 * BLOCK_SIZE {
-            xor::in_place(
-                array_mut_ref!(msg, msg_pos, 8 * BLOCK_SIZE),
-                self.buffer.as_ref(),
-            );
-
-            msg_pos = msg_pos.checked_add(8 * BLOCK_SIZE).expect("overflow");
-            msg_len = msg_len.checked_sub(8 * BLOCK_SIZE).expect("underflow");
-
-            self.fill_buffer(&mut ctr);
-        }
-
-        if msg_len > 0 {
-            let buf_end = self.buffer_pos.checked_add(msg_len).expect("overflow");
-
-            xor::in_place(
-                &mut msg[msg_pos..],
-                &self.buffer.as_ref()[self.buffer_pos..buf_end],
-            );
-
-            self.buffer_pos = self.buffer_pos.checked_add(msg_len).expect("overflow");
-        }
-
-        BigEndian::write_u128(counter.as_mut(), ctr);
-    }
-
-    /// Fill the internal buffer of AES-CTR values
+impl Aes256Ctr {
+    /// Create a new AES-256-CTR instance from the given key
     #[inline]
-    fn fill_buffer(&mut self, counter: &mut u128) {
-        for chunk in self.buffer.as_mut().chunks_mut(BLOCK_SIZE) {
-            BigEndian::write_u128(chunk, *counter);
+    pub fn new(key: &[u8; 32]) -> Self {
+        Self { key: *key }
+    }
+}
 
-            // AES-CTR uses a wrapping counter
-            *counter = counter.wrapping_add(1);
-        }
-
-        self.cipher.encrypt8(&mut self.buffer);
-        self.buffer_pos = 0;
+impl Ctr for Aes256Ctr {
+    fn xor_in_place(&self, iv: &Block, buf: &mut [u8]) {
+        let mut ctr = CtrAesNi256::new(&self.key, array_ref!(iv.as_ref(), 0, BLOCK_SIZE));
+        ctr.xor(buf);
     }
 }
