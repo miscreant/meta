@@ -3,114 +3,18 @@ extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
-use miscreant::internals::{Aes128, Aes128Cmac, Aes128Ctr, Aes128Pmac};
-use miscreant::internals::{Aes256, Aes256Cmac, Aes256Ctr, Aes256Pmac};
-use miscreant::internals::{BLOCK_SIZE, Block, BlockCipher, Ctr, Mac};
 
 mod test_vectors;
-use test_vectors::{AesExample, AesCmacExample, AesCtrExample, AesPmacExample, AesSivExample,
-                   AesPmacSivExample, DblExample};
+use test_vectors::{AesSivExample, AesPmacSivExample};
 
-#[test]
-fn aes_examples() {
-    let examples = AesExample::load_all();
-
-    for example in examples {
-        let mut block = Block::new();
-        block.as_mut().copy_from_slice(&example.src);
-
-        match example.key.len() {
-            16 => {
-                let aes = Aes128::new(array_ref!(example.key, 0, 16));
-                aes.encrypt(&mut block);
-            }
-            32 => {
-                let aes = Aes256::new(array_ref!(example.key, 0, 32));
-                aes.encrypt(&mut block);
-            }
-            _ => panic!("unexpected key size: {}", example.key.len()),
-        }
-
-        assert_eq!(block.as_ref(), array_ref!(example.dst, 0, 16));
-    }
-}
-
-#[test]
-fn aes_cmac_examples() {
-    let examples = AesCmacExample::load_all();
-
-    for example in examples {
-        let result = match example.key.len() {
-            16 => {
-                let mut aes_cmac = Aes128Cmac::new(array_ref!(example.key, 0, 16));
-                aes_cmac.update(&example.message);
-                aes_cmac.finish()
-            }
-            32 => {
-                let mut aes_cmac = Aes256Cmac::new(array_ref!(example.key, 0, 32));
-                aes_cmac.update(&example.message);
-                aes_cmac.finish()
-            }
-            _ => panic!("unexpected key size: {}", example.key.len()),
-        };
-
-        assert_eq!(result.as_ref(), array_ref!(example.tag, 0, 16));
-    }
-}
-
-#[test]
-fn aes_ctr_examples() {
-    let examples = AesCtrExample::load_all();
-
-    for example in examples {
-        let mut buffer = example.plaintext.clone();
-
-        match example.key.len() {
-            16 => {
-                let aes_ctr = Aes128Ctr::new(array_ref!(example.key, 0, 16));
-                let iv = Block::from(&example.iv[..]);
-                aes_ctr.xor_in_place(&iv, &mut buffer);
-            }
-            32 => {
-                let aes_ctr = Aes256Ctr::new(array_ref!(example.key, 0, 32));
-                let iv = Block::from(&example.iv[..]);
-                aes_ctr.xor_in_place(&iv, &mut buffer);
-            }
-            _ => panic!("unexpected key size: {}", example.key.len()),
-        };
-
-        assert_eq!(buffer, example.ciphertext);
-    }
-}
-
-#[test]
-fn aes_pmac_examples() {
-    let examples = AesPmacExample::load_all();
-
-    for example in examples {
-        let result = match example.key.len() {
-            16 => {
-                let mut aes_pmac = Aes128Pmac::new(array_ref!(example.key, 0, 16));
-                aes_pmac.update(&example.message);
-                aes_pmac.finish()
-            }
-            32 => {
-                let mut aes_pmac = Aes256Pmac::new(array_ref!(example.key, 0, 32));
-                aes_pmac.update(&example.message);
-                aes_pmac.finish()
-            }
-            _ => panic!("unexpected key size: {}", example.key.len()),
-        };
-
-        assert_eq!(result.as_ref(), array_ref!(example.tag, 0, 16));
-    }
-}
+const BLOCK_SIZE: usize = 16;
 
 #[test]
 fn aes_siv_examples_seal() {
     let examples = AesSivExample::load_all();
 
     for example in examples {
+        println!("pt: {:?}", example.plaintext);
         let len = example.plaintext.len();
         let mut buffer = vec![0; len + BLOCK_SIZE];
         buffer[BLOCK_SIZE..].copy_from_slice(&example.plaintext);
@@ -199,15 +103,5 @@ fn aes_pmac_siv_examples_open() {
         }.expect("successful decrypt");
 
         assert_eq!(plaintext, &example.plaintext[..]);
-    }
-}
-
-#[test]
-fn dbl_examples() {
-    let examples = DblExample::load_all();
-    for example in examples {
-        let mut block = Block::from(&example.input[..]);
-        block.dbl();
-        assert_eq!(block.as_ref(), &example.output[..]);
     }
 }

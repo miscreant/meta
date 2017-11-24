@@ -14,25 +14,26 @@
 #![feature(i128_type)]
 #![feature(asm)]
 #![feature(attr_literals)]
-#![feature(repr_align)]
 #![cfg_attr(feature = "bench", feature(test))]
 
 #[cfg(all(feature = "bench", test))]
 extern crate test;
 
+extern crate aesni;
 #[macro_use]
 extern crate arrayref;
 extern crate byteorder;
+extern crate block_cipher_trait;
 extern crate clear_on_drop;
+extern crate cmac;
+extern crate crypto_mac;
+extern crate dbl;
+extern crate pmac;
 extern crate subtle;
 
 #[cfg(feature = "bench")]
 mod bench;
-
-#[cfg(debug_assertions)]
-pub mod internals;
-#[cfg(not(debug_assertions))]
-pub(crate) mod internals;
-
+mod ctr;
 pub mod siv;
+
 pub use siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
