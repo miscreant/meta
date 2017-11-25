@@ -14,6 +14,9 @@ pub type Iv = GenericArray<u8, U16>;
 
 /// Common interface to counter mode encryption/decryption
 pub trait Ctr {
+    /// Create a new CTR instance
+    fn new(key: &[u8]) -> Self;
+
     /// XOR the CTR keystream into the given buffer
     fn xor_in_place(&self, iv: &Iv, buf: &mut [u8]);
 }
@@ -24,15 +27,13 @@ pub struct Aes128Ctr {
     key: [u8; 16],
 }
 
-impl Aes128Ctr {
-    /// Create a new AES-128-CTR instance from the given key
-    #[inline]
-    pub fn new(key: &[u8; 16]) -> Self {
-        Self { key: *key }
-    }
-}
-
 impl Ctr for Aes128Ctr {
+    #[inline]
+    fn new(key: &[u8]) -> Self {
+        debug_assert_eq!(key.len(), 16, "expected 16-byte key, got {}", key.len());
+        Self { key: *array_ref!(key, 0, 16) }
+    }
+
     fn xor_in_place(&self, iv: &Iv, buf: &mut [u8]) {
         CtrAesNi128::new(&self.key, array_ref!(iv, 0, 16)).xor(buf);
     }
@@ -50,15 +51,13 @@ pub struct Aes256Ctr {
     key: [u8; 32],
 }
 
-impl Aes256Ctr {
-    /// Create a new AES-256-CTR instance from the given key
-    #[inline]
-    pub fn new(key: &[u8; 32]) -> Self {
-        Self { key: *key }
-    }
-}
-
 impl Ctr for Aes256Ctr {
+    #[inline]
+    fn new(key: &[u8]) -> Self {
+        debug_assert_eq!(key.len(), 32, "expected 16-byte key, got {}", key.len());
+        Self { key: *array_ref!(key, 0, 32) }
+    }
+
     fn xor_in_place(&self, iv: &Iv, buf: &mut [u8]) {
         CtrAesNi256::new(&self.key, array_ref!(iv, 0, 16)).xor(buf);
     }
