@@ -5,7 +5,7 @@ use block_cipher_trait::generic_array::GenericArray;
 use block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use cmac::Cmac;
 use crypto_mac::Mac;
-use ctr::{Aes128Ctr, Aes256Ctr, Ctr, Iv, IV_SIZE};
+use ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE};
 use dbl::Dbl;
 use pmac::Pmac;
 use subtle;
@@ -37,6 +37,7 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     /// Panics if the key is the wrong length
     pub fn new(key: &[u8]) -> Self {
         let key_size = M::KeySize::to_usize() * 2;
+
         assert_eq!(
             key.len(),
             key_size,
@@ -74,7 +75,7 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     ///
     /// # Panics
     ///
-    /// Panics if `plaintext.len()` is less than `IV_SIZE`.
+    /// Panics if `plaintext.len()` is less than `M::OutputSize`.
     /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
     pub fn seal_in_place<I, T>(&mut self, associated_data: I, plaintext: &mut [u8])
     where
@@ -110,12 +111,14 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
             return Err(());
         }
 
-        let mut iv = Iv::clone_from_slice(&ciphertext[..IV_SIZE]);
+        let mut iv = [0u8; IV_SIZE];
+        iv.copy_from_slice(&ciphertext[..IV_SIZE]);
         zero_iv_bits(&mut iv);
+
         self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
 
         let actual_tag = self.s2v(associated_data, &ciphertext[IV_SIZE..]);
-        if subtle::slices_equal(actual_tag.as_slice(), &ciphertext[..IV_SIZE]) != 1 {
+        if subtle::slices_equal(&actual_tag, &ciphertext[..IV_SIZE]) != 1 {
             // Re-encrypt the decrypted plaintext to avoid revealing it
             self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
             return Err(());
@@ -128,7 +131,7 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     /// of a pseudo-random function (CMAC or PMAC).
     ///
     /// See Section 2.4 of RFC 5297 for more information
-    fn s2v<I, T>(&mut self, associated_data: I, plaintext: &[u8]) -> Iv
+    fn s2v<I, T>(&mut self, associated_data: I, plaintext: &[u8]) -> [u8; IV_SIZE]
     where
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
@@ -158,7 +161,10 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
         };
 
         self.mac.input(state.as_ref());
-        self.mac.result().code()
+
+        let mut result = [0u8; IV_SIZE];
+        result.copy_from_slice(&self.mac.result().code());
+        result
     }
 }
 
@@ -175,7 +181,7 @@ fn xor_in_place(a: &mut [u8], b: &[u8]) {
 
 /// Zero out the top bits in the last 32-bit words of the IV
 #[inline]
-fn zero_iv_bits(block: &mut Iv) {
+fn zero_iv_bits(block: &mut [u8; IV_SIZE]) {
     // "We zero-out the top bit in each of the last two 32-bit words
     // of the IV before assigning it to Ctr"
     //  — http://web.cs.ucdavis.edu/~rogaway/papers/siv.pdf

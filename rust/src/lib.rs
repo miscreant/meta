@@ -5,24 +5,15 @@
 #![crate_type = "lib"]
 
 #![deny(warnings, missing_docs, trivial_casts, trivial_numeric_casts)]
-#![deny(unused_import_braces, unused_qualifications)]
+#![deny(unsafe_code, unused_import_braces, unused_qualifications)]
 
 #![no_std]
 
-// Experimental features
-// TODO: make crate work on stable
-#![feature(i128_type)]
-#![feature(asm)]
-#![feature(attr_literals)]
 #![cfg_attr(feature = "bench", feature(test))]
-
 #[cfg(all(feature = "bench", test))]
 extern crate test;
 
 extern crate aesni;
-#[macro_use]
-extern crate arrayref;
-extern crate byteorder;
 extern crate block_cipher_trait;
 extern crate clear_on_drop;
 extern crate cmac;
