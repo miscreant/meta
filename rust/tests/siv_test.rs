@@ -1,11 +1,11 @@
 extern crate miscreant;
 
-use miscreant::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
+mod siv_vectors;
 
-mod test_vectors;
-use test_vectors::{AesSivExample, AesPmacSivExample};
+use miscreant::siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
+use siv_vectors::{AesSivExample, AesPmacSivExample};
 
-const BLOCK_SIZE: usize = 16;
+const IV_SIZE: usize = 16;
 
 #[test]
 fn aes_siv_examples_seal() {
@@ -13,8 +13,8 @@ fn aes_siv_examples_seal() {
 
     for example in examples {
         let len = example.plaintext.len();
-        let mut buffer = vec![0; len + BLOCK_SIZE];
-        buffer[BLOCK_SIZE..].copy_from_slice(&example.plaintext);
+        let mut buffer = vec![0; len + IV_SIZE];
+        buffer[IV_SIZE..].copy_from_slice(&example.plaintext);
 
         match example.key.len() {
             32 => {
@@ -61,8 +61,8 @@ fn aes_pmac_siv_examples_seal() {
 
     for example in examples {
         let len = example.plaintext.len();
-        let mut buffer = vec![0; len + BLOCK_SIZE];
-        buffer[BLOCK_SIZE..].copy_from_slice(&example.plaintext);
+        let mut buffer = vec![0; len + IV_SIZE];
+        buffer[IV_SIZE..].copy_from_slice(&example.plaintext);
 
         match example.key.len() {
             32 => {

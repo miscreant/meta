@@ -22,9 +22,9 @@ extern crate dbl;
 extern crate pmac;
 extern crate subtle;
 
-#[cfg(feature = "bench")]
-mod bench;
+pub mod aead;
 mod ctr;
 pub mod siv;
 
-pub use siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
+#[cfg(feature = "bench")]
+mod bench;
