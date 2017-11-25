@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate arrayref;
 extern crate miscreant;
 
 use miscreant::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv};
@@ -14,18 +12,17 @@ fn aes_siv_examples_seal() {
     let examples = AesSivExample::load_all();
 
     for example in examples {
-        println!("pt: {:?}", example.plaintext);
         let len = example.plaintext.len();
         let mut buffer = vec![0; len + BLOCK_SIZE];
         buffer[BLOCK_SIZE..].copy_from_slice(&example.plaintext);
 
         match example.key.len() {
             32 => {
-                let mut siv = Aes128Siv::new(array_ref!(example.key, 0, 32));
+                let mut siv = Aes128Siv::new(&example.key);
                 siv.seal_in_place(&example.ad, &mut buffer);
             }
             64 => {
-                let mut siv = Aes256Siv::new(array_ref!(example.key, 0, 64));
+                let mut siv = Aes256Siv::new(&example.key);
                 siv.seal_in_place(&example.ad, &mut buffer);
             }
             _ => panic!("unexpected key size: {}", example.key.len()),
@@ -44,11 +41,11 @@ fn aes_siv_examples_open() {
 
         let plaintext = match example.key.len() {
             32 => {
-                let mut siv = Aes128Siv::new(array_ref!(example.key, 0, 32));
+                let mut siv = Aes128Siv::new(&example.key);
                 siv.open_in_place(&example.ad, &mut buffer)
             }
             64 => {
-                let mut siv = Aes256Siv::new(array_ref!(example.key, 0, 64));
+                let mut siv = Aes256Siv::new(&example.key);
                 siv.open_in_place(&example.ad, &mut buffer)
             }
             _ => panic!("unexpected key size: {}", example.key.len()),
@@ -69,11 +66,11 @@ fn aes_pmac_siv_examples_seal() {
 
         match example.key.len() {
             32 => {
-                let mut siv = Aes128PmacSiv::new(array_ref!(example.key, 0, 32));
+                let mut siv = Aes128PmacSiv::new(&example.key);
                 siv.seal_in_place(&example.ad, &mut buffer);
             }
             64 => {
-                let mut siv = Aes256PmacSiv::new(array_ref!(example.key, 0, 64));
+                let mut siv = Aes256PmacSiv::new(&example.key);
                 siv.seal_in_place(&example.ad, &mut buffer);
             }
             _ => panic!("unexpected key size: {}", example.key.len()),
@@ -92,11 +89,11 @@ fn aes_pmac_siv_examples_open() {
 
         let plaintext = match example.key.len() {
             32 => {
-                let mut siv = Aes128PmacSiv::new(array_ref!(example.key, 0, 32));
+                let mut siv = Aes128PmacSiv::new(&example.key);
                 siv.open_in_place(&example.ad, &mut buffer)
             }
             64 => {
-                let mut siv = Aes256PmacSiv::new(array_ref!(example.key, 0, 64));
+                let mut siv = Aes256PmacSiv::new(&example.key);
                 siv.open_in_place(&example.ad, &mut buffer)
             }
             _ => panic!("unexpected key size: {}", example.key.len()),

@@ -2,7 +2,7 @@
 
 use aesni::{Aes128, Aes256};
 use block_cipher_trait::generic_array::GenericArray;
-use block_cipher_trait::generic_array::typenum::U16;
+use block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::{Aes128Ctr, Aes256Ctr, Ctr, Iv, IV_SIZE};
@@ -22,56 +22,35 @@ pub struct Siv<C: Ctr, M: Mac> {
 /// AES-CMAC-SIV with a 128-bit key
 pub type Aes128Siv = Siv<Aes128Ctr, Cmac<Aes128>>;
 
-impl Aes128Siv {
-    /// Create a new AES-SIV instance with a 32-byte key
-    pub fn new(key: &[u8; 32]) -> Self {
-        Self {
-            mac: Cmac::new(GenericArray::from_slice(&key[..16])),
-            ctr: Aes128Ctr::new(array_ref!(key, 16, 16)),
-        }
-    }
-}
-
 /// AES-CMAC-SIV with a 256-bit key
 pub type Aes256Siv = Siv<Aes256Ctr, Cmac<Aes256>>;
-
-impl Aes256Siv {
-    /// Create a new AES-SIV instance with a 64-byte key
-    pub fn new(key: &[u8; 64]) -> Self {
-        Self {
-            mac: Cmac::new(GenericArray::from_slice(&key[..32])),
-            ctr: Aes256Ctr::new(array_ref!(key, 32, 32)),
-        }
-    }
-}
 
 /// AES-PMAC-SIV with a 128-bit key
 pub type Aes128PmacSiv = Siv<Aes128Ctr, Pmac<Aes128>>;
 
-impl Aes128PmacSiv {
-    /// Create a new AES-SIV instance with a 32-byte key
-    pub fn new(key: &[u8; 32]) -> Self {
-        Self {
-            mac: Pmac::new(GenericArray::from_slice(&key[..16])),
-            ctr: Aes128Ctr::new(array_ref!(key, 16, 16)),
-        }
-    }
-}
-
 /// AES-SIV with a 256-bit key
 pub type Aes256PmacSiv = Siv<Aes256Ctr, Pmac<Aes256>>;
 
-impl Aes256PmacSiv {
-    /// Create a new AES-SIV instance with a 64-byte key
-    pub fn new(key: &[u8; 64]) -> Self {
+impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
+    /// Create a new AES-SIV instance
+    ///
+    /// Panics if the key is the wrong length
+    pub fn new(key: &[u8]) -> Self {
+        let key_size = M::KeySize::to_usize() * 2;
+        assert_eq!(
+            key.len(),
+            key_size,
+            "expected {}-byte key, got {}",
+            key_size,
+            key.len()
+        );
+
         Self {
-            mac: Pmac::new(GenericArray::from_slice(&key[..32])),
-            ctr: Aes256Ctr::new(array_ref!(key, 32, 32)),
+            mac: M::new(GenericArray::from_slice(&key[..(key_size / 2)])),
+            ctr: C::new(&key[(key_size / 2)..]),
         }
     }
-}
 
-impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     /// Encrypt the given plaintext in-place, replacing it with the SIV tag and
     /// ciphertext. Requires a buffer with 16-bytes additional space.
     ///
