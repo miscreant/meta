@@ -1,9 +1,10 @@
 [[package]]
 name = "aesni"
 version = "0.2.0"
-source = "git+https://github.com/RustCrypto/block-ciphers.git#461224934d0c286ebb7d76f5f83f51cb3ef77421"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "block-cipher-trait 0.5.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
+ "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "opaque-debug 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -14,7 +15,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "block-cipher-trait"
 version = "0.5.0"
-source = "git+https://github.com/RustCrypto/traits.git?branch=new_versiion#03af6977b425ea83895cccfcfeec2aa8abf0ed7c"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -30,10 +31,10 @@ dependencies = [
 [[package]]
 name = "cmac"
 version = "0.1.0"
-source = "git+https://github.com/RustCrypto/MACs.git#d1dc1a4c694025eb1003a5f88aa783ec1e192886"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "block-cipher-trait 0.5.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
- "crypto-mac 0.6.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
+ "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "crypto-mac 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dbl 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -54,7 +55,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "crypto-mac"
 version = "0.6.0"
-source = "git+https://github.com/RustCrypto/traits.git?branch=new_versiion#03af6977b425ea83895cccfcfeec2aa8abf0ed7c"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "constant_time_eq 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -131,14 +132,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "miscreant"
 version = "0.2.0"
 dependencies = [
- "aesni 0.2.0 (git+https://github.com/RustCrypto/block-ciphers.git)",
- "block-cipher-trait 0.5.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
+ "aesni 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clear_on_drop 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "cmac 0.1.0 (git+https://github.com/RustCrypto/MACs.git)",
- "crypto-mac 0.6.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
+ "cmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "crypto-mac 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "data-encoding 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dbl 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "pmac 0.1.0 (git+https://github.com/RustCrypto/MACs.git)",
+ "pmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ring 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "subtle 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -158,12 +159,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "opaque-debug"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
 name = "pmac"
 version = "0.1.0"
-source = "git+https://github.com/RustCrypto/MACs.git#d1dc1a4c694025eb1003a5f88aa783ec1e192886"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "block-cipher-trait 0.5.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
- "crypto-mac 0.6.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)",
+ "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "crypto-mac 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dbl 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -245,14 +251,14 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
-"checksum aesni 0.2.0 (git+https://github.com/RustCrypto/block-ciphers.git)" = "<none>"
+"checksum aesni 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "9a4f41fb27330914c552d949ee2cde9a6f9d67cacbfd5f6f38d3bc8a167eabb4"
 "checksum bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "aad18937a628ec6abcd26d1489012cc0e18c21798210f491af69ded9b881106d"
-"checksum block-cipher-trait 0.5.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)" = "<none>"
+"checksum block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d6136d803280ae3532efa36114335255ea94f3d75d735ddedd66b0d7cd30bad3"
 "checksum clear_on_drop 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "27fc408dd80e7fe9d5b1c8cee6c2add84bea237d8dee70880a76ae7957f6d3a6"
-"checksum cmac 0.1.0 (git+https://github.com/RustCrypto/MACs.git)" = "<none>"
+"checksum cmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "44f175b5f76aa82ebe4c7e85ef95b23e9293c5618db28461cb10ee929e0f6e2f"
 "checksum coco 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "c06169f5beb7e31c7c67ebf5540b8b472d23e3eade3b2ec7d1f5b504a85f91bd"
 "checksum constant_time_eq 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "8ff012e225ce166d4422e0e78419d901719760f62ae2b7969ca6b564d1b54a9e"
-"checksum crypto-mac 0.6.0 (git+https://github.com/RustCrypto/traits.git?branch=new_versiion)" = "<none>"
+"checksum crypto-mac 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "99376574a55849855052aa6e3b15f3bdebf8bcdd3b24f3cbc3371469bcd5b480"
 "checksum data-encoding 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "099d2591f809713931cd770f2bdf4b8a4d2eb7314bc762da4c375ecaa74af80f"
 "checksum dbl 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "920e117b69060a961c4164ccf83af573292cb167ccdd918950bcf0f5afc32c1c"
 "checksum dtoa 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)" = "09c3753c3db574d215cba4ea76018483895d7bff25a31b49ba45db21c48e50ab"
@@ -266,7 +272,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum libc 0.2.33 (registry+https://github.com/rust-lang/crates.io-index)" = "5ba3df4dcb460b9dfbd070d41c94c19209620c191b0340b929ce748a2bcd42d2"
 "checksum num-traits 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)" = "99843c856d68d8b4313b03a17e33c4bb42ae8f6610ea81b28abe076ac721b9b0"
 "checksum num_cpus 1.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "514f0d73e64be53ff320680ca671b64fe3fb91da01e1ae2ddc99eb51d453b20d"
-"checksum pmac 0.1.0 (git+https://github.com/RustCrypto/MACs.git)" = "<none>"
+"checksum opaque-debug 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d620c9c26834b34f039489ac0dfdb12c7ac15ccaf818350a64c9b5334a452ad7"
+"checksum pmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0a82cc12454dc99354a9342c237149aec041ef16f618066d0a682df256b97714"
 "checksum rand 0.3.18 (registry+https://github.com/rust-lang/crates.io-index)" = "6475140dfd8655aeb72e1fd4b7a1cc1c202be65d71669476e392fe62532b9edd"
 "checksum rayon 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)" = "a77c51c07654ddd93f6cb543c7a849863b03abc7e82591afda6dc8ad4ac3ac4a"
 "checksum rayon-core 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e64b609139d83da75902f88fd6c01820046840a18471e4dfcd5ac7c0f46bea53"
