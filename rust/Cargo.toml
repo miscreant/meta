@@ -11,7 +11,7 @@ categories  = ["cryptography", "no-std"]
 keywords    = ["cryptography", "encryption", "security", "streaming"]
 
 [dependencies]
-aesni = "0.2.0"
+aesni = "0.2"
 crypto-mac = "0.6"
 block-cipher-trait = "0.5"
 clear_on_drop = { version = "0.2", features = ["nightly"] }
@@ -35,10 +35,3 @@ rpath = false
 lto = false
 debug-assertions = false
 codegen-units = 1
-
-[patch.crates-io]
-aesni = { git = "https://github.com/RustCrypto/block-ciphers.git" }
-block-cipher-trait = { git = "https://github.com/RustCrypto/traits.git", branch = "new_versiion" }
-cmac = { git = "https://github.com/RustCrypto/MACs.git" }
-crypto-mac = { git = "https://github.com/RustCrypto/traits.git", branch = "new_versiion" }
-pmac = { git = "https://github.com/RustCrypto/MACs.git" }
