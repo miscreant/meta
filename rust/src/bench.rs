@@ -1,7 +1,7 @@
 extern crate ring;
 
 use self::ring::aead;
-use {Aes128Siv, Aes128PmacSiv};
+use siv::{Aes128Siv, Aes128PmacSiv};
 use test::Bencher;
 
 // WARNING: Do not ever actually use a key of all zeroes
