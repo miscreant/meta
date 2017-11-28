@@ -3,8 +3,7 @@ extern crate miscreant;
 mod aead_vectors;
 
 use aead_vectors::AesSivAeadExample;
-use miscreant::aead::{Aes128SivAead, Aes256SivAead, Aes128PmacSivAead, Aes256PmacSivAead,
-                      Algorithm};
+use miscreant::aead::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv, Algorithm};
 
 const IV_SIZE: usize = 16;
 
@@ -21,11 +20,11 @@ fn aes_siv_aead_examples_seal() {
             "AES-SIV" => {
                 match example.key.len() {
                     32 => {
-                        let mut aead = Aes128SivAead::new(&example.key);
+                        let mut aead = Aes128Siv::new(&example.key);
                         aead.seal_in_place(&example.nonce, &example.ad, &mut buffer);
                     }
                     64 => {
-                        let mut aead = Aes256SivAead::new(&example.key);
+                        let mut aead = Aes256Siv::new(&example.key);
                         aead.seal_in_place(&example.nonce, &example.ad, &mut buffer);
                     }
                     _ => panic!("unexpected key size: {}", example.key.len()),
@@ -34,11 +33,11 @@ fn aes_siv_aead_examples_seal() {
             "AES-PMAC-SIV" => {
                 match example.key.len() {
                     32 => {
-                        let mut aead = Aes128PmacSivAead::new(&example.key);
+                        let mut aead = Aes128PmacSiv::new(&example.key);
                         aead.seal_in_place(&example.nonce, &example.ad, &mut buffer);
                     }
                     64 => {
-                        let mut aead = Aes256PmacSivAead::new(&example.key);
+                        let mut aead = Aes256PmacSiv::new(&example.key);
                         aead.seal_in_place(&example.nonce, &example.ad, &mut buffer);
                     }
                     _ => panic!("unexpected key size: {}", example.key.len()),
