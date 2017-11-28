@@ -3,7 +3,7 @@
 //! and authenticity.
 
 use ctr::IV_SIZE;
-use siv::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv, Siv};
+use siv::{self, Siv};
 
 /// An AEAD algorithm
 pub trait Algorithm {
@@ -30,10 +30,11 @@ pub trait Algorithm {
     ) -> Result<&'a [u8], ()>;
 }
 
+/// Generate AEAD newtypes for SIV types
 macro_rules! impl_siv_aead {
-    ($name:ident, $siv:ty, $key_size:expr, $doc:expr) => {
+    ($name:ident, $key_size:expr, $doc:expr) => {
         #[doc=$doc]
-        pub struct $name($siv);
+        pub struct $name(siv::$name);
 
         impl Algorithm for $name {
             const KEY_SIZE: usize = $key_size;
@@ -60,28 +61,24 @@ macro_rules! impl_siv_aead {
 }
 
 impl_siv_aead!(
-    Aes128SivAead,
     Aes128Siv,
     16,
     "AES-CMAC-SIV in AEAD mode with 128-bit key size"
 );
 
 impl_siv_aead!(
-    Aes256SivAead,
     Aes256Siv,
     32,
     "AES-CMAC-SIV in AEAD mode with 256-bit key size"
 );
 
 impl_siv_aead!(
-    Aes128PmacSivAead,
     Aes128PmacSiv,
     16,
     "AES-PMAC-SIV in AEAD mode with 128-bit key size"
 );
 
 impl_siv_aead!(
-    Aes256PmacSivAead,
     Aes256PmacSiv,
     32,
     "AES-PMAC-SIV in AEAD mode with 256-bit key size"
