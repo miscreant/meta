@@ -29,4 +29,8 @@ matrix:
   - language: rust
     rust: nightly
     before_script: cd rust
+  - language: rust
+    rust: nightly
+    before_script: cd rust
+    script: cargo test --features="yolocrypto"
 
