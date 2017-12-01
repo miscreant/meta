@@ -19,6 +19,7 @@ extern crate clear_on_drop;
 extern crate cmac;
 extern crate crypto_mac;
 extern crate dbl;
+extern crate digest;
 extern crate generic_array;
 extern crate pmac;
 extern crate subtle;
@@ -27,6 +28,9 @@ pub mod aead;
 mod ctr;
 pub mod siv;
 mod s2v;
+
+#[cfg(feature = "yolocrypto")]
+pub mod kdf;
 
 #[cfg(feature = "bench")]
 mod bench;
