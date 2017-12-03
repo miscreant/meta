@@ -2,16 +2,17 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use ctr::IV_SIZE;
+use generic_array::ArrayLength;
+use generic_array::typenum::{U16, U32, U64};
 use siv::{self, Siv};
 
 /// An AEAD algorithm
 pub trait Algorithm {
     /// Size of a key associated with this AEAD algoritm
-    const KEY_SIZE: usize;
+    type KeySize: ArrayLength<u8>;
 
     /// Size of a MAC tag
-    const MAC_SIZE: usize;
+    type TagSize: ArrayLength<u8>;
 
     /// Create a new AEAD instance
     ///
@@ -22,7 +23,7 @@ pub trait Algorithm {
     fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]);
 
     /// Decrypt the contents of buffer in-place
-    fn open_in_place<'a, I, T>(
+    fn open_in_place<'a>(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
@@ -32,13 +33,13 @@ pub trait Algorithm {
 
 /// Generate AEAD newtypes for SIV types
 macro_rules! impl_siv_aead {
-    ($name:ident, $key_size:expr, $doc:expr) => {
+    ($name:ident, $key_size:ty, $doc:expr) => {
         #[doc=$doc]
         pub struct $name(siv::$name);
 
         impl Algorithm for $name {
-            const KEY_SIZE: usize = $key_size;
-            const MAC_SIZE: usize = IV_SIZE;
+            type KeySize = $key_size;
+            type TagSize = U16;
 
             fn new(key: &[u8]) -> Self {
                 $name(Siv::new(key))
@@ -48,7 +49,7 @@ macro_rules! impl_siv_aead {
                 self.0.seal_in_place(&[associated_data, nonce], buffer)
             }
 
-            fn open_in_place<'a, I, T>(
+            fn open_in_place<'a>(
                 &mut self,
                 nonce: &[u8],
                 associated_data: &[u8],
@@ -62,24 +63,24 @@ macro_rules! impl_siv_aead {
 
 impl_siv_aead!(
     Aes128Siv,
-    16,
-    "AES-CMAC-SIV in AEAD mode with 128-bit key size"
+    U32,
+    "AES-CMAC-SIV in AEAD mode with 256-bit key size (128-bit security)"
 );
 
 impl_siv_aead!(
     Aes256Siv,
-    32,
-    "AES-CMAC-SIV in AEAD mode with 256-bit key size"
+    U64,
+    "AES-CMAC-SIV in AEAD mode with 512-bit key size (256-bit security)"
 );
 
 impl_siv_aead!(
     Aes128PmacSiv,
-    16,
-    "AES-PMAC-SIV in AEAD mode with 128-bit key size"
+    U32,
+    "AES-PMAC-SIV in AEAD mode with 256-bit key size (128-bit security"
 );
 
 impl_siv_aead!(
     Aes256PmacSiv,
-    32,
-    "AES-PMAC-SIV in AEAD mode with 256-bit key size"
+    U64,
+    "AES-PMAC-SIV in AEAD mode with 512-bit key size (256-bit security)"
 );

@@ -14,6 +14,7 @@
 extern crate test;
 
 extern crate aesni;
+extern crate byteorder;
 extern crate block_cipher_trait;
 extern crate clear_on_drop;
 extern crate cmac;
@@ -27,6 +28,7 @@ pub mod aead;
 mod ctr;
 pub mod siv;
 mod s2v;
+pub mod stream;
 
 #[cfg(feature = "bench")]
 mod bench;
