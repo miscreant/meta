@@ -109,28 +109,27 @@ Have questions? Want to suggest a feature or change?
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-SIV           | :green_heart:              | :sparkling_heart:   | :yellow_heart:     | [RFC 5297]        |
-| AES-PMAC-SIV      | :green_heart:              | :sparkling_heart:   | :green_heart:      | None              |
+| AES-SIV           | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
+| AES-PMAC-SIV      | :green_heart:              | :green_heart:       | :green_heart:      | None              |
 
 ### Other Constructions
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :sparkling_heart:♣ | Forthcoming‡      |
-| AES-GCM           | :green_heart:              | :broken_heart:      | :sparkling_heart:♣ | [NIST SP 800-38D] |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :green_heart:      | Forthcoming‡      |
+| AES-GCM           | :green_heart:              | :broken_heart:      | :green_heart:      | [NIST SP 800-38D] |
 | AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
-| AES-CBC           | :broken_heart:             | :broken_heart:      | :sparkling_heart:  | [NIST SP 800-38A] |
-| AES-CTR           | :broken_heart:             | :broken_heart:      | :sparkling_heart:  | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | :sparkling_heart:  | [RFC 7539]        |
+| AES-CBC           | :broken_heart:             | :broken_heart:      | :green_heart:      | [NIST SP 800-38A] |
+| AES-CTR           | :broken_heart:             | :broken_heart:      | :green_heart:      | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | [RFC 7539]        |
 | XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | None              |
 
 ### Legend
 
 | Heart             | Meaning   |
 |-------------------|-----------|
-| :sparkling_heart: | Excellent |
 | :green_heart:     | Great     |
-| :yellow_heart:    | Fine      |
+| :yellow_heart:    | Fine <img src="https://raw.githubusercontent.com/miscreant/miscreant.github.io/master/images/thisisfine.png" width="16" height="16"> |
 | :broken_heart:    | Bad       |
 
 † Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks].
@@ -138,12 +137,6 @@ Have questions? Want to suggest a feature or change?
 
 ‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
-
-♣ Only applies to platforms which provide a hardware accelerated version of the
-  **GHASH**/**POLYVAL** functions. On platforms that do **NOT** provide
-  acceleration for these functions (e.g. microcontrollers/IoT platforms),
-  these ciphers receive a :yellow_heart: (or potentially :broken_heart: if too
-  constrained)
 
 When standardization work around [AES-GCM-SIV] is complete, it will be
 [seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
@@ -385,7 +378,7 @@ A: No, there are [no IP rights concerns] with either the **AES-SIV** mode or
 **AES-PMAC-SIV** modes (see the "[What about patents?]" section of Rogaway's PMAC
 FAQ for imformation about PMAC).
 
-To the best of our knowledge, the algorithm is entirely in the public domain. 
+To the best of our knowledge, the algorithm is entirely in the public domain.
 
 [no IP rights concerns]: http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/siv/ip.pdf
 [What About Patents?]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
