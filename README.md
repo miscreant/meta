@@ -134,18 +134,8 @@ Have questions? Want to suggest a feature or change?
 
 † Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
-
-When standardization work around [AES-GCM-SIV] is complete, it will be
-[seriously considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
-**AES-GCM-SIV** has the advantage of the [GHASH] (technically **POLYVAL**)
-function being able to run in parallel, versus **AES-CMAC**'s sequential
-operation.
-
-**AES-SIV** has the advantages of stronger security guarantees, simplicity,
-and that it can be implemented using the AES encryption function alone, making
-it a better choice for environments where a hardware accelerated version of the
-**GHASH** function is unavailable, such as low-powered mobile devices and
-so-called "Internet of Things" embedded use cases.
+  When standardization work around [AES-GCM-SIV] is complete, it will be
+  [considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
 
 [Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
