@@ -116,7 +116,7 @@ Have questions? Want to suggest a feature or change?
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-GCM-SIV       | :green_heart:              | :green_heart:†      | :green_heart:      | Forthcoming‡      |
+| AES-GCM-SIV       | :green_heart:              | :green_heart:       | :green_heart:      | Forthcoming†      |
 | AES-GCM           | :green_heart:              | :broken_heart:      | :green_heart:      | [NIST SP 800-38D] |
 | AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
 | AES-CBC           | :broken_heart:             | :broken_heart:      | :green_heart:      | [NIST SP 800-38A] |
@@ -132,10 +132,7 @@ Have questions? Want to suggest a feature or change?
 | :yellow_heart:    | Fine <img src="https://raw.githubusercontent.com/miscreant/miscreant.github.io/master/images/thisisfine.png" width="16" height="16"> |
 | :broken_heart:    | Bad       |
 
-† Previous drafts of the AES-GCM-SIV specification were vulnerable to [key recovery attacks].
-  These attacks are being addressed in newer drafts of the specification.
-
-‡ Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
+† Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
   For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
 
 When standardization work around [AES-GCM-SIV] is complete, it will be
@@ -156,7 +153,6 @@ so-called "Internet of Things" embedded use cases.
 [NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
-[key recovery attacks]: https://mailarchive.ietf.org/arch/attach/cfrg/pdfL0pM_N.pdf
 [AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
