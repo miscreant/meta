@@ -133,8 +133,8 @@ Have questions? Want to suggest a feature or change?
 | :broken_heart:    | Bad       |
 
 † Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
-  For more information, see [draft-irtf-cfrg-gcmsiv][AES-GCM-SIV].
-  When standardization work around [AES-GCM-SIV] is complete, it will be
+  For more information, see [draft-irtf-cfrg-gcmsiv].
+  When standardization work around **AES-GCM-SIV** is complete, it will be
   [considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
 
 [Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
@@ -143,7 +143,7 @@ Have questions? Want to suggest a feature or change?
 [NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C
 [NIST SP 800-38D]: https://dx.doi.org/10.6028/NIST.SP.800-38D
 [RFC 7539]: https://tools.ietf.org/html/rfc7539
-[AES-GCM-SIV]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
+[draft-irtf-cfrg-gcmsiv]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
 
