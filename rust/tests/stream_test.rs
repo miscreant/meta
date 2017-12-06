@@ -3,7 +3,6 @@ extern crate generic_array;
 
 mod stream_vectors;
 
-use generic_array::ArrayLength;
 use miscreant::aead;
 use miscreant::stream::{Aes128PmacSivEncryptor, Aes128PmacSivDecryptor};
 use miscreant::stream::{Aes128SivEncryptor, Aes128SivDecryptor};
@@ -41,11 +40,7 @@ fn aes_siv_stream_examples_seal() {
     }
 }
 
-fn test_encryptor<A, N>(mut encryptor: Encryptor<A, N>, blocks: &[Block])
-where
-    A: aead::Algorithm,
-    N: ArrayLength<u8>,
-{
+fn test_encryptor<A: aead::Algorithm>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         let mut buffer = vec![0; IV_SIZE + block.plaintext.len()];
         buffer[IV_SIZE..].copy_from_slice(&block.plaintext);
@@ -88,11 +83,7 @@ fn aes_siv_stream_examples_open() {
     }
 }
 
-fn test_decryptor<A, N>(mut decryptor: Decryptor<A, N>, blocks: &[Block])
-where
-    A: aead::Algorithm,
-    N: ArrayLength<u8>,
-{
+fn test_decryptor<A: aead::Algorithm>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
         let mut buffer = block.ciphertext.clone();
 
