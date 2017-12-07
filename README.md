@@ -15,8 +15,8 @@
 
 A misuse resistant symmetric encryption library designed to support
 authenticated encryption of individual messages, encryption keys,
-message streams, or large files using the [AES-SIV] ([RFC 5297]) and
-[CHAIN/STREAM] constructions.
+message streams, or large files using the [AES-SIV] ([RFC 5297]),
+[AES-PMAC-SIV], and [STREAM] constructions.
 
 Miscreant is available for several programming languages, including
 [Go], [JavaScript], [Python], [Ruby], and [Rust].
@@ -37,71 +37,30 @@ languages providing a high-level API for misuse-resistant symmetric encryption.
 Additionally, it provides support for "online" [authenticated encryption] use
 cases such as streaming or incrementally encryption/decryption of large files.
 
-The following constructions are provided by **Miscreant**:
+The following [algorithms] are provided by **Miscreant**:
 
-* [AES-SIV]: (standardized in [RFC 5297]) combines the [AES-CTR]
-  ([NIST SP 800-38A]) mode of encryption with the [AES-CMAC]
-  ([NIST SP 800-38B]) or [AES-PMAC] function for integrity.
-  Unlike most [authenticated encryption] algorithms, **AES-SIV** uses a
-  special "encrypt-with-MAC" construction which combines the roles of an
-  initialization vector (IV) with a message authentication code (MAC)
-  using a construction called a *synthetic initialization vector* (SIV).
-  It works in practice by first using **AES-CMAC** or **AES-PMAC** to derive
-  an IV from a MAC of zero or more "header" values and the message
-  plaintext, then encrypting the message under that derived IV.
-  This approach provides not just the benefits of an authenticated
-  encryption mode, but also makes it resistant to accidental reuse
-  of an IV/nonce, something that would be catastrophic with a mode
-  like **AES-GCM**. **AES-SIV** provides [nonce reuse misuse resistance],
-  considered the gold standard in cryptography today.
+* [AES-SIV]: a authenticated mode of AES which provides
+  [nonce reuse misuse resistance]. Described in [RFC 5297], it combines the
+  [AES-CTR] ([NIST SP 800-38A]) mode of encryption with the
+  [AES-CMAC]([NIST SP 800-38B]) function for integrity.
 
-* [CHAIN]: a construction which provides "online" chunked/multipart
-  [authenticated encryption] when used in conjunction with a cipher like
-  **AES-SIV**. **CHAIN** achieves the best-possible security for an online
-  authenticated encryption scheme (OAE2).
+* [AES-PMAC-SIV]: a fully parallelizable variant of **AES-SIV** which
+  substitutes the [AES-PMAC] function for integrity, providing effectively
+  identical security properties as the original construction, but much better
+  performance on systems which provide parallel hardware implementations of
+  AES, namely Intel/AMD CPUs.
 
-* [STREAM]: a construction which provides streaming [authenticated encryption]
-  and defends against reordering and truncation attacks. Unlike **CHAIN**,
-  **STREAM** supports parallelization and seeking, allowing chunks within
-  a message to be encrypted and decrypted in any order the user wants.
-  **STREAM** provides nonce-based online authenticated encryption (nOAE),
-  which the [CHAIN/STREAM] paper proves is equivalent to OAE2.
-
-Though not yet described in an RFC, **CHAIN** and **STREAM** were designed by
-[Phil Rogaway] (who also created **AES-SIV**) and are described in the paper
-[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance], which
-contains a rigorous security analysis proving them secure under the definitions
-of OAE2 and nOAE respectively.
-
-_NOTE:_ this library does not yet support **CHAIN** and **STREAM**! Please see
-the tracking issues [CHAIN support (OAE2)] and [STREAM support (Nonce-based OAE)]
-to follow progress on adding support.
+* [STREAM]: a construction which, when combined with **AES-SIV** or
+  **AES-PMAC-SIV**, provides online/streaming [authenticated encryption]
+  and defends against reordering and truncation attacks.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
-[AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
+[AES-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-siv
+[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-pmac-siv
+[STREAM]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#stream
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
-[nonce reuse misuse resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
-[misuse resistant]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
-[CHAIN]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-[STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-[Online Authenticated-Encryption and its Nonce-Reuse Misuse-Resistance]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-[CHAIN support (OAE2)]: https://github.com/miscreant/miscreant/issues/33
-[STREAM support (Nonce-based OAE)]: https://github.com/miscreant/miscreant/issues/32
-
-
-## Help and Discussion
-
-Have questions? Want to suggest a feature or change?
-
-* [Gitter]: web-based chat about Miscreant
-* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
-
-[Gitter]: https://gitter.im/miscreant/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
-[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
-
 
 ## Cipher Comparison
 
@@ -109,8 +68,8 @@ Have questions? Want to suggest a feature or change?
 
 | Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
 |-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-SIV           | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
-| AES-PMAC-SIV      | :green_heart:              | :green_heart:       | :green_heart:      | None              |
+| [AES-SIV]         | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
+| [AES-PMAC-SIV]    | :green_heart:              | :green_heart:       | :green_heart:      | None              |
 
 ### Other Constructions
 
@@ -146,7 +105,6 @@ Have questions? Want to suggest a feature or change?
 [draft-irtf-cfrg-gcmsiv]: https://datatracker.ietf.org/doc/draft-irtf-cfrg-gcmsiv/
 [GHASH]: https://en.wikipedia.org/wiki/Galois/Counter_Mode#Mathematical_basis
 
-
 ## Language Support
 
 **Miscreant** libraries are available for the following languages:
@@ -169,58 +127,21 @@ Have questions? Want to suggest a feature or change?
 [crate-shield]: https://img.shields.io/crates/v/miscreant.svg
 [crate-link]: https://crates.io/crates/miscreant
 
+## Documentation
 
-## AES-SIV
+[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki)
+for more detailed documentation and usage notes.
 
-This section provides a more in-depth exploration of how the **AES-SIV**
-function operates.
+## Help and Discussion
 
-### Encryption
+Have questions? Want to suggest a feature or change?
 
-<img src="https://miscreant.io/images/siv-encrypt.svg" width="410px" height="300px">
+* [Gitter]: web-based chat about Miscreant
+* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
 
-#### Inputs:
-
-* **AES-CMAC** and **AES-CTR** *keys*: *K<sub>1</sub>* and *K<sub>2</sub>*
-* Zero or more message *headers*: *H<sub>1</sub>* through *H<sub>m</sub>*
-* Plaintext *message*: *M*
-
-#### Outputs:
-
-* Initialization vector: *IV*
-* *Ciphertext* message: *C*
-
-#### Description:
-
-**AES-SIV** first computes **AES-CMAC** on the message headers *H<sub>1</sub>*
-through *H<sub>m</sub>* and messages under *K<sub>1</sub>*, computing a
-*synthetic IV* (SIV). This IV is used to perform **AES-CTR** encryption under
-*K<sub>2</sub>*
-
-### Decryption
-
-<img src="https://miscreant.io/images/siv-decrypt.svg" width="410px" height="368px">
-
-#### Inputs:
-
-* **AES-CMAC** and **AES-CTR** *keys*: *K<sub>1</sub>* and *K<sub>2</sub>*
-* Zero or more message *headers*: *H<sub>1</sub>* through *H<sub>m</sub>*
-* Initialization vector: *IV*
-* *Ciphertext* message: *C*
-
-#### Outputs:
-
-* Plaintext *message*: *M*
-
-#### Description:
-
-To decrypt a message, **AES-SIV** first performs an **AES-CTR** decryption of
-the message under the provided synthetic IV. The message headers
-*H<sub>1</sub>* through *H<sub>m</sub>* and candidate decryption message are
-then authenticated by **AES-CMAC**. If the computed `IV’` does not match the
-original one supplied, the decryption operation is aborted. Otherwise, we've
-authenticated the original plaintext and can return it.
-
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
 
 ## Code of Conduct
 
