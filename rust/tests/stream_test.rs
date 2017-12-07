@@ -3,7 +3,7 @@ extern crate generic_array;
 
 mod stream_vectors;
 
-use miscreant::aead;
+use miscreant::{aead, Buffer};
 use miscreant::stream::{Aes128PmacSivEncryptor, Aes128PmacSivDecryptor};
 use miscreant::stream::{Aes128SivEncryptor, Aes128SivDecryptor};
 use miscreant::stream::{Aes256PmacSivEncryptor, Aes256PmacSivDecryptor};
@@ -42,15 +42,15 @@ fn aes_siv_stream_examples_seal() {
 
 fn test_encryptor<A: aead::Algorithm>(mut encryptor: Encryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
-        let mut buffer = vec![0; IV_SIZE + block.plaintext.len()];
-        buffer[IV_SIZE..].copy_from_slice(&block.plaintext);
+        let mut buffer = Buffer::from(vec![0; IV_SIZE + block.plaintext.len()]);
+        buffer.mut_msg_slice().copy_from_slice(&block.plaintext);
 
         if i < blocks.len() - 1 {
             encryptor.seal_next_in_place(&block.ad, &mut buffer);
-            assert_eq!(buffer, block.ciphertext);
+            assert_eq!(buffer.as_slice(), block.ciphertext.as_slice());
         } else {
             encryptor.seal_last_in_place(&block.ad, &mut buffer);
-            assert_eq!(buffer, block.ciphertext);
+            assert_eq!(buffer.as_slice(), block.ciphertext.as_slice());
             return;
         }
     }
@@ -85,18 +85,20 @@ fn aes_siv_stream_examples_open() {
 
 fn test_decryptor<A: aead::Algorithm>(mut decryptor: Decryptor<A>, blocks: &[Block]) {
     for (i, block) in blocks.iter().enumerate() {
-        let mut buffer = block.ciphertext.clone();
+        let mut buffer = Buffer::from(block.ciphertext.clone());
 
         if i < blocks.len() - 1 {
-            let result = decryptor
+            decryptor
                 .open_next_in_place(&block.ad, &mut buffer)
-                .expect("decrypt");
-            assert_eq!(result, block.plaintext.as_slice());
+                .expect("decrypt failure");
+
+            assert_eq!(buffer.msg_slice(), block.plaintext.as_slice());
         } else {
-            let result = decryptor
+            decryptor
                 .open_last_in_place(&block.ad, &mut buffer)
-                .expect("decrypt");
-            assert_eq!(result, block.plaintext.as_slice());
+                .expect("decrypt failure");
+
+            assert_eq!(buffer.msg_slice(), block.plaintext.as_slice());
             return;
         }
     }
