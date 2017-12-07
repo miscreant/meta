@@ -39,7 +39,7 @@ cases such as streaming or incrementally encryption/decryption of large files.
 
 The following algorithms are provided by **Miscreant**:
 
-* [AES-SIV]: a authenticated mode of AES which provides
+* [AES-SIV]: an [authenticated] mode of AES which provides
   [nonce reuse misuse resistance]. Described in [RFC 5297], it combines the
   [AES-CTR] ([NIST SP 800-38A]) mode of encryption with the
   [AES-CMAC]([NIST SP 800-38B]) function for integrity.
@@ -54,7 +54,7 @@ The following algorithms are provided by **Miscreant**:
   **AES-PMAC-SIV**, provides online/streaming [authenticated encryption]
   and defends against reordering and truncation attacks.
 
-[authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
+[authenticated]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [nonce reuse misuse resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
 [AES-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-siv
 [AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-pmac-siv
@@ -67,22 +67,22 @@ The following algorithms are provided by **Miscreant**:
 
 ### Miscreant Ciphers
 
-| Name              | [Authenticated Encryption] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
-|-------------------|----------------------------|---------------------|----------------|------------|-------------------|
-| [AES-SIV]         | 💚                         | 💚                  | 💛             | 💚         | [RFC 5297]        |
-| [AES-PMAC-SIV]    | 💚                         | 💚                  | 💚             | 💚         | None              |
+| Name              | [Authenticated] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
+|-------------------|-----------------|---------------------|----------------|------------|-------------------|
+| [AES-SIV]         | 💚              | 💚                  | 💛             | 💚         | [RFC 5297]        |
+| [AES-PMAC-SIV]    | 💚              | 💚                  | 💚             | 💚         | None              |
 
 ### Other Constructions
 
-| Name              | [Authenticated Encryption] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
-|-------------------|----------------------------|---------------------|----------------|------------|-------------------|
-| AES-GCM-SIV       | 💚                         | 💚                  | 💚             | 💛         | Forthcoming‡      |
-| AES-GCM           | 💚                         | 💔                  | 💚             | 💛         | [NIST SP 800-38D] |
-| AES-CCM           | 💚                         | 💔                  | 💛             | 💚         | [NIST SP 800-38C] |
-| AES-CBC           | 💔                         | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
-| AES-CTR           | 💔                         | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | 💚                         | 💔                  | 💚             | 💛         | [RFC 7539]        |
-| XSalsa20+Poly1305 | 💚                         | 💔                  | 💚             | 💛         | None              |
+| Name              | [Authenticated] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
+|-------------------|-----------------|---------------------|----------------|------------|-------------------|
+| AES-GCM-SIV       | 💚              | 💚                  | 💚             | 💛         | Forthcoming‡      |
+| AES-GCM           | 💚              | 💔                  | 💚             | 💛         | [NIST SP 800-38D] |
+| AES-CCM           | 💚              | 💔                  | 💛             | 💚         | [NIST SP 800-38C] |
+| AES-CBC           | 💔              | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
+| AES-CTR           | 💔              | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | 💚              | 💔                  | 💚             | 💛         | [RFC 7539]        |
+| XSalsa20+Poly1305 | 💚              | 💔                  | 💚             | 💛         | None              |
 
 ### Legend
 
