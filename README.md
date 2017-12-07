@@ -55,6 +55,7 @@ The following algorithms are provided by **Miscreant**:
   and defends against reordering and truncation attacks.
 
 [authenticated encryption]: https://en.wikipedia.org/wiki/Authenticated_encryption
+[nonce reuse misuse resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
 [AES-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-siv
 [AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-pmac-siv
 [STREAM]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#stream
@@ -66,32 +67,34 @@ The following algorithms are provided by **Miscreant**:
 
 ### Miscreant Ciphers
 
-| Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
-|-------------------|----------------------------|---------------------|--------------------|-------------------|
-| [AES-SIV]         | :green_heart:              | :green_heart:       | :yellow_heart:     | [RFC 5297]        |
-| [AES-PMAC-SIV]    | :green_heart:              | :green_heart:       | :green_heart:      | None              |
+| Name              | [Authenticated Encryption] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
+|-------------------|----------------------------|---------------------|----------------|------------|-------------------|
+| [AES-SIV]         | 💚                         | 💚                  | 💛             | 💚         | [RFC 5297]        |
+| [AES-PMAC-SIV]    | 💚                         | 💚                  | 💚             | 💚         | None              |
 
 ### Other Constructions
 
-| Name              | [Authenticated Encryption] | [Misuse Resistance] | Performance        | Standardization   |
-|-------------------|----------------------------|---------------------|--------------------|-------------------|
-| AES-GCM-SIV       | :green_heart:              | :green_heart:       | :green_heart:      | Forthcoming†      |
-| AES-GCM           | :green_heart:              | :broken_heart:      | :green_heart:      | [NIST SP 800-38D] |
-| AES-CCM           | :green_heart:              | :broken_heart:      | :yellow_heart:     | [NIST SP 800-38C] |
-| AES-CBC           | :broken_heart:             | :broken_heart:      | :green_heart:      | [NIST SP 800-38A] |
-| AES-CTR           | :broken_heart:             | :broken_heart:      | :green_heart:      | [NIST SP 800-38A] |
-| ChaCha20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | [RFC 7539]        |
-| XSalsa20+Poly1305 | :green_heart:              | :broken_heart:      | :green_heart:      | None              |
+| Name              | [Authenticated Encryption] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
+|-------------------|----------------------------|---------------------|----------------|------------|-------------------|
+| AES-GCM-SIV       | 💚                         | 💚                  | 💚             | 💛         | Forthcoming‡      |
+| AES-GCM           | 💚                         | 💔                  | 💚             | 💛         | [NIST SP 800-38D] |
+| AES-CCM           | 💚                         | 💔                  | 💛             | 💚         | [NIST SP 800-38C] |
+| AES-CBC           | 💔                         | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
+| AES-CTR           | 💔                         | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
+| ChaCha20+Poly1305 | 💚                         | 💔                  | 💚             | 💛         | [RFC 7539]        |
+| XSalsa20+Poly1305 | 💚                         | 💔                  | 💚             | 💛         | None              |
 
 ### Legend
 
-| Heart             | Meaning   |
-|-------------------|-----------|
-| :green_heart:     | Great     |
-| :yellow_heart:    | Fine <img src="https://raw.githubusercontent.com/miscreant/miscreant.github.io/master/images/thisisfine.png" width="16" height="16"> |
-| :broken_heart:    | Bad       |
+| Heart | Meaning   |
+|-------|-----------|
+| 💚    | Great     |
+| 💛    | Fine <img src="https://raw.githubusercontent.com/miscreant/miscreant.github.io/master/images/thisisfine.png" width="16" height="16"> |
+| 💔    | Bad       |
 
-† Work is underway in the IRTF CFRG to provide an informational RFC for AES-GCM-SIV.
+† Assumes hardware acceleration for the AES block cipher function
+
+‡ Work is underway in the IRTF CFRG to provide an informational RFC for **AES-GCM-SIV**.
   For more information, see [draft-irtf-cfrg-gcmsiv].
   When standardization work around **AES-GCM-SIV** is complete, it will be
   [considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
