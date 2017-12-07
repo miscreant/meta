@@ -37,7 +37,7 @@ languages providing a high-level API for misuse-resistant symmetric encryption.
 Additionally, it provides support for "online" [authenticated encryption] use
 cases such as streaming or incrementally encryption/decryption of large files.
 
-The following [algorithms] are provided by **Miscreant**:
+The following algorithms are provided by **Miscreant**:
 
 * [AES-SIV]: a authenticated mode of AES which provides
   [nonce reuse misuse resistance]. Described in [RFC 5297], it combines the
