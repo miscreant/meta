@@ -25,10 +25,14 @@ extern crate pmac;
 extern crate subtle;
 
 pub mod aead;
+pub mod buffer;
 mod ctr;
+pub mod error;
 pub mod siv;
 mod s2v;
 pub mod stream;
 
 #[cfg(feature = "bench")]
 mod bench;
+
+pub use buffer::Buffer;

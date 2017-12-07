@@ -3,6 +3,7 @@ extern crate miscreant;
 mod aead_vectors;
 
 use aead_vectors::AesSivAeadExample;
+use miscreant::Buffer;
 use miscreant::aead::{Aes128Siv, Aes256Siv, Aes128PmacSiv, Aes256PmacSiv, Algorithm};
 
 const IV_SIZE: usize = 16;
@@ -12,8 +13,8 @@ fn aes_siv_aead_examples_seal() {
     let examples = AesSivAeadExample::load_all();
 
     for example in examples {
-        let mut buffer = vec![0; example.plaintext.len() + IV_SIZE];
-        buffer[IV_SIZE..].copy_from_slice(&example.plaintext);
+        let mut buffer = Buffer::from(vec![0; example.plaintext.len() + IV_SIZE]);
+        buffer.mut_msg_slice().copy_from_slice(&example.plaintext);
 
         match example.alg.as_ref() {
             "AES-SIV" => {
@@ -45,7 +46,7 @@ fn aes_siv_aead_examples_seal() {
             _ => panic!("unexpected algorithm: {}", example.alg),
         }
 
-        assert_eq!(buffer, example.ciphertext);
+        assert_eq!(buffer.as_slice(), example.ciphertext.as_slice());
     }
 }
 
@@ -54,8 +55,9 @@ fn aes_siv_aead_examples_open() {
     let examples = AesSivAeadExample::load_all();
 
     for example in examples {
-        let mut buffer = example.ciphertext.clone();
-        let result = match example.alg.as_ref() {
+        let mut buffer = Buffer::from(example.ciphertext.clone());
+
+        match example.alg.as_ref() {
             "AES-SIV" => {
                 match example.key.len() {
                     32 => {
@@ -89,6 +91,6 @@ fn aes_siv_aead_examples_open() {
             _ => panic!("unexpected algorithm: {}", example.alg),
         };
 
-        assert_eq!(result, example.plaintext.as_slice());
+        assert_eq!(buffer.msg_slice(), example.plaintext.as_slice());
     }
 }

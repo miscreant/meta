@@ -1,3 +1,10 @@
+//! `s2v.rs`: a multi-message PRF construction built from a single-message PRF
+//!
+//! From "Deterministic Authenticated-Encryption: A Provable-Security Treatment
+//! of the Key-Wrap Problem"[1]
+//!
+//! [1]: http://web.cs.ucdavis.edu/~rogaway/papers/keywrap.pdf
+
 use crypto_mac::Mac;
 use dbl::Dbl;
 use generic_array::GenericArray;
@@ -6,10 +13,11 @@ use generic_array::typenum::{U16, Unsigned};
 /// Maximum number of associated data items
 pub const MAX_ASSOCIATED_DATA: usize = 126;
 
-/// The S2V function performs a double-and-xor operation on the outputs
-/// of a pseudo-random function (CMAC or PMAC).
+/// The S2V construction turns a pseudo-random function (e.g. CMAC, PMAC)
+/// into a PRF that acts on a sequence of messages.
 ///
-/// See Section 2.4 of RFC 5297 for more information
+/// It's used by the SIV construction to derive a synthetic initialization
+/// vector from zero or more message headers and the input plaintext.
 pub fn s2v<M, I, T>(mac: &mut M, headers: I, message: &[u8]) -> GenericArray<u8, U16>
 where
     M: Mac<OutputSize = U16>,
