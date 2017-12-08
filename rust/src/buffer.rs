@@ -53,6 +53,27 @@ where
     }
 }
 
+#[cfg(feature = "std")]
+impl Buffer<Vec<u8>> {
+    /// Allocate a Vec-backed buffer which makes a copy of the message
+    /// plaintext with additional space for the tag
+    pub fn from_plaintext(plaintext: &[u8]) -> Self {
+        let mut buffer = Buffer::from(vec![0; TAG_SIZE + plaintext.len()]);
+        buffer.mut_msg_slice().copy_from_slice(plaintext);
+        buffer
+    }
+
+    /// Consumes the `Buffer` and returns a `Vec<u8>` containing only the
+    /// message portion of the buffer, sans the IV/tag
+    ///
+    /// NOTE: does not actually decrypt the buffer
+    pub fn into_plaintext(self) -> Vec<u8> {
+        let mut plaintext = self.into_contents();
+        plaintext.drain(..TAG_SIZE);
+        plaintext
+    }
+}
+
 impl<T> From<T> for Buffer<T>
 where
     T: AsRef<[u8]> + AsMut<[u8]>,
