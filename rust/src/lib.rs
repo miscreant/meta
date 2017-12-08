@@ -28,7 +28,6 @@ extern crate core;
 extern crate test;
 
 pub mod aead;
-mod buffer;
 mod ctr;
 pub mod error;
 pub mod siv;
@@ -37,5 +36,3 @@ pub mod stream;
 
 #[cfg(feature = "bench")]
 mod bench;
-
-pub use buffer::Buffer;

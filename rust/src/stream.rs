@@ -2,7 +2,6 @@
 //! See <https://eprint.iacr.org/2015/189.pdf> for definition.
 
 use aead::{self, Aes128Siv, Aes128PmacSiv, Aes256Siv, Aes256PmacSiv};
-use buffer::Buffer;
 use byteorder::{BigEndian, ByteOrder};
 use error::Error;
 
@@ -49,19 +48,13 @@ impl<A: aead::Algorithm> Encryptor<A> {
     }
 
     /// Encrypt the next message in the stream in-place
-    pub fn seal_next_in_place<B>(&mut self, ad: &[u8], buffer: &mut Buffer<B>)
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
+    pub fn seal_next_in_place(&mut self, ad: &[u8], buffer: &mut [u8]) {
         self.alg.seal_in_place(self.nonce.as_slice(), ad, buffer);
         self.nonce.increment();
     }
 
     /// Encrypt the final message in-place, consuming the stream encryptor
-    pub fn seal_last_in_place<B>(mut self, ad: &[u8], buffer: &mut Buffer<B>)
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
+    pub fn seal_last_in_place(mut self, ad: &[u8], buffer: &mut [u8]) {
         self.alg.seal_in_place(&self.nonce.finish(), ad, buffer);
     }
 
@@ -119,20 +112,22 @@ impl<A: aead::Algorithm> Decryptor<A> {
     }
 
     /// Decrypt the next message in the stream in-place
-    pub fn open_next_in_place<B>(&mut self, ad: &[u8], buffer: &mut Buffer<B>) -> Result<(), Error>
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
-        self.alg.open_in_place(self.nonce.as_slice(), ad, buffer)?;
+    pub fn open_next_in_place<'a>(
+        &mut self,
+        ad: &[u8],
+        buffer: &'a mut [u8],
+    ) -> Result<&'a [u8], Error> {
+        let result = self.alg.open_in_place(self.nonce.as_slice(), ad, buffer)?;
         self.nonce.increment();
-        Ok(())
+        Ok(result)
     }
 
     /// Decrypt the final message in-place, consuming the stream decryptor
-    pub fn open_last_in_place<B>(mut self, ad: &[u8], buffer: &mut Buffer<B>) -> Result<(), Error>
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
+    pub fn open_last_in_place<'a>(
+        mut self,
+        ad: &[u8],
+        buffer: &'a mut [u8],
+    ) -> Result<&'a [u8], Error> {
         self.alg.open_in_place(&self.nonce.finish(), ad, buffer)
     }
 
