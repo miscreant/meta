@@ -3,11 +3,12 @@
 //! and authenticity.
 
 use aesni::{Aes128, Aes256};
-use buffer::Buffer;
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;
 use ctr::{Aes128Ctr, Aes256Ctr, Ctr};
+#[cfg(feature = "std")]
+use ctr::IV_SIZE;
 use error::Error;
 use generic_array::ArrayLength;
 use generic_array::typenum::{U16, U32, U64};
@@ -27,27 +28,24 @@ pub trait Algorithm {
     /// Panics if the key is the wrong length
     fn new(key: &[u8]) -> Self;
 
-    /// Encrypt the contents of buf in-place
-    fn seal_in_place<B>(&mut self, nonce: &[u8], associated_data: &[u8], buf: &mut Buffer<B>)
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>;
+    /// Encrypt the contents of buffer in-place
+    fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]);
 
-    /// Decrypt the contents of buf in-place
-    fn open_in_place<B>(
+    /// Decrypt the contents of buffer in-place
+    fn open_in_place<'a>(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
-        buf: &mut Buffer<B>,
-    ) -> Result<(), Error>
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>;
+        buffer: &'a mut [u8],
+    ) -> Result<&'a [u8], Error>;
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
     #[cfg(feature = "std")]
     fn seal(&mut self, nonce: &[u8], associated_data: &[u8], plaintext: &[u8]) -> Vec<u8> {
-        let mut buf = Buffer::from_plaintext(plaintext);
-        self.seal_in_place(nonce, associated_data, &mut buf);
-        buf.into_contents()
+        let mut buffer = vec![0; IV_SIZE + plaintext.len()];
+        buffer[IV_SIZE..].copy_from_slice(plaintext);
+        self.seal_in_place(nonce, associated_data, &mut buffer);
+        buffer
     }
 
     /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
@@ -58,9 +56,10 @@ pub trait Algorithm {
         associated_data: &[u8],
         ciphertext: &[u8],
     ) -> Result<Vec<u8>, Error> {
-        let mut buf = Buffer::from(Vec::from(ciphertext));
-        self.open_in_place(nonce, associated_data, &mut buf)?;
-        Ok(buf.into_plaintext())
+        let mut buffer = Vec::from(ciphertext);
+        self.open_in_place(nonce, associated_data, &mut buffer)?;
+        buffer.drain(..IV_SIZE);
+        Ok(buffer)
     }
 }
 
@@ -98,22 +97,16 @@ where
         }
     }
 
-    fn seal_in_place<B>(&mut self, nonce: &[u8], associated_data: &[u8], buf: &mut Buffer<B>)
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
-        self.siv.seal_in_place(&[associated_data, nonce], buf)
+    fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]) {
+        self.siv.seal_in_place(&[associated_data, nonce], buffer)
     }
 
-    fn open_in_place<B>(
+    fn open_in_place<'a>(
         &mut self,
         nonce: &[u8],
         associated_data: &[u8],
-        buf: &mut Buffer<B>,
-    ) -> Result<(), Error>
-    where
-        B: AsRef<[u8]> + AsMut<[u8]>,
-    {
-        self.siv.open_in_place(&[associated_data, nonce], buf)
+        buffer: &'a mut [u8],
+    ) -> Result<&'a [u8], Error> {
+        self.siv.open_in_place(&[associated_data, nonce], buffer)
     }
 }

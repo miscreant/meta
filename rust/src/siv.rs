@@ -1,7 +1,6 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
 use aesni::{Aes128, Aes256};
-use buffer::Buffer;
 use cmac::Cmac;
 use crypto_mac::Mac;
 use ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE};
@@ -56,34 +55,41 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     ///
     /// # Usage
     ///
-    /// The `miscreant::Buffer` type is intended to simplify slicing the buffer
-    /// into respective "message" and "tag" slices.
-    ///
-    /// The buffer must include an additional 16-bytes of space in which to
-    /// write the SIV tag (at the beginning of the buffer).
-    /// It's important to note that with AES-SIV the "tag" portion of the
-    /// buffer lies at the beginning, and the "message" portion at the end.
+    /// It's important to note that only the *end* of the buffer will be
+    /// treated as the input plaintext:
     ///
     /// ```rust
     /// let buffer = [0u8; 21];
     /// let plaintext = &buffer[..buffer.len() - 16];
     /// ```
     ///
+    /// In this case, only the *last* 5 bytes are treated as the plaintext,
+    /// since `21 - 16 = 5` (the AES block size is 16-bytes).
+    ///
+    /// The buffer must include an additional 16-bytes of space in which to
+    /// write the SIV tag (at the beginning of the buffer).
+    /// Failure to account for this will leave you with plaintext messages that
+    /// are missing their first 16-bytes!
+    ///
     /// # Panics
     ///
+    /// Panics if `plaintext.len()` is less than `M::OutputSize`.
     /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
-    pub fn seal_in_place<B, I, T>(&mut self, associated_data: I, buf: &mut Buffer<B>)
+    pub fn seal_in_place<I, T>(&mut self, associated_data: I, plaintext: &mut [u8])
     where
-        B: AsRef<[u8]> + AsMut<[u8]>,
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
     {
+        if plaintext.len() < IV_SIZE {
+            panic!("plaintext buffer too small to hold MAC tag!");
+        }
+
         // Compute the synthetic IV for this plaintext
-        let siv = s2v(&mut self.mac, associated_data, buf.msg_slice());
-        buf.mut_tag_slice().copy_from_slice(siv.as_slice());
+        let iv = s2v(&mut self.mac, associated_data, &plaintext[IV_SIZE..]);
+        plaintext[..IV_SIZE].copy_from_slice(iv.as_slice());
         self.ctr.xor_in_place(
-            &zero_iv_bits(&siv),
-            buf.mut_msg_slice(),
+            &zero_iv_bits(&iv),
+            &mut plaintext[IV_SIZE..],
         );
     }
 
@@ -91,27 +97,30 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
     /// synthetic IV included in the message.
     ///
     /// Returns a slice containing a decrypted message on success.
-    pub fn open_in_place<B, I, T>(
+    pub fn open_in_place<'a, I, T>(
         &mut self,
         associated_data: I,
-        buf: &mut Buffer<B>,
-    ) -> Result<(), Error>
+        ciphertext: &'a mut [u8],
+    ) -> Result<&'a [u8], Error>
     where
-        B: AsRef<[u8]> + AsMut<[u8]>,
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
     {
-        let iv = zero_iv_bits(buf.tag_slice());
-        self.ctr.xor_in_place(&iv, buf.mut_msg_slice());
-
-        let computed_tag = s2v(&mut self.mac, associated_data, buf.msg_slice());
-        if subtle::slices_equal(computed_tag.as_slice(), buf.tag_slice()) != 1 {
-            // On verify fail, re-encrypt the unauthenticated plaintext to avoid revealing it
-            self.ctr.xor_in_place(&iv, buf.mut_msg_slice());
+        if ciphertext.len() < IV_SIZE {
             return Err(Error);
         }
 
-        Ok(())
+        let iv = zero_iv_bits(&ciphertext[..IV_SIZE]);
+        self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
+
+        let actual_tag = s2v(&mut self.mac, associated_data, &ciphertext[IV_SIZE..]);
+        if subtle::slices_equal(actual_tag.as_slice(), &ciphertext[..IV_SIZE]) != 1 {
+            // Re-encrypt the decrypted plaintext to avoid revealing it
+            self.ctr.xor_in_place(&iv, &mut ciphertext[IV_SIZE..]);
+            return Err(Error);
+        }
+
+        Ok(&ciphertext[IV_SIZE..])
     }
 
     /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
@@ -121,9 +130,10 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
     {
-        let mut buf = Buffer::from_plaintext(plaintext);
-        self.seal_in_place(associated_data, &mut buf);
-        buf.into_contents()
+        let mut buffer = vec![0; IV_SIZE + plaintext.len()];
+        buffer[IV_SIZE..].copy_from_slice(plaintext);
+        self.seal_in_place(associated_data, &mut buffer);
+        buffer
     }
 
     /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
@@ -133,9 +143,10 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
         I: IntoIterator<Item = T>,
         T: AsRef<[u8]>,
     {
-        let mut buf = Buffer::from(Vec::from(ciphertext));
-        self.open_in_place(associated_data, &mut buf)?;
-        Ok(buf.into_plaintext())
+        let mut buffer = Vec::from(ciphertext);
+        self.open_in_place(associated_data, &mut buffer)?;
+        buffer.drain(..IV_SIZE);
+        Ok(buffer)
     }
 }
 

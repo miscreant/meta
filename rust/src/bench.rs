@@ -1,7 +1,6 @@
 extern crate ring;
 
 use self::ring::aead;
-use buffer::Buffer;
 use siv::{Aes128Siv, Aes128PmacSiv};
 use test::Bencher;
 
@@ -20,7 +19,7 @@ fn bench_aes_siv_128_encrypt_128_bytes(b: &mut Bencher) {
     let mut siv = Aes128Siv::new(&KEY_256_BIT);
 
     // 128 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 144]);
+    let mut buffer = vec![0u8; 144];
     b.bytes = 128;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
@@ -31,7 +30,7 @@ fn bench_aes_siv_128_encrypt_1024_bytes(b: &mut Bencher) {
     let mut siv = Aes128Siv::new(&KEY_256_BIT);
 
     // 1024 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 1040]);
+    let mut buffer = vec![0u8; 1040];
     b.bytes = 1024;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
@@ -42,7 +41,7 @@ fn bench_aes_siv_128_encrypt_16384_bytes(b: &mut Bencher) {
     let mut siv = Aes128Siv::new(&KEY_256_BIT);
 
     // 16384 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 16400]);
+    let mut buffer = vec![0u8; 16400];
     b.bytes = 16384;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
@@ -57,7 +56,7 @@ fn bench_aes_pmac_siv_128_encrypt_128_bytes(b: &mut Bencher) {
     let mut siv = Aes128PmacSiv::new(&KEY_256_BIT);
 
     // 128 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 144]);
+    let mut buffer = vec![0u8; 144];
     b.bytes = 128;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
@@ -68,7 +67,7 @@ fn bench_aes_pmac_siv_128_encrypt_1024_bytes(b: &mut Bencher) {
     let mut siv = Aes128PmacSiv::new(&KEY_256_BIT);
 
     // 1024 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 1040]);
+    let mut buffer = vec![0u8; 1040];
     b.bytes = 1024;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
@@ -79,7 +78,7 @@ fn bench_aes_pmac_siv_128_encrypt_16384_bytes(b: &mut Bencher) {
     let mut siv = Aes128PmacSiv::new(&KEY_256_BIT);
 
     // 16384 bytes input + 16 bytes tag
-    let mut buffer = Buffer::from(vec![0u8; 16400]);
+    let mut buffer = vec![0u8; 16400];
     b.bytes = 16384;
 
     b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
