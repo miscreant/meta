@@ -113,6 +113,30 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
 
         Ok(())
     }
+
+    /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
+    #[cfg(feature = "std")]
+    pub fn seal<I, T>(&mut self, associated_data: I, plaintext: &[u8]) -> Vec<u8>
+    where
+        I: IntoIterator<Item = T>,
+        T: AsRef<[u8]>,
+    {
+        let mut buf = Buffer::from_plaintext(plaintext);
+        self.seal_in_place(associated_data, &mut buf);
+        buf.into_contents()
+    }
+
+    /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
+    #[cfg(feature = "std")]
+    pub fn open<I, T>(&mut self, associated_data: I, ciphertext: &[u8]) -> Result<Vec<u8>, Error>
+    where
+        I: IntoIterator<Item = T>,
+        T: AsRef<[u8]>,
+    {
+        let mut buf = Buffer::from(Vec::from(ciphertext));
+        self.open_in_place(associated_data, &mut buf)?;
+        Ok(buf.into_plaintext())
+    }
 }
 
 /// Zero out the top bits in the last 32-bit words of the IV

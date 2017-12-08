@@ -7,11 +7,8 @@
 #![deny(warnings, missing_docs, trivial_casts, trivial_numeric_casts)]
 #![deny(unsafe_code, unused_import_braces, unused_qualifications)]
 
-#![no_std]
-
+#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "bench", feature(test))]
-#[cfg(all(feature = "bench", test))]
-extern crate test;
 
 extern crate aesni;
 extern crate byteorder;
@@ -24,8 +21,14 @@ extern crate generic_array;
 extern crate pmac;
 extern crate subtle;
 
+#[cfg(feature = "std")]
+extern crate core;
+
+#[cfg(all(feature = "bench", test))]
+extern crate test;
+
 pub mod aead;
-pub mod buffer;
+mod buffer;
 mod ctr;
 pub mod error;
 pub mod siv;

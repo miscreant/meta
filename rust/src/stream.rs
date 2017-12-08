@@ -64,6 +64,22 @@ impl<A: aead::Algorithm> Encryptor<A> {
     {
         self.alg.seal_in_place(&self.nonce.finish(), ad, buffer);
     }
+
+    /// Encrypt the next message in the stream, allocating and returning a
+    /// `Vec<u8>` for the ciphertext
+    #[cfg(feature = "std")]
+    pub fn seal_next(&mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
+        let ciphertext = self.alg.seal(self.nonce.as_slice(), ad, plaintext);
+        self.nonce.increment();
+        ciphertext
+    }
+
+    /// Encrypt the final message in the stream, allocating and returning a
+    /// `Vec<u8>` for the ciphertext
+    #[cfg(feature = "std")]
+    pub fn seal_last(mut self, ad: &[u8], plaintext: &[u8]) -> Vec<u8> {
+        self.alg.seal(&self.nonce.finish(), ad, plaintext)
+    }
 }
 
 /// A STREAM decryptor with a 32-bit counter, generalized for any AEAD algorithm
@@ -118,6 +134,22 @@ impl<A: aead::Algorithm> Decryptor<A> {
         B: AsRef<[u8]> + AsMut<[u8]>,
     {
         self.alg.open_in_place(&self.nonce.finish(), ad, buffer)
+    }
+
+    /// Decrypt the next message in the stream, allocating and returning a
+    /// `Vec<u8>` for the plaintext
+    #[cfg(feature = "std")]
+    pub fn open_next(&mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
+        let plaintext = self.alg.open(self.nonce.as_slice(), ad, ciphertext)?;
+        self.nonce.increment();
+        Ok(plaintext)
+    }
+
+    /// Decrypt the next message in the stream, allocating and returning a
+    /// `Vec<u8>` for the plaintext
+    #[cfg(feature = "std")]
+    pub fn open_last(mut self, ad: &[u8], ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
+        self.alg.open(&self.nonce.finish(), ad, ciphertext)
     }
 }
 

@@ -41,6 +41,27 @@ pub trait Algorithm {
     ) -> Result<(), Error>
     where
         B: AsRef<[u8]> + AsMut<[u8]>;
+
+    /// Encrypt the given plaintext, allocating and returning a Vec<u8> for the ciphertext
+    #[cfg(feature = "std")]
+    fn seal(&mut self, nonce: &[u8], associated_data: &[u8], plaintext: &[u8]) -> Vec<u8> {
+        let mut buf = Buffer::from_plaintext(plaintext);
+        self.seal_in_place(nonce, associated_data, &mut buf);
+        buf.into_contents()
+    }
+
+    /// Decrypt the given ciphertext, allocating and returning a Vec<u8> for the plaintext
+    #[cfg(feature = "std")]
+    fn open(
+        &mut self,
+        nonce: &[u8],
+        associated_data: &[u8],
+        ciphertext: &[u8],
+    ) -> Result<Vec<u8>, Error> {
+        let mut buf = Buffer::from(Vec::from(ciphertext));
+        self.open_in_place(nonce, associated_data, &mut buf)?;
+        Ok(buf.into_plaintext())
+    }
 }
 
 /// AEAD interface provider for AES-(PMAC-)SIV types

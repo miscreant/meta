@@ -29,6 +29,8 @@ serde_json = "1"
 
 [features]
 bench = ["ring"]
+default = ["std"]
+std = []
 
 [profile.bench]
 opt-level = 3
