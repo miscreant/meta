@@ -1,4 +1,10 @@
-# miscreant.rs [![crate][crate-image]][crate-link] [![Docs][docs-image]][docs-link] [![Build Status][build-image]][build-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.rs
+
+[![crate][crate-image]][crate-link]
+[![Docs][docs-image]][docs-link]
+[![Build Status][build-image]][build-link]
+[![MIT licensed][license-image]][license-link]
+[![Gitter Chat][gitter-image]][gitter-link]
 
 [crate-image]: https://img.shields.io/crates/v/miscreant.svg
 [crate-link]: https://crates.io/crates/miscreant
