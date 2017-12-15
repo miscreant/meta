@@ -140,7 +140,7 @@
             ]
         },
         {
-            "name:s":"AES-PMAC-SIV STREAM 2-Block Example with Associated Data (256-bit key)",
+            "name:s":"AES-PMAC-SIV STREAM 1-Block Example with Associated Data (256-bit key)",
             "alg:s":"AES-PMAC-SIV",
             "key:d16":"7f7e7d7c7b7a79787776757473727170404142434445464748494a4b4c4d4e4f",
             "nonce:d16":"09f911029d74e35b",
