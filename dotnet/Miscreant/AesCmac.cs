@@ -17,9 +17,9 @@ namespace Miscreant
 
 		private Aes aes;
 		private ICryptoTransform encryptor;
-		private readonly byte[] buffer;
-		private readonly byte[] K1;
-		private readonly byte[] K2;
+		private readonly byte[] buffer = new byte[BufferSize];
+		private readonly byte[] K1 = new byte[BlockSize];
+		private readonly byte[] K2 = new byte[BlockSize];
 		private int position;
 
 		/// <summary>
@@ -39,16 +39,15 @@ namespace Miscreant
 			using (var aes = CreateAes(CipherMode.ECB))
 			using (var encryptor = aes.CreateEncryptor(KeyValue, null))
 			{
-				byte[] L = new byte[BlockSize];
-				encryptor.TransformBlock(Zero, 0, BlockSize, L, 0);
+				encryptor.TransformBlock(Zero, 0, BlockSize, K1, 0);
+				Utils.Multiply(K1);
 
-				K1 = Utils.Multiply(L);
-				K2 = Utils.Multiply(K1);
+				Array.Copy(K1, K2, BlockSize);
+				Utils.Multiply(K2);
 			}
 
 			aes = CreateAes(CipherMode.CBC);
 			encryptor = aes.CreateEncryptor(KeyValue, Zero);
-			buffer = new byte[BufferSize];
 		}
 
 		public override byte[] Key

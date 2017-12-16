@@ -14,9 +14,9 @@ namespace Miscreant.Tests
 			foreach (var example in LoadExamples())
 			{
 				var input = Hex.Decode(example.Input);
-				var output = Utils.Multiply(input);
+				Utils.Multiply(input);
 
-				Assert.Equal(example.Output, Hex.Encode(output));
+				Assert.Equal(example.Output, Hex.Encode(input));
 			}
 		}
 
