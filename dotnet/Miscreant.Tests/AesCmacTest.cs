@@ -77,7 +77,7 @@ namespace Miscreant.Tests
 
 		private static IEnumerable<(string Key, string Message, string Tag)> LoadExamples()
 		{
-			var s = File.ReadAllText("../../../aes_cmac.tjson");
+			var s = File.ReadAllText("../../../../../vectors/aes_cmac.tjson");
 			var json = JObject.Parse(s);
 			var examples = json["examples:A<O>"];
 
