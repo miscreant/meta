@@ -42,8 +42,8 @@ namespace Miscreant
 				byte[] L = new byte[BlockSize];
 				encryptor.TransformBlock(Zero, 0, BlockSize, L, 0);
 
-				K1 = Multiply(L);
-				K2 = Multiply(K1);
+				K1 = Utils.Multiply(L);
+				K2 = Utils.Multiply(K1);
 			}
 
 			aes = CreateAes(CipherMode.CBC);
@@ -105,12 +105,12 @@ namespace Miscreant
 		{
 			if (position == BlockSize)
 			{
-				Xor(K1, buffer, BlockSize);
+				Utils.Xor(K1, buffer, BlockSize);
 			}
 			else
 			{
 				Pad(buffer, position);
-				Xor(K2, buffer, BlockSize);
+				Utils.Xor(K2, buffer, BlockSize);
 			}
 
 			byte[] sum = new byte[BlockSize];
@@ -140,32 +140,9 @@ namespace Miscreant
 			return aes;
 		}
 
-		private static byte[] Multiply(byte[] input)
-		{
-			byte[] output = new byte[BlockSize];
-
-			for (int i = 0; i < BlockSize - 1; ++i)
-			{
-				output[i] = (byte)((input[i] << 1) | (input[i + 1] >> 7));
-			}
-
-			int carry = input[0] >> 7;
-			output[BlockSize - 1] = (byte)((input[BlockSize - 1] << 1) ^ ((0 - carry) & 0x87));
-
-			return output;
-		}
-
 		private static ArraySegment<T> Slice<T>(ArraySegment<T> seg, int index)
 		{
 			return new ArraySegment<T>(seg.Array, seg.Offset + index, seg.Count - index);
-		}
-
-		private static void Xor(byte[] source, byte[] destination, int length)
-		{
-			for (int i = 0; i < length; ++i)
-			{
-				destination[i] ^= source[i];
-			}
 		}
 
 		private static void Pad(byte[] buffer, int position)
