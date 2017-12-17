@@ -4,27 +4,41 @@ namespace Miscreant
 {
 	internal static class Utils
 	{
-		private const int BlockSize = 16;
-
 		public static void Multiply(byte[] input)
 		{
-			Debug.Assert(input.Length == BlockSize);
+			Debug.Assert(input.Length == Constants.BlockSize);
 
 			int carry = input[0] >> 7;
 
-			for (int i = 0; i < BlockSize - 1; ++i)
+			for (int i = 0; i < Constants.BlockSize - 1; ++i)
 			{
 				input[i] = (byte)((input[i] << 1) | (input[i + 1] >> 7));
 			}
 
-			input[BlockSize - 1] = (byte)((input[BlockSize - 1] << 1) ^ ((0 - carry) & 0x87));
+			byte last = (byte)((input[Constants.BlockSize - 1] << 1) ^ ((0 - carry) & 0x87));
+			input[Constants.BlockSize - 1] = last;
 		}
 
 		public static void Xor(byte[] source, byte[] destination, int length)
 		{
+			Xor(source, 0, destination, 0, length);
+		}
+
+		public static void Xor(byte[] source, int sourceIndex, byte[] destination, int destinationIndex, int length)
+		{
 			for (int i = 0; i < length; ++i)
 			{
-				destination[i] ^= source[i];
+				destination[destinationIndex + i] ^= source[sourceIndex + i];
+			}
+		}
+
+		public static void Pad(byte[] buffer, int position)
+		{
+			buffer[position] = 0x80;
+
+			for (int i = position + 1; i < Constants.BlockSize; ++i)
+			{
+				buffer[i] = 0;
 			}
 		}
 	}

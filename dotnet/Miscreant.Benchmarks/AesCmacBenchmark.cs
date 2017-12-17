@@ -9,7 +9,6 @@ namespace Miscreant.Benchmarks
 	{
 		private const int BlockSize = 16;
 		private const int MessageSize = 1024;
-
 		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
 
 		private readonly byte[] message;

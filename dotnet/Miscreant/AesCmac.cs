@@ -10,9 +10,8 @@ namespace Miscreant
 	/// </summary>
 	public sealed class AesCmac : KeyedHashAlgorithm
 	{
-		private const int BlockSize = 16;
+		private const int BlockSize = Constants.BlockSize;
 		private const int BufferSize = 4096;
-
 		private static readonly byte[] Zero = new byte[BlockSize];
 
 		private Aes aes;
@@ -108,7 +107,7 @@ namespace Miscreant
 			}
 			else
 			{
-				Pad(buffer, position);
+				Utils.Pad(buffer, position);
 				Utils.Xor(K2, buffer, BlockSize);
 			}
 
@@ -142,12 +141,6 @@ namespace Miscreant
 		private static ArraySegment<T> Slice<T>(ArraySegment<T> seg, int index)
 		{
 			return new ArraySegment<T>(seg.Array, seg.Offset + index, seg.Count - index);
-		}
-
-		private static void Pad(byte[] buffer, int position)
-		{
-			buffer[position] = 0x80;
-			Array.Copy(Zero, 0, buffer, position + 1, BlockSize - position - 1);
 		}
 	}
 }
