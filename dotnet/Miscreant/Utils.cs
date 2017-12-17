@@ -1,9 +1,15 @@
+using System;
 using System.Diagnostics;
 
 namespace Miscreant
 {
 	internal static class Utils
 	{
+		public static ArraySegment<T> Slice<T>(this ArraySegment<T> seg, int index)
+		{
+			return new ArraySegment<T>(seg.Array, seg.Offset + index, seg.Count - index);
+		}
+
 		public static void Multiply(byte[] input)
 		{
 			Debug.Assert(input.Length == Constants.BlockSize);

@@ -22,7 +22,7 @@ namespace Miscreant
 		private int position;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AesCmac"/> class with the specified key data.
+		/// Initializes a new instance of the <see cref="AesCmac"/> class with the specified key.
 		/// </summary>
 		/// <param name="key">The secret key for <see cref="AesCmac"> authentication.</param>
 		public AesCmac(byte[] key)
@@ -76,7 +76,7 @@ namespace Miscreant
 			{
 				Array.Copy(seg.Array, seg.Offset, buffer, position, left);
 				encryptor.TransformBlock(buffer, 0, BlockSize, buffer, 0);
-				seg = Slice(seg, left);
+				seg = seg.Slice(left);
 				position = 0;
 			}
 
@@ -89,7 +89,7 @@ namespace Miscreant
 
 				int count = Math.Min(BufferSize, (seg.Count - 1) / BlockSize * BlockSize);
 				encryptor.TransformBlock(seg.Array, seg.Offset, count, buffer, 0);
-				seg = Slice(seg, count);
+				seg = seg.Slice(count);
 			}
 
 			if (seg.Count > 0)
@@ -138,11 +138,6 @@ namespace Miscreant
 			aes.Padding = PaddingMode.None;
 
 			return aes;
-		}
-
-		private static ArraySegment<T> Slice<T>(ArraySegment<T> seg, int index)
-		{
-			return new ArraySegment<T>(seg.Array, seg.Offset + index, seg.Count - index);
 		}
 	}
 }
