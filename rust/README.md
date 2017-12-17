@@ -12,7 +12,7 @@
 [docs-link]: https://docs.rs/miscreant/
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
-[license-image]: https://img.shields.io/badge/license-MIT-blue.svg
+[license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
 [gitter-link]: https://gitter.im/miscreant/Lobby
@@ -97,10 +97,20 @@ For more information, please see [CODE_OF_CONDUCT.md].
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/miscreant/miscreant
 
-## Copyright
+Unless you explicitly state otherwise, any contribution intentionally
+submitted for inclusion in the work by you, as defined in the Apache-2.0
+license, shall be dual licensed as noted below, without any additional terms or
+conditions.
+
+## License
 
 Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
-See [LICENSE.txt] for further details.
+
+The Rust implementation of Miscrenant specifically is licensed under either of:
+
+* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
 
 [AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md
-[LICENSE.txt]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
