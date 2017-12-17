@@ -16,6 +16,10 @@ namespace Miscreant
 			mac = new AesCmac(key);
 		}
 
+		/// <summary>
+		/// S2V operation, defined in the section 2.4 of
+		/// <see href="https://tools.ietf.org/html/rfc5297#section-2.4">RFC 5297</see>.
+		/// </summary>
 		private byte[] S2V(byte[][] headers, byte[] message)
 		{
 			if (headers == null)
