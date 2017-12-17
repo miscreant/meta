@@ -133,7 +133,9 @@ namespace Miscreant
 		private static Aes CreateAes(CipherMode mode)
 		{
 			var aes = Aes.Create();
+
 			aes.Mode = mode;
+			aes.Padding = PaddingMode.None;
 
 			return aes;
 		}
