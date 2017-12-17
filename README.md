@@ -23,7 +23,9 @@ Miscreant is available for several programming languages, including
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
-[CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[AES-SIV]: https://github.com/miscreant/miscreant/wiki/AES-SIV
+[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/AES-PMAC-SIV
+[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
 [Go]: https://github.com/miscreant/miscreant/tree/master/go
 [JavaScript]: https://github.com/miscreant/miscreant/tree/master/js
 [Python]: https://github.com/miscreant/miscreant/tree/master/python
@@ -56,9 +58,6 @@ The following algorithms are provided by **Miscreant**:
 
 [authenticated]: https://en.wikipedia.org/wiki/Authenticated_encryption
 [nonce reuse misuse resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
-[AES-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-siv
-[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#aes-pmac-siv
-[STREAM]: https://github.com/miscreant/miscreant/wiki/Encryption-Algorithms#stream
 [AES-CTR]: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_.28CTR.29
 [AES-CMAC]: https://en.wikipedia.org/wiki/One-key_MAC
 [AES-PMAC]: http://web.cs.ucdavis.edu/~rogaway/ocb/pmac-bak.htm
@@ -134,6 +133,17 @@ The following algorithms are provided by **Miscreant**:
 
 [Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki)
 for more detailed documentation and usage notes.
+
+## Related Projects
+
+* [XSTREAM]: public-key cryptography built on Miscreant and the [X25519]
+  elliptic curve Diffie-Hellman function.
+* [minc] (the MIscreaNt Cryptotool): a command-line encryption utility built
+  on Miscreant and **XSTREAM**.
+
+[XSTREAM]: https://github.com/miscreant/xstream
+[X25519]: https://en.wikipedia.org/wiki/Curve25519
+[minc]: https://github.com/miscreant/minc
 
 ## Help and Discussion
 
