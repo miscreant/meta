@@ -53,7 +53,7 @@ The following algorithms are provided by **Miscreant**:
   AES, namely Intel/AMD CPUs.
 
 * [STREAM]: a construction which, when combined with **AES-SIV** or
-  **AES-PMAC-SIV**, provides online/streaming [authenticated encryption]
+  **AES-PMAC-SIV**, provides online/streaming [authenticated] encryption
   and defends against reordering and truncation attacks.
 
 [authenticated]: https://en.wikipedia.org/wiki/Authenticated_encryption
