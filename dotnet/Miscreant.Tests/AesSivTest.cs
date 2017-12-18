@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -22,6 +23,33 @@ namespace Miscreant.Tests
 					byte[] plaintext = siv.Open(ciphertext, example.AssociatedData);
 					Assert.Equal(Hex.Encode(example.Plaintext), Hex.Encode(plaintext));
 				}
+			}
+		}
+
+		[Fact]
+		public void TestTampering()
+		{
+			using (var siv = new AesSiv(new byte[32]))
+			{
+				// Test tag tampering
+
+				var ciphertext = siv.Seal(new byte[0]);
+				ciphertext[0] = 0;
+
+				Assert.Throws<CryptographicException>(() => siv.Open(ciphertext));
+
+				// Test ciphertext tampering
+
+				ciphertext = siv.Seal(new byte[1]);
+				ciphertext[ciphertext.Length - 1] = 0;
+
+				Assert.Throws<CryptographicException>(() => siv.Open(ciphertext));
+
+				// Test associated data tampering
+
+				ciphertext = siv.Seal(new byte[0], new byte[] { 1 });
+
+				Assert.Throws<CryptographicException>(() => siv.Open(ciphertext));
 			}
 		}
 
