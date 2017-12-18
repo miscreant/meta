@@ -47,5 +47,17 @@ namespace Miscreant
 				buffer[i] = 0;
 			}
 		}
+
+		public static bool ConstantTimeEquals(byte[] x, byte[] y, int count)
+		{
+			byte result = 0;
+
+			for (int i = 0; i < count; ++i)
+			{
+				result |= (byte)(x[i] ^ y[i]);
+			}
+
+			return result == 0;
+		}
 	}
 }

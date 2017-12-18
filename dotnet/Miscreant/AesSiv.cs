@@ -128,7 +128,7 @@ namespace Miscreant
 
 			byte[] v = S2V(data, output);
 
-			if (!ConstantTimeEquals(ciphertext, v, BlockSize))
+			if (!Utils.ConstantTimeEquals(ciphertext, v, BlockSize))
 			{
 				throw new CryptographicException("Malformed or corrupt ciphertext.");
 			}
@@ -199,18 +199,6 @@ namespace Miscreant
 		{
 			iv[iv.Length - 8] &= 0x7f;
 			iv[iv.Length - 4] &= 0x7f;
-		}
-
-		private bool ConstantTimeEquals(byte[] x, byte[] y, int count)
-		{
-			byte result = 0;
-
-			for (int i = 0; i < count; ++i)
-			{
-				result |= (byte)(x[i] ^ y[i]);
-			}
-
-			return result == 0;
 		}
 
 		public void Dispose()
