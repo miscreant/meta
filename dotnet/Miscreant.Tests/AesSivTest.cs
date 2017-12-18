@@ -10,7 +10,7 @@ namespace Miscreant.Tests
 	public class AesSivTest
 	{
 		[Fact]
-		public void TestSeal()
+		public void TestSealAndOpen()
 		{
 			foreach (var example in LoadExamples())
 			{
@@ -18,6 +18,9 @@ namespace Miscreant.Tests
 				{
 					byte[] ciphertext = siv.Seal(example.Plaintext, example.AssociatedData);
 					Assert.Equal(Hex.Encode(example.Ciphertext), Hex.Encode(ciphertext));
+
+					byte[] plaintext = siv.Open(ciphertext, example.AssociatedData);
+					Assert.Equal(Hex.Encode(example.Plaintext), Hex.Encode(plaintext));
 				}
 			}
 		}

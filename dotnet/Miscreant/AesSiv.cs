@@ -54,7 +54,7 @@ namespace Miscreant
 		/// </summary>
 		/// <param name="plaintext">The plaintext to encrypt.</param>
 		/// <param name="data">Associated data items to authenticate.</param>
-		/// <returns></returns>
+		/// <returns>Concatenation of the authentication tag and the encrypted data.</returns>
 		public byte[] Seal(byte[] plaintext, params byte[][] data)
 		{
 			if (plaintext == null)
@@ -76,15 +76,64 @@ namespace Miscreant
 			byte[] output = new byte[iv.Length + plaintext.Length];
 
 			Array.Copy(iv, output, iv.Length);
-
-			iv[iv.Length - 8] &= 0x7f;
-			iv[iv.Length - 4] &= 0x7f;
+			ZeroIvBits(iv);
 
 			using (var ctr = new AesCtr(K2, iv))
 			{
 				ctr.Encrypt(plaintext, 0, plaintext.Length, output, iv.Length);
 				return output;
 			}
+		}
+		/// <summary>
+		/// Open decrypts ciphertext, authenticates the decrypted plaintext
+		/// and the given associated data items and, if successful, returns
+		/// the result. For nonce-based encryption, the nonce should be the
+		/// last associated data item.
+		/// </summary>
+		/// <param name="ciphertext">The ciphertext to decrypt.</param>
+		/// <param name="data">Associated data items to authenticate.</param>
+		/// <returns>The decrypted plaintext.</returns>
+		public byte[] Open(byte[] ciphertext, params byte[][] data)
+		{
+			if (ciphertext == null)
+			{
+				throw new ArgumentNullException(nameof(ciphertext));
+			}
+
+			if (data == null)
+			{
+				throw new ArgumentNullException(nameof(data));
+			}
+
+			if (ciphertext.Length < BlockSize)
+			{
+				throw new CryptographicException("Malformed or corrupt ciphertext.");
+			}
+
+			if (data.Length > MaxAssociatedDataItems)
+			{
+				throw new CryptographicException($"Maximum number of associated data items is {MaxAssociatedDataItems}");
+			}
+
+			byte[] iv = new byte[BlockSize];
+			byte[] output = new byte[ciphertext.Length - iv.Length];
+
+			Array.Copy(ciphertext, 0, iv, 0, BlockSize);
+			ZeroIvBits(iv);
+
+			using (var ctr = new AesCtr(K2, iv))
+			{
+				ctr.Encrypt(ciphertext, BlockSize, output.Length, output, 0);
+			}
+
+			byte[] v = S2V(data, output);
+
+			if (!ConstantTimeEquals(ciphertext, v, BlockSize))
+			{
+				throw new CryptographicException("Malformed or corrupt ciphertext.");
+			}
+
+			return output;
 		}
 
 		/// <summary>
@@ -144,6 +193,24 @@ namespace Miscreant
 			mac.TransformFinalBlock(v, 0, BlockSize);
 
 			return mac.Hash;
+		}
+
+		private void ZeroIvBits(byte[] iv)
+		{
+			iv[iv.Length - 8] &= 0x7f;
+			iv[iv.Length - 4] &= 0x7f;
+		}
+
+		private bool ConstantTimeEquals(byte[] x, byte[] y, int count)
+		{
+			byte result = 0;
+
+			for (int i = 0; i < count; ++i)
+			{
+				result |= (byte)(x[i] ^ y[i]);
+			}
+
+			return result == 0;
 		}
 
 		public void Dispose()
