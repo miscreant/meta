@@ -51,7 +51,7 @@ namespace Miscreant
 
 		public override byte[] Key
 		{
-			get => (byte[])KeyValue.Clone();
+			get => throw new InvalidOperationException("AES-CMAC key cannot be retrieved.");
 			set => throw new InvalidOperationException("AES-CMAC key cannot be modified.");
 		}
 
