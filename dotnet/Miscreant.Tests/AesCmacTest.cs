@@ -18,10 +18,12 @@ namespace Miscreant.Tests
 			{
 				var key = Hex.Decode(example.Key);
 				var message = Hex.Decode(example.Message);
-				var cmac = new AesCmac(key);
 
-				cmac.TransformFinalBlock(message, 0, message.Length);
-				Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+				using (var cmac = new AesCmac(key))
+				{
+					cmac.TransformFinalBlock(message, 0, message.Length);
+					Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+				}
 			}
 		}
 

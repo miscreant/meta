@@ -17,10 +17,12 @@ namespace Miscreant.Tests
 				var key = Hex.Decode(example.Key);
 				var iv = Hex.Decode(example.Iv);
 				var plaintext = Hex.Decode(example.Plaintext);
-				var ctr = new AesCtr(key, iv);
 
-				ctr.Encrypt(plaintext, 0, plaintext.Length, plaintext, 0);
-				Assert.Equal(example.Ciphertext, Hex.Encode(plaintext));
+				using (var ctr = new AesCtr(key, iv))
+				{
+					ctr.Encrypt(plaintext, 0, plaintext.Length, plaintext, 0);
+					Assert.Equal(example.Ciphertext, Hex.Encode(plaintext));
+				}
 			}
 		}
 

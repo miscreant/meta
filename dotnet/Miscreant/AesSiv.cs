@@ -24,7 +24,7 @@ namespace Miscreant
 		/// Initializes a new instance of the <see cref="AesSiv"/> class with the specified key.
 		/// </summary>
 		/// <param name="key">The secret key for <see cref="AesSiv"> encryption.</param>
-		private AesSiv(byte[] key)
+		public AesSiv(byte[] key)
 		{
 			if (key == null)
 			{
@@ -135,8 +135,9 @@ namespace Miscreant
 				return mac.Hash;
 			}
 
-			byte[] padded = (byte[])message.Clone();
+			byte[] padded = new byte[BlockSize];
 
+			Array.Copy(message, padded, message.Length);
 			Utils.Multiply(v);
 			Utils.Pad(padded, message.Length);
 			Utils.Xor(padded, v, BlockSize);
