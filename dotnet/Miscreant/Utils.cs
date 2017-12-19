@@ -59,5 +59,10 @@ namespace Miscreant
 
 			return result == 0;
 		}
+
+		public static int Ceil(int dividend, int divisor)
+		{
+			return (dividend + divisor - 1) / divisor;
+		}
 	}
 }

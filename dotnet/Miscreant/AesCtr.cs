@@ -15,8 +15,7 @@ namespace Miscreant
 		private readonly Aes aes;
 		private readonly ICryptoTransform encryptor;
 		private readonly byte[] counter;
-		private readonly byte[] keyStream;
-		private int used;
+		private ArraySegment<byte> keyStream;
 		private bool disposed;
 
 		/// <summary>
@@ -46,9 +45,9 @@ namespace Miscreant
 
 			encryptor = aes.CreateEncryptor(key, null);
 			counter = (byte[])iv.Clone();
-			keyStream = new byte[KeyStreamBufferSize];
 
-			GenerateKeyStream();
+			var buffer = new byte[KeyStreamBufferSize];
+			keyStream = new ArraySegment<byte>(buffer, KeyStreamBufferSize, 0);
 		}
 
 		/// <summary>
@@ -71,38 +70,41 @@ namespace Miscreant
 
 			while (inputSeg.Count > 0)
 			{
-				if (used == KeyStreamBufferSize)
+				if (keyStream.Count == 0)
 				{
-					GenerateKeyStream();
+					GenerateKeyStream(inputSeg.Count);
 				}
 
-				int left = KeyStreamBufferSize - used;
-				int count = Math.Min(inputSeg.Count, left);
-
+				int count = Math.Min(inputSeg.Count, keyStream.Count);
+				int keyStreamPosition = keyStream.Offset;
 				int inputPosition = inputSeg.Offset;
 				int outputPosition = outputSeg.Offset;
 
 				for (int i = 0; i < count; ++i)
 				{
-					byte c = (byte)(keyStream[used++] ^ input[inputPosition + i]);
+					byte c = (byte)(keyStream.Array[keyStreamPosition + i] ^ input[inputPosition + i]);
 					output[outputPosition + i] = c;
 				}
 
+				keyStream = keyStream.Slice(count);
 				inputSeg = inputSeg.Slice(count);
 				outputSeg = outputSeg.Slice(count);
 			}
 		}
 
-		private void GenerateKeyStream()
+		private void GenerateKeyStream(int inputCount)
 		{
-			for (int i = 0; i < KeyStreamBufferSize; i += BlockSize)
+			int size = Math.Min(KeyStreamBufferSize, Utils.Ceil(inputCount, BlockSize) * BlockSize);
+			byte[] array = keyStream.Array;
+
+			for (int i = 0; i < size; i += BlockSize)
 			{
-				Array.Copy(counter, 0, keyStream, i, BlockSize);
+				Array.Copy(counter, 0, array, i, BlockSize);
 				IncrementCounter();
 			}
 
-			encryptor.TransformBlock(keyStream, 0, KeyStreamBufferSize, keyStream, 0);
-			used = 0;
+			encryptor.TransformBlock(array, 0, size, array, 0);
+			keyStream = new ArraySegment<byte>(array, 0, size);
 		}
 
 		private void IncrementCounter()
@@ -124,7 +126,7 @@ namespace Miscreant
 				encryptor.Dispose();
 
 				Array.Clear(counter, 0, BlockSize);
-				Array.Clear(keyStream, 0, KeyStreamBufferSize);
+				Array.Clear(keyStream.Array, 0, KeyStreamBufferSize);
 
 				disposed = true;
 			}

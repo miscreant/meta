@@ -84,6 +84,7 @@ namespace Miscreant
 				return output;
 			}
 		}
+
 		/// <summary>
 		/// Open decrypts ciphertext, authenticates the decrypted plaintext
 		/// and the given associated data items and, if successful, returns
