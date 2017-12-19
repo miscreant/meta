@@ -14,8 +14,8 @@ namespace Miscreant
 		private const int BufferSize = 4096;
 		private static readonly byte[] Zero = new byte[BlockSize];
 
-		private Aes aes;
-		private ICryptoTransform encryptor;
+		private readonly Aes aes;
+		private readonly ICryptoTransform encryptor;
 		private readonly byte[] buffer = new byte[BufferSize];
 		private readonly byte[] K1 = new byte[BlockSize];
 		private readonly byte[] K2 = new byte[BlockSize];
@@ -57,12 +57,7 @@ namespace Miscreant
 
 		public override void Initialize()
 		{
-			aes.Dispose();
-			encryptor.Dispose();
-
-			aes = CreateAes(CipherMode.CBC);
-			encryptor = aes.CreateEncryptor(KeyValue, Zero);
-
+			encryptor.TransformFinalBlock(Zero, 0, 0);
 			Array.Clear(buffer, 0, BufferSize);
 			position = 0;
 		}
