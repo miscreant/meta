@@ -16,8 +16,7 @@ namespace Miscreant
 		private static readonly byte[] Zero = new byte[BlockSize];
 
 		private readonly KeyedHashAlgorithm mac;
-		private readonly byte[] K1;
-		private readonly byte[] K2;
+		private readonly AesCtr ctr;
 		private bool disposed;
 
 		/// <summary>
@@ -38,13 +37,14 @@ namespace Miscreant
 
 			int halfKeySize = key.Length / 2;
 
-			K1 = new byte[halfKeySize];
-			K2 = new byte[halfKeySize];
+			var K1 = new byte[halfKeySize];
+			var K2 = new byte[halfKeySize];
 
 			Array.Copy(key, 0, K1, 0, halfKeySize);
 			Array.Copy(key, halfKeySize, K2, 0, halfKeySize);
 
 			mac = new AesCmac(K1);
+			ctr = new AesCtr(K2);
 		}
 
 		/// <summary>
@@ -78,11 +78,10 @@ namespace Miscreant
 			Array.Copy(iv, output, iv.Length);
 			ZeroIvBits(iv);
 
-			using (var ctr = new AesCtr(K2, iv))
-			{
-				ctr.Encrypt(plaintext, 0, plaintext.Length, output, iv.Length);
-				return output;
-			}
+			ctr.Reset(iv);
+			ctr.Encrypt(plaintext, 0, plaintext.Length, output, iv.Length);
+
+			return output;
 		}
 
 		/// <summary>
@@ -122,10 +121,8 @@ namespace Miscreant
 			Array.Copy(ciphertext, 0, iv, 0, BlockSize);
 			ZeroIvBits(iv);
 
-			using (var ctr = new AesCtr(K2, iv))
-			{
-				ctr.Encrypt(ciphertext, BlockSize, output.Length, output, 0);
-			}
+			ctr.Reset(iv);
+			ctr.Encrypt(ciphertext, BlockSize, output.Length, output, 0);
 
 			byte[] v = S2V(data, output);
 
@@ -207,9 +204,7 @@ namespace Miscreant
 			if (!disposed)
 			{
 				mac.Dispose();
-
-				Array.Clear(K1, 0, BlockSize);
-				Array.Clear(K2, 0, BlockSize);
+				ctr.Dispose();
 
 				disposed = true;
 			}

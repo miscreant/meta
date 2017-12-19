@@ -14,7 +14,7 @@ namespace Miscreant
 
 		private readonly Aes aes;
 		private readonly ICryptoTransform encryptor;
-		private readonly byte[] counter;
+		private byte[] counter;
 		private ArraySegment<byte> keyStream;
 		private bool disposed;
 
@@ -47,7 +47,24 @@ namespace Miscreant
 			counter = (byte[])iv.Clone();
 
 			var buffer = new byte[KeyStreamBufferSize];
-			keyStream = new ArraySegment<byte>(buffer, KeyStreamBufferSize, 0);
+			keyStream = new ArraySegment<byte>(buffer, 0, 0);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="AesCtr"/> class with the
+		/// specified key. For internal use only. The initialization vector will
+		/// be set later by the <see cref="AesSiv"> object.
+		/// </summary>
+		/// <param name="key">The secret key for <see cref="AesCtr"> encryption.</param>
+		internal AesCtr(byte[] key)
+		{
+			aes = Aes.Create();
+			aes.Mode = CipherMode.ECB;
+
+			encryptor = aes.CreateEncryptor(key, null);
+
+			var buffer = new byte[KeyStreamBufferSize];
+			keyStream = new ArraySegment<byte>(buffer, 0, 0);
 		}
 
 		/// <summary>
@@ -90,6 +107,19 @@ namespace Miscreant
 				inputSeg = inputSeg.Slice(count);
 				outputSeg = outputSeg.Slice(count);
 			}
+		}
+
+		/// <summary>
+		/// Reset the initialization vector. For internal use only. This
+		/// method is needed in order to avoid creating heavyweight
+		/// <see cref="AesCtr"> object every time we call
+		/// <see cref="AesSiv.Seal"> or <see cref="AesSiv.Open"> methods.
+		/// </summary>
+		/// <param name="iv">The initialization vector for <see cref="AesCtr"> encryption.</param>
+		internal void Reset(byte[] iv)
+		{
+			counter = iv;
+			keyStream = new ArraySegment<byte>(keyStream.Array, 0, 0);
 		}
 
 		private void GenerateKeyStream(int inputCount)
