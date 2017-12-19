@@ -32,7 +32,7 @@ namespace Miscreant.Benchmarks
 		[Benchmark]
 		public void BenchmarkAesCmac()
 		{
-			cmac.TransformBlock(message, 0, message.Length, message, 0);
+			cmac.HashCore(message, 0, message.Length);
 		}
 
 		[Benchmark]

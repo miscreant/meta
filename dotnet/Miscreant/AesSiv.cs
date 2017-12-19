@@ -15,7 +15,7 @@ namespace Miscreant
 		private const int MaxAssociatedDataItems = 126;
 		private static readonly byte[] Zero = new byte[BlockSize];
 
-		private readonly KeyedHashAlgorithm mac;
+		private readonly AesCmac mac;
 		private readonly AesCtr ctr;
 		private bool disposed;
 
@@ -156,8 +156,8 @@ namespace Miscreant
 			// plaintext as the last vector (even if it's zero-length),
 			// so we omit this case.
 
-			mac.TransformFinalBlock(Zero, 0, BlockSize);
-			byte[] v = mac.Hash;
+			mac.HashCore(Zero, 0, BlockSize);
+			byte[] v = mac.HashFinal();
 
 			foreach (var header in headers)
 			{
@@ -166,20 +166,20 @@ namespace Miscreant
 					throw new ArgumentNullException(nameof(header));
 				}
 
-				mac.TransformFinalBlock(header, 0, header.Length);
+				mac.HashCore(header, 0, header.Length);
 				Utils.Multiply(v);
-				Utils.Xor(mac.Hash, v, BlockSize);
+				Utils.Xor(mac.HashFinal(), v, BlockSize);
 			}
 
 			if (message.Length > BlockSize)
 			{
 				int n = message.Length - BlockSize;
 
-				mac.TransformBlock(message, 0, n, message, 0);
+				mac.HashCore(message, 0, n);
 				Utils.Xor(message, n, v, 0, BlockSize);
-				mac.TransformFinalBlock(v, 0, BlockSize);
+				mac.HashCore(v, 0, BlockSize);
 
-				return mac.Hash;
+				return mac.HashFinal();
 			}
 
 			byte[] padded = new byte[BlockSize];
@@ -188,9 +188,9 @@ namespace Miscreant
 			Utils.Multiply(v);
 			Utils.Pad(padded, message.Length);
 			Utils.Xor(padded, v, BlockSize);
-			mac.TransformFinalBlock(v, 0, BlockSize);
+			mac.HashCore(v, 0, BlockSize);
 
-			return mac.Hash;
+			return mac.HashFinal();
 		}
 
 		private void ZeroIvBits(byte[] iv)

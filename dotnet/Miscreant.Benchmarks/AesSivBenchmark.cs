@@ -8,17 +8,24 @@ namespace Miscreant.Benchmarks
 	[MemoryDiagnoser]
 	public class AesSivBenchmark
 	{
-		private readonly AesSiv siv = new AesSiv(new byte[32]);
-		private readonly byte[] data = new byte[64];
+		private AesSiv siv;
+		private byte[] data;
 
-		private readonly byte[] message1K = new byte[1024];
-		private readonly byte[] message8K = new byte[8192];
+		private byte[] message1K;
+		private byte[] message8K;
 
-		private readonly byte[] ciphertext1K;
-		private readonly byte[] ciphertext8K;
+		private byte[] ciphertext1K;
+		private byte[] ciphertext8K;
 
-		public AesSivBenchmark()
+		[GlobalSetup]
+		public void Setup()
 		{
+			siv = new AesSiv(new byte[32]);
+			data = new byte[64];
+
+			message1K = new byte[1024];
+			message8K = new byte[8192];
+
 			ciphertext1K = siv.Seal(message1K, data);
 			ciphertext8K = siv.Seal(message8K, data);
 		}

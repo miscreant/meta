@@ -8,7 +8,7 @@ namespace Miscreant
 	/// CMAC message authentication code, defined in NIST Special Publication
 	/// <see href="https://csrc.nist.gov/publications/detail/sp/800-38b/archive/2005-05-01">SP 800-38B</see>.
 	/// </summary>
-	public sealed class AesCmac : KeyedHashAlgorithm
+	public sealed class AesCmac : IDisposable
 	{
 		private const int BlockSize = Constants.BlockSize;
 		private const int BufferSize = 4096;
@@ -20,6 +20,7 @@ namespace Miscreant
 		private readonly byte[] K1 = new byte[BlockSize];
 		private readonly byte[] K2 = new byte[BlockSize];
 		private int position;
+		private bool disposed;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AesCmac"/> class with the specified key.
@@ -32,11 +33,8 @@ namespace Miscreant
 				throw new ArgumentNullException(nameof(key));
 			}
 
-			KeyValue = (byte[])key.Clone();
-			HashSizeValue = 8 * BlockSize;
-
 			using (var aes = CreateAes(CipherMode.ECB))
-			using (var encryptor = aes.CreateEncryptor(KeyValue, null))
+			using (var encryptor = aes.CreateEncryptor(key, null))
 			{
 				encryptor.TransformBlock(Zero, 0, BlockSize, K1, 0);
 				Utils.Multiply(K1);
@@ -46,24 +44,22 @@ namespace Miscreant
 			}
 
 			aes = CreateAes(CipherMode.CBC);
-			encryptor = aes.CreateEncryptor(KeyValue, Zero);
+			encryptor = aes.CreateEncryptor(key, Zero);
 		}
 
-		public override byte[] Key
+		/// <summary>
+		/// Adds more data to the running hash.
+		/// </summary>
+		/// <param name="input">The input to hash.</param>
+		/// <param name="index">The offset into the input byte array from which to begin using data.</param>
+		/// <param name="size">The number of bytes in the input byte array to use as data.</param>
+		public void HashCore(byte[] input, int index, int size)
 		{
-			get => throw new InvalidOperationException("AES-CMAC key cannot be retrieved.");
-			set => throw new InvalidOperationException("AES-CMAC key cannot be modified.");
-		}
+			if (disposed)
+			{
+				throw new ObjectDisposedException(nameof(AesCmac));
+			}
 
-		public override void Initialize()
-		{
-			encryptor.TransformFinalBlock(Zero, 0, 0);
-			Array.Clear(buffer, 0, BufferSize);
-			position = 0;
-		}
-
-		protected override void HashCore(byte[] input, int index, int size)
-		{
 			var seg = new ArraySegment<byte>(input, index, size);
 			var left = BlockSize - position;
 
@@ -94,8 +90,17 @@ namespace Miscreant
 			}
 		}
 
-		protected override byte[] HashFinal()
+		/// <summary>
+		/// Returns the current hash and resets the hash state.
+		/// </summary>
+		/// <returns>The value of the computed hash.</returns>
+		public byte[] HashFinal()
 		{
+			if (disposed)
+			{
+				throw new ObjectDisposedException(nameof(AesCmac));
+			}
+
 			if (position == BlockSize)
 			{
 				Utils.Xor(K1, buffer, BlockSize);
@@ -106,15 +111,14 @@ namespace Miscreant
 				Utils.Xor(K2, buffer, BlockSize);
 			}
 
-			byte[] sum = new byte[BlockSize];
-			encryptor.TransformBlock(buffer, 0, BlockSize, sum, 0);
+			position = 0;
 
-			return sum;
+			return encryptor.TransformFinalBlock(buffer, 0, BlockSize);
 		}
 
-		protected override void Dispose(bool disposing)
+		public void Dispose()
 		{
-			if (disposing)
+			if (!disposed)
 			{
 				aes.Dispose();
 				encryptor.Dispose();
@@ -122,6 +126,8 @@ namespace Miscreant
 				Array.Clear(buffer, 0, BufferSize);
 				Array.Clear(K1, 0, BlockSize);
 				Array.Clear(K2, 0, BlockSize);
+
+				disposed = true;
 			}
 		}
 

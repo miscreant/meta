@@ -21,8 +21,8 @@ namespace Miscreant.Tests
 
 				using (var cmac = new AesCmac(key))
 				{
-					cmac.TransformFinalBlock(message, 0, message.Length);
-					Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+					cmac.HashCore(message, 0, message.Length);
+					Assert.Equal(example.Tag, Hex.Encode(cmac.HashFinal()));
 				}
 			}
 		}
@@ -39,31 +39,28 @@ namespace Miscreant.Tests
 
 			for (int i = 0; i < message.Length; ++i)
 			{
-				cmac.TransformBlock(message, i, 1, message, i);
+				cmac.HashCore(message, i, 1);
 			}
 
-			cmac.TransformFinalBlock(message, 0, 0);
-			Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+			Assert.Equal(example.Tag, Hex.Encode(cmac.HashFinal()));
 
 			// Test writing halves
 
 			int half = message.Length / 2;
 
-			cmac.TransformBlock(message, 0, half, message, 0);
-			cmac.TransformBlock(message, half, message.Length - half, message, half);
+			cmac.HashCore(message, 0, half);
+			cmac.HashCore(message, half, message.Length - half);
 
-			cmac.TransformFinalBlock(message, 0, 0);
-			Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+			Assert.Equal(example.Tag, Hex.Encode(cmac.HashFinal()));
 
 			// Test writing third, then the rest
 
 			int third = message.Length / 3;
 
-			cmac.TransformBlock(message, 0, third, message, 0);
-			cmac.TransformBlock(message, third, message.Length - third, message, third);
+			cmac.HashCore(message, 0, third);
+			cmac.HashCore(message, third, message.Length - third);
 
-			cmac.TransformFinalBlock(message, 0, 0);
-			Assert.Equal(example.Tag, Hex.Encode(cmac.Hash));
+			Assert.Equal(example.Tag, Hex.Encode(cmac.HashFinal()));
 		}
 
 		[Fact]
@@ -73,8 +70,8 @@ namespace Miscreant.Tests
 			var message = new byte[10000];
 			var cmac = new AesCmac(key);
 
-			cmac.TransformFinalBlock(message, 0, message.Length);
-			Assert.Equal("994d0e70cfa12cb68023cbdfa11cbd81", Hex.Encode(cmac.Hash));
+			cmac.HashCore(message, 0, message.Length);
+			Assert.Equal("994d0e70cfa12cb68023cbdfa11cbd81", Hex.Encode(cmac.HashFinal()));
 		}
 
 		private static IEnumerable<(string Key, string Message, string Tag)> LoadExamples()
