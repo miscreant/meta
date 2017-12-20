@@ -51,9 +51,9 @@ namespace Miscreant
 		/// <summary>
 		/// Generates a random nonce.
 		/// </summary>
-		/// <param name="size">Nonce size.</param>
+		/// <param name="size">Nonce size in bytes.</param>
 		/// <returns>Generated nonce.</returns>
-		public byte[] GenerateNonce(int size)
+		public static byte[] GenerateNonce(int size)
 		{
 			if (size < MinimumRandomNonceSize)
 			{
@@ -67,7 +67,7 @@ namespace Miscreant
 		/// Generates a random 32-byte encryption key.
 		/// </summary>
 		/// <returns>Generated key.</returns>
-		public byte[] GenerateKey256()
+		public static byte[] GenerateKey256()
 		{
 			return Utils.GetRandomBytes(AesSiv256KeySize);
 		}
