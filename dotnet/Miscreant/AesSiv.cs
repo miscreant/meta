@@ -122,11 +122,13 @@ namespace Miscreant
 		/// Open decrypts ciphertext, authenticates the decrypted plaintext
 		/// and the given associated data items and, if successful, returns
 		/// the result. For nonce-based encryption, the nonce should be the
-		/// last associated data item.
+		/// last associated data item. In case of failed decryption, this
+		/// method throws <see cref="CryptographicException">.
 		/// </summary>
 		/// <param name="ciphertext">The ciphertext to decrypt.</param>
 		/// <param name="data">Associated data items to authenticate.</param>
 		/// <returns>The decrypted plaintext.</returns>
+		/// <exception cref="CryptographicException">Thrown when the ciphertext is invalid.</exception>
 		public byte[] Open(byte[] ciphertext, params byte[][] data)
 		{
 			if (ciphertext == null)
