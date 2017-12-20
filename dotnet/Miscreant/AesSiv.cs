@@ -14,6 +14,8 @@ namespace Miscreant
 		private const int AesSiv512KeySize = 64;
 		private const int MaxAssociatedDataItems = 126;
 		private const int MinimumRandomNonceSize = BlockSize;
+
+		private static readonly byte[] Empty = new byte[0];
 		private static readonly byte[] Zero = new byte[BlockSize];
 
 		private readonly AesCmac mac;
@@ -91,11 +93,6 @@ namespace Miscreant
 		/// <returns>Concatenation of the authentication tag and the encrypted data.</returns>
 		public byte[] Seal(byte[] plaintext, params byte[][] data)
 		{
-			if (plaintext == null)
-			{
-				throw new ArgumentNullException(nameof(plaintext));
-			}
-
 			if (data == null)
 			{
 				throw new ArgumentNullException(nameof(data));
@@ -104,6 +101,11 @@ namespace Miscreant
 			if (data.Length > MaxAssociatedDataItems)
 			{
 				throw new CryptographicException($"Maximum number of associated data items is {MaxAssociatedDataItems}");
+			}
+
+			if (plaintext == null)
+			{
+				plaintext = Empty;
 			}
 
 			byte[] iv = S2V(data, plaintext);

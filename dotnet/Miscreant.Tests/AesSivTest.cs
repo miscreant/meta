@@ -74,6 +74,20 @@ namespace Miscreant.Tests
 			}
 		}
 
+		[Fact]
+		public void TestAuthenticationOnly()
+		{
+			var key = new byte[32];
+			var data = new byte[64];
+			var tag = "4cc0e8dee84dc6cd460e43acacb23cb4";
+
+			using (var siv = new AesSiv(key))
+			{
+				Assert.Equal(tag, Hex.Encode(siv.Seal(new byte[0], data)));
+				Assert.Equal(tag, Hex.Encode(siv.Seal(null, data)));
+			}
+		}
+
 		private static IEnumerable<AesSivExample> LoadExamples()
 		{
 			var s = File.ReadAllText("../../../../../vectors/aes_siv.tjson");
