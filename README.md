@@ -19,11 +19,12 @@ message streams, or large files using the [AES-SIV] ([RFC 5297]),
 [AES-PMAC-SIV], and [STREAM] constructions.
 
 Miscreant is available for several programming languages, including
-[Go], [JavaScript], [Python], [Ruby], and [Rust].
+[C#], [Go], [JavaScript], [Python], [Ruby], and [Rust].
 
 [Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 [RFC 5297]: https://tools.ietf.org/html/rfc5297
 [CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
+[C#]: https://github.com/miscreant/miscreant/tree/master/dotnet
 [Go]: https://github.com/miscreant/miscreant/tree/master/go
 [JavaScript]: https://github.com/miscreant/miscreant/tree/master/js
 [Python]: https://github.com/miscreant/miscreant/tree/master/python
@@ -114,12 +115,14 @@ The following algorithms are provided by **Miscreant**:
 
 | Language               | Version                              |
 |------------------------|--------------------------------------|
+| [C#][csharp-link]      | N/A                                  |
 | [Go][go-link]          | N/A                                  |
 | [JavaScript][npm-link] | [![npm][npm-shield]][npm-link]       |
 | [Python][pypi-link]    | [![pypi][pypi-shield]][pypi-link]    |
 | [Ruby][gem-link]       | [![gem][gem-shield]][gem-link]       |
 | [Rust][crate-link]     | [![crate][crate-shield]][crate-link] |
 
+[csharp-link]: https://github.com/miscreant/miscreant/tree/master/dotnet
 [go-link]: https://github.com/miscreant/miscreant/tree/master/go
 [npm-shield]: https://img.shields.io/npm/v/miscreant.svg
 [npm-link]: https://www.npmjs.com/package/miscreant
