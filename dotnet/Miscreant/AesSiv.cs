@@ -13,6 +13,7 @@ namespace Miscreant
 		private const int AesSiv256KeySize = 32;
 		private const int AesSiv512KeySize = 64;
 		private const int MaxAssociatedDataItems = 126;
+		private const int MinimumRandomNonceSize = BlockSize;
 		private static readonly byte[] Zero = new byte[BlockSize];
 
 		private readonly AesCmac mac;
@@ -45,6 +46,39 @@ namespace Miscreant
 
 			mac = new AesCmac(K1);
 			ctr = new AesCtr(K2);
+		}
+
+		/// <summary>
+		/// Generates a random nonce.
+		/// </summary>
+		/// <param name="size">Nonce size.</param>
+		/// <returns>Generated nonce.</returns>
+		public byte[] GenerateNonce(int size)
+		{
+			if (size < MinimumRandomNonceSize)
+			{
+				throw new CryptographicException("Nonce size is too small.");
+			}
+
+			return Utils.GetRandomBytes(size);
+		}
+
+		/// <summary>
+		/// Generates a random 32-byte encryption key.
+		/// </summary>
+		/// <returns>Generated key.</returns>
+		public byte[] GenerateKey256()
+		{
+			return Utils.GetRandomBytes(AesSiv256KeySize);
+		}
+
+		/// <summary>
+		/// Generates a random 64-byte encryption key.
+		/// </summary>
+		/// <returns>Generated key.</returns>
+		public byte[] GenerateKey512()
+		{
+			return Utils.GetRandomBytes(AesSiv512KeySize);
 		}
 
 		/// <summary>

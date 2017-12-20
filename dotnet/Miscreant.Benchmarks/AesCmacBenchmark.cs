@@ -17,10 +17,10 @@ namespace Miscreant.Benchmarks
 
 		public AesCmacBenchmark()
 		{
-			var key = GetRandomBytes(BlockSize);
-			var iv = GetRandomBytes(BlockSize);
+			var key = Utils.GetRandomBytes(BlockSize);
+			var iv = Utils.GetRandomBytes(BlockSize);
 
-			message = GetRandomBytes(MessageSize);
+			message = Utils.GetRandomBytes(MessageSize);
 			cmac = new AesCmac(key);
 
 			var aes = Aes.Create();
@@ -39,14 +39,6 @@ namespace Miscreant.Benchmarks
 		public void BenchmarkAes()
 		{
 			encryptor.TransformBlock(message, 0, message.Length, message, 0);
-		}
-
-		private static byte[] GetRandomBytes(int size)
-		{
-			var bytes = new byte[size];
-			random.GetBytes(bytes);
-
-			return bytes;
 		}
 	}
 }

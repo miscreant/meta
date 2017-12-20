@@ -1,10 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace Miscreant
 {
 	internal static class Utils
 	{
+		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
+
 		public static ArraySegment<T> Slice<T>(this ArraySegment<T> seg, int index)
 		{
 			return new ArraySegment<T>(seg.Array, seg.Offset + index, seg.Count - index);
@@ -63,6 +66,14 @@ namespace Miscreant
 		public static int Ceil(int dividend, int divisor)
 		{
 			return (dividend + divisor - 1) / divisor;
+		}
+
+		public static byte[] GetRandomBytes(int size)
+		{
+			var bytes = new byte[size];
+			random.GetBytes(bytes);
+
+			return bytes;
 		}
 	}
 }
