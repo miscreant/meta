@@ -53,6 +53,27 @@ namespace Miscreant.Tests
 			}
 		}
 
+		[Fact]
+		public void TestLargeMessage()
+		{
+			var key = new byte[32];
+			var message = new byte[10000];
+			var data = new byte[64];
+			var tag = new byte[16];
+			var last = new byte[16];
+
+			using (var siv = new AesSiv(key))
+			{
+				var ciphertext = siv.Seal(message, data);
+
+				Array.Copy(ciphertext, 0, tag, 0, 16);
+				Array.Copy(ciphertext, message.Length, last, 0, 16);
+
+				Assert.Equal("b6355f5f35349dcb5c9574443f7fe3f2", Hex.Encode(tag));
+				Assert.Equal("46e332af8648f74f2d6375ff936b1fa3", Hex.Encode(last));
+			}
+		}
+
 		private static IEnumerable<AesSivExample> LoadExamples()
 		{
 			var s = File.ReadAllText("../../../../../vectors/aes_siv.tjson");
