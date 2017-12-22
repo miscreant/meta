@@ -121,7 +121,7 @@ module Miscreant
 
         encoded_nonce = [@nonce_prefix, @counter, last_block ? LAST_BLOCK_FLAG : 0].pack("a8NC")
         @counter += 1
-        raise OverflowError, "STREAM counter overflowed" if @counter >= 2**64
+        raise OverflowError, "STREAM counter overflowed" if @counter >= COUNTER_MAX
 
         encoded_nonce
       end
