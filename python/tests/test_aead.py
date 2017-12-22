@@ -20,7 +20,7 @@ class TestAEAD(unittest.TestCase):
         key = AEAD.generate_key()
         self.assertEqual(len(key), 32)
 
-    def test_generate_key(self):
+    def test_generate_nonce(self):
         """Ensure we can generate random nonces with the right default size"""
         nonce = AEAD.generate_nonce()
         self.assertEqual(len(nonce), 16)
@@ -33,7 +33,7 @@ class TestAEAD(unittest.TestCase):
             self.assertEqual(ciphertext, ex.ciphertext)
 
     def test_open(self):
-        """Ensure open passes all AES-SIV test vectors"""
+        """Ensure open passes all AES-(PMAC-)SIV AEAD test vectors"""
         for ex in AEADExample.load():
             aead = AEAD(ex.alg, ex.key)
             plaintext = aead.open(ex.ciphertext, nonce=ex.nonce, associated_data=ex.ad)
