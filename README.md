@@ -1,11 +1,14 @@
 # <img alt="miscreant." src="https://miscreant.io/images/miscreant.svg">
 
-[![Build Status][build-image]][build-link]
+[![Travis CI Status][build-image]][build-link]
+[![Appveyor CI Status][appveyor-image]][appveyor-link]
 [![MIT Licensed][license-image]][license-link]
 [![Gitter Chat][gitter-image]][gitter-link]
 
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
+[appveyor-image]: https://ci.appveyor.com/api/projects/status/xi4cc74iyqsjke2l?svg=true
+[appveyor-link]: https://ci.appveyor.com/project/tarcieri/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
