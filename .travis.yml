@@ -33,3 +33,7 @@ matrix:
     rust: nightly
     before_script: cd rust
     script: cargo build --no-default-features
+  - language: csharp
+    mono: none
+    dotnet: 2.0.0
+    before_script: cd dotnet
