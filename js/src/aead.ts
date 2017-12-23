@@ -1,4 +1,4 @@
-import { IAEADLike, ICryptoProvider, ISIVLike } from "./internals/interfaces";
+import { IAEADLike, ICryptoProvider, ISIVLike } from "./interfaces";
 
 import { SIV } from "./siv";
 

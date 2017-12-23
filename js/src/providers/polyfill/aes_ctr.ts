@@ -2,7 +2,7 @@
 // MIT License. See LICENSE file for details.
 
 import Block from "../../internals/block";
-import { ICTRLike } from "../../internals/interfaces";
+import { ICTRLike } from "../../interfaces";
 
 import PolyfillAes from "./aes";
 

@@ -2,7 +2,7 @@
 // MIT License. See LICENSE file for details.
 
 import Block from "../../internals/block";
-import { IBlockCipher } from "../../internals/interfaces";
+import { IBlockCipher } from "../../interfaces";
 
 /**
  * WebCrypto-based implementation of the AES block cipher.

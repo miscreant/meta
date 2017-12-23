@@ -1,13 +1,11 @@
 /** Shared interfaces for cryptographic algorithms */
 
-import Block from "./block";
+import Block from "./internals/block";
 
 /**
  * A block cipher (with 128-bit blocks, i.e. AES)
  *
  * WARNING: This interface should not be used directly!
- * That is why it is hiding under "internals".
- *
  * It should only be used to implement a cipher mode.
  * This library uses it to implement AES-SIV.
  */
