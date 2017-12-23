@@ -1,6 +1,6 @@
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import { wipe } from "../src/internals/util/wipe";
+import { wipe } from "../src/internals/wipe";
 
 @suite class WipeSpec {
   @test "should wipe bytes"() {

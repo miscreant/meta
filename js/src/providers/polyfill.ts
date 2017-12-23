@@ -1,4 +1,4 @@
-import { IBlockCipher, ICryptoProvider, ICTRLike } from "../internals/interfaces";
+import { IBlockCipher, ICryptoProvider, ICTRLike } from "../interfaces";
 import PolyfillAes from "./polyfill/aes";
 import PolyfillAesCtr from "./polyfill/aes_ctr";
 

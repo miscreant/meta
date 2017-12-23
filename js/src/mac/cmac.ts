@@ -2,8 +2,8 @@
 // MIT License. See LICENSE file for details.
 
 import Block from "../internals/block";
-import { IBlockCipher, ICryptoProvider, IMACLike } from "../internals/interfaces";
-import { xor } from "../internals/util/xor";
+import { IBlockCipher, ICryptoProvider, IMACLike } from "../interfaces";
+import { xor } from "../internals/xor";
 
 /**
  * The AES-CMAC message authentication code

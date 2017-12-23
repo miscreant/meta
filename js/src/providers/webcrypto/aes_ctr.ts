@@ -1,4 +1,4 @@
-import { ICTRLike } from "../../internals/interfaces";
+import { ICTRLike } from "../../interfaces";
 
 /**
  * AES-CTR using a WebCrypto (or similar) API

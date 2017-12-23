@@ -2,10 +2,10 @@
 // MIT License. See LICENSE file for details.
 
 import Block from "../internals/block";
-import { IBlockCipher, ICryptoProvider, IMACLike } from "../internals/interfaces";
-import { select } from "../internals/util/constant-time";
-import { ctz } from "../internals/util/ctz";
-import { xor } from "../internals/util/xor";
+import { IBlockCipher, ICryptoProvider, IMACLike } from "../interfaces";
+import { select } from "../internals/constant-time";
+import { ctz } from "../internals/ctz";
+import { xor } from "../internals/xor";
 
 // Number of L blocks to precompute (i.e. µ in the PMAC paper)
 // TODO: dynamically compute these as needed

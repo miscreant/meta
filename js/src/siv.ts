@@ -1,14 +1,14 @@
 // Copyright (C) 2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import { equal } from "./internals/util/constant-time";
-import { wipe } from "./internals/util/wipe";
-import { xor } from "./internals/util/xor";
+import { equal } from "./internals/constant-time";
+import { wipe } from "./internals/wipe";
+import { xor } from "./internals/xor";
 
 import IntegrityError from "./exceptions/integrity_error";
 import NotImplementedError from "./exceptions/not_implemented_error";
 import Block from "./internals/block";
-import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./internals/interfaces";
+import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./interfaces";
 
 import CMAC from "./mac/cmac";
 import PMAC from "./mac/pmac";
