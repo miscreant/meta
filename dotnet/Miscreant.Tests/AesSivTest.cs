@@ -11,11 +11,16 @@ namespace Miscreant.Tests
 	public class AesSivTest
 	{
 		[Fact]
-		public void TestSealAndOpen()
+		public void TestCmacSealAndOpen() => TestSealAndOpen(AesSiv.CreateAesCmacSiv, "aes_siv");
+
+		[Fact]
+		public void TestPmacSealAndOpen() => TestSealAndOpen(AesSiv.CreateAesPmacSiv, "aes_pmac_siv");
+
+		private void TestSealAndOpen(Func<byte[], AesSiv> sivFactory, string file)
 		{
-			foreach (var example in LoadExamples())
+			foreach (var example in LoadExamples(file))
 			{
-				using (var siv = AesSiv.CreateAesCmacSiv(example.Key))
+				using (var siv = sivFactory(example.Key))
 				{
 					byte[] ciphertext = siv.Seal(example.Plaintext, example.AssociatedData);
 					Assert.Equal(Hex.Encode(example.Ciphertext), Hex.Encode(ciphertext));
@@ -27,9 +32,14 @@ namespace Miscreant.Tests
 		}
 
 		[Fact]
-		public void TestTampering()
+		public void TestCmacTampering() => TestTampering(AesSiv.CreateAesCmacSiv);
+
+		[Fact]
+		public void TestPmacTampering() => TestTampering(AesSiv.CreateAesPmacSiv);
+
+		private void TestTampering(Func<byte[], AesSiv> sivFactory)
 		{
-			using (var siv = AesSiv.CreateAesCmacSiv(new byte[32]))
+			using (var siv = sivFactory(new byte[32]))
 			{
 				// Test tag tampering
 
@@ -54,7 +64,20 @@ namespace Miscreant.Tests
 		}
 
 		[Fact]
-		public void TestLargeMessage()
+		public void TestCmacLargeMessage() => TestLargeMessage(
+			AesSiv.CreateAesCmacSiv,
+			"b6355f5f35349dcb5c9574443f7fe3f2",
+			"46e332af8648f74f2d6375ff936b1fa3"
+		);
+
+		[Fact]
+		public void TestPmacLargeMessage() => TestLargeMessage(
+			AesSiv.CreateAesPmacSiv,
+			"fa7a298c6c3668b27258cff211c6eaf4",
+			"79895a27a8d7a17c416cbf3a3a7c38ee"
+		);
+
+		private void TestLargeMessage(Func<byte[], AesSiv> sivFactory, string firstBlock, string lastBlock)
 		{
 			var key = new byte[32];
 			var message = new byte[10000];
@@ -62,35 +85,45 @@ namespace Miscreant.Tests
 			var tag = new byte[16];
 			var last = new byte[16];
 
-			using (var siv = AesSiv.CreateAesCmacSiv(key))
+			using (var siv = sivFactory(key))
 			{
 				var ciphertext = siv.Seal(message, data);
 
 				Array.Copy(ciphertext, 0, tag, 0, 16);
 				Array.Copy(ciphertext, message.Length, last, 0, 16);
 
-				Assert.Equal("b6355f5f35349dcb5c9574443f7fe3f2", Hex.Encode(tag));
-				Assert.Equal("46e332af8648f74f2d6375ff936b1fa3", Hex.Encode(last));
+				Assert.Equal(firstBlock, Hex.Encode(tag));
+				Assert.Equal(lastBlock, Hex.Encode(last));
 			}
 		}
 
 		[Fact]
-		public void TestAuthenticationOnly()
+		public void TestCmacAuthenticationOnly() => TestAuthenticationOnly(
+			AesSiv.CreateAesCmacSiv,
+			"4cc0e8dee84dc6cd460e43acacb23cb4"
+		);
+
+		[Fact]
+		public void TestPmacAuthenticationOnly() => TestAuthenticationOnly(
+			AesSiv.CreateAesPmacSiv,
+			"ba087cb5d41830ba65d92b5ce71dc129"
+		);
+
+		private void TestAuthenticationOnly(Func<byte[], AesSiv> sivFactory, string tag)
 		{
 			var key = new byte[32];
 			var data = new byte[64];
-			var tag = "4cc0e8dee84dc6cd460e43acacb23cb4";
 
-			using (var siv = AesSiv.CreateAesCmacSiv(key))
+			using (var siv = sivFactory(key))
 			{
 				Assert.Equal(tag, Hex.Encode(siv.Seal(new byte[0], data)));
 				Assert.Equal(tag, Hex.Encode(siv.Seal(null, data)));
 			}
 		}
 
-		private static IEnumerable<AesSivExample> LoadExamples()
+		private static IEnumerable<AesSivExample> LoadExamples(string file)
 		{
-			var s = File.ReadAllText("../../../../../vectors/aes_siv.tjson");
+			var s = File.ReadAllText($"../../../../../vectors/{file}.tjson");
 			var json = JObject.Parse(s);
 			var examples = json["examples:A<O>"];
 

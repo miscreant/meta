@@ -77,21 +77,20 @@ namespace Miscreant.Tests
 		}
 
 		[Fact]
-		public void TestLargeMessage()
+		public void TestCmacLargeMessage() => TestLargeMessage(AesCmac.Create, "994d0e70cfa12cb68023cbdfa11cbd81");
+
+		[Fact]
+		public void TestPmacLargeMessage() => TestLargeMessage(AesPmac.Create, "823a7d32a9d5ee2e8667ee02ab08e511");
+
+		private void TestLargeMessage(Func<byte[], IMac> macFactory, string tag)
 		{
 			var key = new byte[16];
 			var message = new byte[10000];
 
-			using (var cmac = new AesCmac(key))
+			using (var mac = macFactory(key))
 			{
-				cmac.HashCore(message, 0, message.Length);
-				Assert.Equal("994d0e70cfa12cb68023cbdfa11cbd81", Hex.Encode(cmac.HashFinal()));
-			}
-
-			using (var pmac = new AesPmac(key))
-			{
-				pmac.HashCore(message, 0, message.Length);
-				Assert.Equal("823a7d32a9d5ee2e8667ee02ab08e511", Hex.Encode(pmac.HashFinal()));
+				mac.HashCore(message, 0, message.Length);
+				Assert.Equal(tag, Hex.Encode(mac.HashFinal()));
 			}
 		}
 
