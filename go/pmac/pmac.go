@@ -7,6 +7,7 @@ import (
 	"crypto/cipher"
 	"crypto/subtle"
 	"hash"
+	"math/bits"
 
 	"github.com/miscreant/miscreant/go/block"
 )
@@ -183,24 +184,13 @@ func (d *pmac) BlockSize() int { return block.Size }
 
 // Update the internal tag state based on the buf contents
 func (d *pmac) processBuffer() {
-	xor(d.offset[:], d.l[ctz(d.ctr+1)][:])
+	xor(d.offset[:], d.l[bits.TrailingZeros(d.ctr+1)][:])
 	xor(d.buf[:], d.offset[:])
 	d.ctr++
 
 	d.buf.Encrypt(d.c)
 	xor(d.digest[:], d.buf[:])
 	d.pos = 0
-}
-
-// TODO: use math/bits TrailingZeros() when it becomes available
-// See: https://github.com/golang/go/issues/18616
-func ctz(n uint) uint {
-	var c uint
-	for n&1 == 0 {
-		c++
-		n >>= 1
-	}
-	return c
 }
 
 // XOR the contents of b into a in-place
