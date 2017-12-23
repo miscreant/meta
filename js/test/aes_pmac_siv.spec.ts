@@ -7,10 +7,10 @@ import * as chaiAsPromised from "chai-as-promised";
 import { AesPmacSivExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import PolyfillCryptoProvider from "../src/internal/polyfill/provider";
-import WebCryptoProvider from "../src/internal/webcrypto/provider";
+import PolyfillCryptoProvider from "../src/providers/polyfill";
+import WebCryptoProvider from "../src/providers/webcrypto";
 
-import AesSiv from "../src/internal/aes_siv";
+import * as miscreant from "../src/index";
 import IntegrityError from "../src/exceptions/integrity_error";
 
 let expect = chai.expect;
@@ -27,7 +27,7 @@ chai.use(chaiAsPromised);
     const polyfillProvider = new PolyfillCryptoProvider();
 
     for (let v of AesPmacSivSpec.vectors) {
-      const siv = await AesSiv.importKey(polyfillProvider, "AES-PMAC-SIV", v.key);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-PMAC-SIV", polyfillProvider);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -42,7 +42,7 @@ chai.use(chaiAsPromised);
     const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
 
     for (let v of AesPmacSivSpec.vectors) {
-      const siv = await AesSiv.importKey(webCryptoProvider, "AES-PMAC-SIV", v.key);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-PMAC-SIV", webCryptoProvider);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
@@ -60,8 +60,8 @@ chai.use(chaiAsPromised);
       const badAd = v.ad;
       badAd.push(new Uint8Array(1));
 
-      const siv = await AesSiv.importKey(polyfillProvider, "AES-PMAC-SIV", v.key);
-      return expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-PMAC-SIV", polyfillProvider);
+      await expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -74,8 +74,8 @@ chai.use(chaiAsPromised);
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = await AesSiv.importKey(polyfillProvider, "AES-PMAC-SIV", v.key);
-      return expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-PMAC-SIV", polyfillProvider);
+      await expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 }

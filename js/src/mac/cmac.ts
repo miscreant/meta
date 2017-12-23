@@ -1,17 +1,17 @@
 // Copyright (C) 2016-2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import Block from "../block";
-import { IBlockCipher, ICryptoProvider, IMacLike } from "../interfaces";
-import { xor } from "../util/xor";
+import Block from "../internals/block";
+import { IBlockCipher, ICryptoProvider, IMACLike } from "../internals/interfaces";
+import { xor } from "../internals/util/xor";
 
 /**
  * The AES-CMAC message authentication code
  */
-export default class Cmac implements IMacLike {
+export default class CMAC implements IMACLike {
   /** Create a new CMAC instance from the given key */
-  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<Cmac> {
-    const cipher = await provider.importAesKey(keyData);
+  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<CMAC> {
+    const cipher = await provider.importBlockCipherKey(keyData);
 
     // Generate subkeys.
     const subkey1 = new Block();
@@ -21,7 +21,7 @@ export default class Cmac implements IMacLike {
     const subkey2 = subkey1.clone();
     subkey2.dbl();
 
-    return new Cmac(cipher, subkey1, subkey2);
+    return new CMAC(cipher, subkey1, subkey2);
   }
 
   private _buffer: Block;

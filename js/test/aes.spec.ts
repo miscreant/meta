@@ -5,11 +5,11 @@ import { suite, test } from "mocha-typescript";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import { AesExample } from "./support/test_vectors";
-import Block from "../src/internal/block";
+import Block from "../src/internals/block";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import WebCryptoAes from "../src/internal/webcrypto/aes";
-import PolyfillAes from "../src/internal/polyfill/aes";
+import WebCryptoAes from "../src/providers/webcrypto/aes";
+import PolyfillAes from "../src/providers/polyfill/aes";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);

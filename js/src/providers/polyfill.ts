@@ -1,6 +1,6 @@
-import { IBlockCipher, ICryptoProvider, ICtrLike } from "../interfaces";
-import PolyfillAes from "./aes";
-import PolyfillAesCtr from "./aes_ctr";
+import { IBlockCipher, ICryptoProvider, ICTRLike } from "../internals/interfaces";
+import PolyfillAes from "./polyfill/aes";
+import PolyfillAesCtr from "./polyfill/aes_ctr";
 
 /**
  * Pure JavaScript cryptography implementations
@@ -12,11 +12,11 @@ export default class PolyfillCryptoProvider implements ICryptoProvider {
     // This class doesn't do anything, it just signals that polyfill impls should be used
   }
 
-  public async importAesKey(keyData: Uint8Array): Promise<IBlockCipher> {
+  public async importBlockCipherKey(keyData: Uint8Array): Promise<IBlockCipher> {
     return new PolyfillAes(keyData);
   }
 
-  public async importAesCtrKey(keyData: Uint8Array): Promise<ICtrLike> {
+  public async importCTRKey(keyData: Uint8Array): Promise<ICTRLike> {
     return new PolyfillAesCtr(new PolyfillAes(keyData));
   }
 }

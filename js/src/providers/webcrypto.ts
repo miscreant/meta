@@ -1,21 +1,20 @@
-import NotImplementedError from "../../exceptions/not_implemented_error";
-import { IBlockCipher, ICryptoProvider, ICtrLike } from "../interfaces";
-import WebCryptoAes from "./aes";
-import WebCryptoAesCtr from "./aes_ctr";
+import NotImplementedError from "../exceptions/not_implemented_error";
+import { IBlockCipher, ICryptoProvider, ICTRLike } from "../internals/interfaces";
+import WebCryptoAes from "./webcrypto/aes";
+import WebCryptoAesCtr from "./webcrypto/aes_ctr";
 
 /** Placeholder backend for using pure JavaScript crypto implementations */
 export default class WebCryptoProvider implements ICryptoProvider {
   constructor(
-    private crypto: Crypto,
+    private crypto: Crypto = window.crypto,
   ) {
-    // This class doesn't do anything, it just signals that polyfill impls should be used
   }
 
-  public async importAesKey(keyData: Uint8Array): Promise<IBlockCipher> {
+  public async importBlockCipherKey(keyData: Uint8Array): Promise<IBlockCipher> {
     return WebCryptoAes.importKey(this.crypto, keyData);
   }
 
-  public async importAesCtrKey(keyData: Uint8Array): Promise<ICtrLike> {
+  public async importCTRKey(keyData: Uint8Array): Promise<ICTRLike> {
     try {
       return await WebCryptoAesCtr.importKey(this.crypto, keyData);
     } catch (e) {
