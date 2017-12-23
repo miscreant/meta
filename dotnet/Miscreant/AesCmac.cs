@@ -47,6 +47,11 @@ namespace Miscreant
 			encryptor = aes.CreateEncryptor(key, Zero);
 		}
 
+		internal static IMac Create(byte[] key)
+		{
+			return new AesCmac(key);
+		}
+
 		/// <summary>
 		/// Adds more data to the running hash.
 		/// </summary>

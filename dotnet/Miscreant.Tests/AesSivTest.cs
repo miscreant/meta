@@ -15,7 +15,7 @@ namespace Miscreant.Tests
 		{
 			foreach (var example in LoadExamples())
 			{
-				using (var siv = new AesSiv(example.Key))
+				using (var siv = AesSiv.CreateAesCmacSiv(example.Key))
 				{
 					byte[] ciphertext = siv.Seal(example.Plaintext, example.AssociatedData);
 					Assert.Equal(Hex.Encode(example.Ciphertext), Hex.Encode(ciphertext));
@@ -29,7 +29,7 @@ namespace Miscreant.Tests
 		[Fact]
 		public void TestTampering()
 		{
-			using (var siv = new AesSiv(new byte[32]))
+			using (var siv = AesSiv.CreateAesCmacSiv(new byte[32]))
 			{
 				// Test tag tampering
 
@@ -62,7 +62,7 @@ namespace Miscreant.Tests
 			var tag = new byte[16];
 			var last = new byte[16];
 
-			using (var siv = new AesSiv(key))
+			using (var siv = AesSiv.CreateAesCmacSiv(key))
 			{
 				var ciphertext = siv.Seal(message, data);
 
@@ -81,7 +81,7 @@ namespace Miscreant.Tests
 			var data = new byte[64];
 			var tag = "4cc0e8dee84dc6cd460e43acacb23cb4";
 
-			using (var siv = new AesSiv(key))
+			using (var siv = AesSiv.CreateAesCmacSiv(key))
 			{
 				Assert.Equal(tag, Hex.Encode(siv.Seal(new byte[0], data)));
 				Assert.Equal(tag, Hex.Encode(siv.Seal(null, data)));

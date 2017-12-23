@@ -5,7 +5,7 @@ namespace Miscreant
 	/// <summary>
 	/// Defines the basic operations of message authentication code.
 	/// </summary>
-	public interface IMac : IDisposable
+	internal interface IMac : IDisposable
 	{
 		/// <summary>
 		/// Adds more data to the running hash.

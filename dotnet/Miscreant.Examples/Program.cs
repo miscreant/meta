@@ -16,9 +16,9 @@ namespace Miscreant.Examples
 			// Create a 16-byte nonce (optional).
 			var nonce = AesSiv.GenerateNonce(16);
 
-			// Create a new AES-SIV instance. It implements the IDisposable
+			// Create a new AES-CMAC-SIV instance. It implements the IDisposable
 			// interface, so it's best to create it inside using statement.
-			using (var siv = new AesSiv(key))
+			using (var siv = AesSiv.CreateAesCmacSiv(key))
 			{
 				// If the message is string, convert it to byte array first.
 				var bytes = Encoding.UTF8.GetBytes(plaintext);

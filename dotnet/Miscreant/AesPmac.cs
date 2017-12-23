@@ -63,6 +63,11 @@ namespace Miscreant
 			inv[BlockSize - 1] ^= (byte)Utils.ConstantTimeSelect(lastBit, Constants.R >> 1, 0);
 		}
 
+		internal static IMac Create(byte[] key)
+		{
+			return new AesPmac(key);
+		}
+
 		/// <summary>
 		/// Adds more data to the running hash.
 		/// </summary>

@@ -6,7 +6,7 @@ namespace Miscreant.Benchmarks
 	{
 		public static void Main(string[] args)
 		{
-			BenchmarkRunner.Run<SivBenchmark>();
+			BenchmarkRunner.Run<AesSivBenchmark>();
 		}
 	}
 }

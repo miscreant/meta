@@ -22,11 +22,7 @@ namespace Miscreant
 		private readonly AesCtr ctr;
 		private bool disposed;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AesSiv"/> class with the specified key.
-		/// </summary>
-		/// <param name="key">The secret key for <see cref="AesSiv"> encryption.</param>
-		public AesSiv(byte[] key)
+		private AesSiv(Func<byte[], IMac> macFactory, byte[] key)
 		{
 			if (key == null)
 			{
@@ -46,8 +42,28 @@ namespace Miscreant
 			Array.Copy(key, 0, K1, 0, halfKeySize);
 			Array.Copy(key, halfKeySize, K2, 0, halfKeySize);
 
-			mac = new AesCmac(K1);
+			mac = macFactory(K1);
 			ctr = new AesCtr(K2);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the AES-CMAC-SIV algorithm with the specified key.
+		/// </summary>
+		/// <param name="key">The secret key for AES-CMAC-SIV encryption.</param>
+		/// <returns>An AES-CMAC-SIV instance.</returns>
+		public static AesSiv CreateAesCmacSiv(byte[] key)
+		{
+			return new AesSiv(AesCmac.Create, key);
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the AES-PMAC-SIV algorithm with the specified key.
+		/// </summary>
+		/// <param name="key">The secret key for AES-PMAC-SIV encryption.</param>
+		/// <returns>An AES-PMAC-SIV instance.</returns>
+		public static AesSiv CreateAesPmacSiv(byte[] key)
+		{
+			return new AesSiv(AesPmac.Create, key);
 		}
 
 		/// <summary>

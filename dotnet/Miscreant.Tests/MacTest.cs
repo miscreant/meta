@@ -13,19 +13,19 @@ namespace Miscreant.Tests
 		private readonly List<MacExample> pmacExamples = LoadExamples("aes_pmac").ToList();
 
 		[Fact]
-		public void TestCmacHashFinal() => TestHashFinal(key => new AesCmac(key), cmacExamples);
+		public void TestCmacHashFinal() => TestHashFinal(AesCmac.Create, cmacExamples);
 
 		[Fact]
-		public void TestPmacHashFinal() => TestHashFinal(key => new AesPmac(key), pmacExamples);
+		public void TestPmacHashFinal() => TestHashFinal(AesPmac.Create, pmacExamples);
 
-		private void TestHashFinal(Func<byte[], IMac> factory, IEnumerable<MacExample> examples)
+		private void TestHashFinal(Func<byte[], IMac> macFactory, IEnumerable<MacExample> examples)
 		{
 			foreach (var example in examples)
 			{
 				var key = Hex.Decode(example.Key);
 				var message = Hex.Decode(example.Message);
 
-				using (var mac = factory(key))
+				using (var mac = macFactory(key))
 				{
 					mac.HashCore(message, 0, message.Length);
 					Assert.Equal(example.Tag, Hex.Encode(mac.HashFinal()));
@@ -34,18 +34,18 @@ namespace Miscreant.Tests
 		}
 
 		[Fact]
-		public void TestCmacHashCore() => TestHashCore(key => new AesCmac(key), cmacExamples);
+		public void TestCmacHashCore() => TestHashCore(AesCmac.Create, cmacExamples);
 
 		[Fact]
-		public void TestPmacHashCore() => TestHashCore(key => new AesPmac(key), pmacExamples);
+		public void TestPmacHashCore() => TestHashCore(AesPmac.Create, pmacExamples);
 
-		private void TestHashCore(Func<byte[], IMac> factory, IEnumerable<MacExample> examples)
+		private void TestHashCore(Func<byte[], IMac> macFactory, IEnumerable<MacExample> examples)
 		{
 			var example = examples.Last();
 			var key = Hex.Decode(example.Key);
 			var message = Hex.Decode(example.Message);
 
-			using (var mac = factory(key))
+			using (var mac = macFactory(key))
 			{
 				// Test writing byte-by-byte
 

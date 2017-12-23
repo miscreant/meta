@@ -65,16 +65,24 @@ and .NET Core 2.1.2, but it should also work on any of the following platforms:
 The `Miscreant.AesSiv` class provides the main interface to the **AES-SIV** misuse
 resistant authenticated encryption function.
 
-To make a new instance, pass in a 32-byte or 64-byte key. Note that these
-options are twice the size of what you might be expecting (AES-SIV uses two
-AES keys).
+```csharp
+public static AesSiv CreateAesCmacSiv(byte[] key)
+public static AesSiv CreateAesPmacSiv(byte[] key)
+```
+
+To make a new AES-SIV instance that uses CMAC, call the
+`CreateAesCmacSiv` method with a 32-byte or 64-byte key.
+To make a new AES-SIV instance that uses PMAC, call the
+`CreateAesPmacSiv` method with a 32-byte or 64-byte key.
+Note that these keys are twice the size of what you might
+be expecting (AES-SIV uses two AES keys).
 
 You can generate random 32-byte or 64-byte keys using the static
 `AesSiv.GenerateKey256` or `AesSiv.GenerateKey512` methods:
 
 ```csharp
 var key = AesSiv.GenerateKey256();
-var siv = new AesSiv(key);
+var siv = AesSiv.CreateAesCmacSiv(key);
 ```
 
 #### Encryption (Seal)
@@ -113,9 +121,9 @@ var key = AesSiv.GenerateKey256();
 // Create a 16-byte nonce (optional).
 var nonce = AesSiv.GenerateNonce(16);
 
-// Create a new AES-SIV instance. It implements the IDisposable
+// Create a new AES-CMAC-SIV instance. It implements the IDisposable
 // interface, so it's best to create it inside using statement.
-using (var siv = new AesSiv(key))
+using (var siv = CreateAesCmacSiv(key))
 {
   // If the message is string, convert it to byte array first.
   var bytes = Encoding.UTF8.GetBytes(plaintext);
