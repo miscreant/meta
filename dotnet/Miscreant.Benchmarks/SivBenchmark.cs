@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 namespace Miscreant.Benchmarks
 {
 	[MemoryDiagnoser]
-	public class AesSivBenchmark
+	public class SivBenchmark
 	{
 		private AesSiv siv;
 		private byte[] data;

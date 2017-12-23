@@ -12,7 +12,7 @@ namespace Miscreant.Tests
 		private readonly List<(string Key, string Message, string Tag)> examples = LoadExamples().ToList();
 
 		[Fact]
-		public void TestTransformFinalBlock()
+		public void TestHashFinal()
 		{
 			foreach (var example in examples)
 			{
@@ -28,7 +28,7 @@ namespace Miscreant.Tests
 		}
 
 		[Fact]
-		public void TestTransformBlock()
+		public void TestHashCore()
 		{
 			var example = examples.Last();
 			var key = Hex.Decode(example.Key);

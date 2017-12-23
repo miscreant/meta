@@ -18,7 +18,7 @@ namespace Miscreant
 		private static readonly byte[] Empty = new byte[0];
 		private static readonly byte[] Zero = new byte[BlockSize];
 
-		private readonly AesCmac mac;
+		private readonly IMac mac;
 		private readonly AesCtr ctr;
 		private bool disposed;
 

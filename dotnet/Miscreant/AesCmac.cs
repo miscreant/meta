@@ -8,7 +8,7 @@ namespace Miscreant
 	/// CMAC message authentication code, defined in NIST Special Publication
 	/// <see href="https://csrc.nist.gov/publications/detail/sp/800-38b/archive/2005-05-01">SP 800-38B</see>.
 	/// </summary>
-	public sealed class AesCmac : IDisposable
+	public sealed class AesCmac : IMac
 	{
 		private const int BlockSize = Constants.BlockSize;
 		private const int BufferSize = 4096;
@@ -33,7 +33,7 @@ namespace Miscreant
 				throw new ArgumentNullException(nameof(key));
 			}
 
-			using (var aes = CreateAes(CipherMode.ECB))
+			using (var aes = Utils.CreateAes(CipherMode.ECB))
 			using (var encryptor = aes.CreateEncryptor(key, null))
 			{
 				encryptor.TransformBlock(Zero, 0, BlockSize, K1, 0);
@@ -43,7 +43,7 @@ namespace Miscreant
 				Utils.Multiply(K2);
 			}
 
-			aes = CreateAes(CipherMode.CBC);
+			aes = Utils.CreateAes(CipherMode.CBC);
 			encryptor = aes.CreateEncryptor(key, Zero);
 		}
 
@@ -129,16 +129,6 @@ namespace Miscreant
 
 				disposed = true;
 			}
-		}
-
-		private static Aes CreateAes(CipherMode mode)
-		{
-			var aes = Aes.Create();
-
-			aes.Mode = mode;
-			aes.Padding = PaddingMode.None;
-
-			return aes;
 		}
 	}
 }

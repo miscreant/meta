@@ -6,6 +6,11 @@ namespace Miscreant
 {
 	internal static class Utils
 	{
+		private static readonly byte[] deBruijn = new byte[] {
+			0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
+			31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
+		};
+
 		private static readonly RandomNumberGenerator random = RandomNumberGenerator.Create();
 
 		public static ArraySegment<T> Slice<T>(this ArraySegment<T> seg, int index)
@@ -24,7 +29,7 @@ namespace Miscreant
 				input[i] = (byte)((input[i] << 1) | (input[i + 1] >> 7));
 			}
 
-			byte last = (byte)((input[Constants.BlockSize - 1] << 1) ^ ((0 - carry) & 0x87));
+			byte last = (byte)((input[Constants.BlockSize - 1] << 1) ^ ((0 - carry) & Constants.R));
 			input[Constants.BlockSize - 1] = last;
 		}
 
@@ -63,6 +68,15 @@ namespace Miscreant
 			return result == 0;
 		}
 
+		/// <summary>
+		/// ConstantTimeSelect returns x if v is 1 and y if v is 0.
+		/// See <see href="https://golang.org/src/crypto/subtle/constant_time.go">constant_time.go</see> for more details.
+		/// </summary>
+		public static int ConstantTimeSelect(int v, int x, int y)
+		{
+			return ~(v - 1) & x | (v - 1) & y;
+		}
+
 		public static int Ceil(int dividend, int divisor)
 		{
 			return (dividend + divisor - 1) / divisor;
@@ -74,6 +88,25 @@ namespace Miscreant
 			random.GetBytes(bytes);
 
 			return bytes;
+		}
+
+		public static Aes CreateAes(CipherMode mode)
+		{
+			var aes = Aes.Create();
+
+			aes.Mode = mode;
+			aes.Padding = PaddingMode.None;
+
+			return aes;
+		}
+
+		/// <summary>
+		/// Count the number of trailing zeros bits in x.
+		/// See <see href="https://golang.org/src/math/bits/bits.go">bits.go</see> for more details.
+		/// </summary>
+		public static int TrailingZeros(uint x)
+		{
+			return x > 0 ? deBruijn[(uint)((x & -x) * 0x077CB531) >> (32 - 5)] : 32;
 		}
 	}
 }
