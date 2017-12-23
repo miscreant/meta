@@ -20,7 +20,7 @@ const PRECOMPUTED_BLOCKS: number = 31;
 export default class PMAC implements IMACLike {
   /** Create a new CMAC instance from the given key */
   public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<PMAC> {
-    const cipher = await provider.importAesKey(keyData);
+    const cipher = await provider.importBlockCipherKey(keyData);
 
     /**
      * L is defined as follows (quoted from the PMAC paper):

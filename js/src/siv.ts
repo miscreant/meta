@@ -8,7 +8,7 @@ import { xor } from "./internals/util/xor";
 import IntegrityError from "./exceptions/integrity_error";
 import NotImplementedError from "./exceptions/not_implemented_error";
 import Block from "./internals/block";
-import { ICryptoProvider, ICTRLike, IMACLike, ISivLike } from "./internals/interfaces";
+import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./internals/interfaces";
 
 import CMAC from "./mac/cmac";
 import PMAC from "./mac/pmac";
@@ -16,11 +16,11 @@ import PMAC from "./mac/pmac";
 import WebCryptoProvider from "./providers/webcrypto";
 
 /** Maximum number of associated data items */
-const MAX_ASSOCIATED_DATA = 126;
+export const MAX_ASSOCIATED_DATA = 126;
 
 /** The AES-SIV mode of authenticated encryption */
-export default class SIV implements ISivLike {
-  /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
+export class SIV implements ISIVLike {
+  /** Create a new AES-SIV instance with the given 32-byte or 64-byte key */
   public static async importKey(
     keyData: Uint8Array,
     alg: string,
@@ -50,7 +50,7 @@ export default class SIV implements ISivLike {
         throw new NotImplementedError(`Miscreant: algorithm not supported: ${alg}`);
     }
 
-    const ctr = await provider.importAesCtrKey(encKey);
+    const ctr = await provider.importCTRKey(encKey);
     return new SIV(mac, ctr);
   }
 
@@ -116,7 +116,7 @@ export default class SIV implements ISivLike {
     return result;
   }
 
-  /** Make a best effort to wipe memory used by this AesSiv instance */
+  /** Make a best effort to wipe memory used by this instance */
   public clear(): this {
     this._tmp1.clear();
     this._tmp2.clear();
@@ -128,7 +128,7 @@ export default class SIV implements ISivLike {
 
   /**
    * The S2V operation consists of the doubling and XORing of the outputs
-   * of the pseudo-random function CMAC.
+   * of the pseudo-random function CMAC (or PMAC in the case of AES-PMAC-SIV).
    *
    * See Section 2.4 of RFC 5297 for more information
    */

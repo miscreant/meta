@@ -10,11 +10,11 @@ export default class WebCryptoProvider implements ICryptoProvider {
   ) {
   }
 
-  public async importAesKey(keyData: Uint8Array): Promise<IBlockCipher> {
+  public async importBlockCipherKey(keyData: Uint8Array): Promise<IBlockCipher> {
     return WebCryptoAes.importKey(this.crypto, keyData);
   }
 
-  public async importAesCtrKey(keyData: Uint8Array): Promise<ICTRLike> {
+  public async importCTRKey(keyData: Uint8Array): Promise<ICTRLike> {
     try {
       return await WebCryptoAesCtr.importKey(this.crypto, keyData);
     } catch (e) {

@@ -10,7 +10,7 @@ import WebCrypto = require("node-webcrypto-ossl");
 import PolyfillCryptoProvider from "../src/providers/polyfill";
 import WebCryptoProvider from "../src/providers/webcrypto";
 
-import AesSiv from "../src/siv";
+import * as miscreant from "../src/index";
 import IntegrityError from "../src/exceptions/integrity_error";
 
 let expect = chai.expect;
@@ -27,11 +27,11 @@ chai.use(chaiAsPromised);
     const polyfillProvider = new PolyfillCryptoProvider();
 
     for (let v of AesSivSpec.vectors) {
-      const siv = await AesSiv.importKey(v.key, "AES-SIV", polyfillProvider);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
-      const unsealed = await siv.open(sealed, v.ad, );
+      const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clear()).not.to.throw();
@@ -42,11 +42,11 @@ chai.use(chaiAsPromised);
     const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
 
     for (let v of AesSivSpec.vectors) {
-      const siv = await AesSiv.importKey(v.key, "AES-SIV", webCryptoProvider);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", webCryptoProvider);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
-      const unsealed = await siv.open(sealed, v.ad, );
+      const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clear()).not.to.throw();
@@ -63,10 +63,10 @@ chai.use(chaiAsPromised);
     const ad2 = [byteSeq(32), byteSeq(10)];
     const pt2 = byteSeq(40, 100);
 
-    const siv = await AesSiv.importKey(key, "AES-SIV", polyfillProvider);
+    const siv = await miscreant.SIV.importKey(key, "AES-SIV", polyfillProvider);
 
     const sealed1 = await siv.seal(pt1, ad1);
-    const opened1 = await siv.open(sealed1, ad1, );
+    const opened1 = await siv.open(sealed1, ad1);
     expect(opened1).not.to.be.null;
     expect(opened1!).to.eql(pt1);
 
@@ -87,8 +87,8 @@ chai.use(chaiAsPromised);
       badKey[2] ^= badKey[2];
       badKey[3] ^= badKey[8];
 
-      const siv = await AesSiv.importKey(badKey, "AES-SIV", polyfillProvider);
-      expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(IntegrityError);
+      const siv = await miscreant.SIV.importKey(badKey, "AES-SIV", polyfillProvider);
+      await expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -99,8 +99,8 @@ chai.use(chaiAsPromised);
       const badAd = v.ad;
       badAd.push(new Uint8Array(1));
 
-      const siv = await AesSiv.importKey(v.key, "AES-SIV", polyfillProvider);
-      return expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
+      await expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
     }
   }
 
@@ -113,8 +113,8 @@ chai.use(chaiAsPromised);
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = await AesSiv.importKey(v.key, "AES-SIV", polyfillProvider);
-      return expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
+      const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
+      await expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
     }
   }
 }

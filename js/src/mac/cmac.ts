@@ -11,7 +11,7 @@ import { xor } from "../internals/util/xor";
 export default class CMAC implements IMACLike {
   /** Create a new CMAC instance from the given key */
   public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<CMAC> {
-    const cipher = await provider.importAesKey(keyData);
+    const cipher = await provider.importBlockCipherKey(keyData);
 
     // Generate subkeys.
     const subkey1 = new Block();

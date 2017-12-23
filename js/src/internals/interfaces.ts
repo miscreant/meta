@@ -5,14 +5,14 @@ import Block from "./block";
 /**
  * A block cipher (with 128-bit blocks, i.e. AES)
  *
- *
  * WARNING: This interface should not be used directly!
- * That is why it is hiding under internal.
+ * That is why it is hiding under "internals".
  *
  * It should only be used to implement a cipher mode.
  * This library uses it to implement AES-SIV.
  */
 export interface IBlockCipher {
+  /** Zero out internal state (which may contain secrets */
   clear(): this;
 
   /** Encrypt 16-byte block in-place, replacing its contents with ciphertext. */
@@ -23,8 +23,8 @@ export interface IBlockCipher {
  * A backend which provides an implementation of cryptographic primitives
  */
 export interface ICryptoProvider {
-  importAesKey(keyData: Uint8Array): Promise<IBlockCipher>;
-  importAesCtrKey(keyData: Uint8Array): Promise<ICTRLike>;
+  importBlockCipherKey(keyData: Uint8Array): Promise<IBlockCipher>;
+  importCTRKey(keyData: Uint8Array): Promise<ICTRLike>;
 }
 
 /**
@@ -48,8 +48,17 @@ export interface IMACLike {
 /**
  * A cipher which provides a SIV-like interface and properties
  */
-export interface ISivLike {
+export interface ISIVLike {
   seal(plaintext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
-  open(sealed: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
+  open(ciphertext: Uint8Array, associatedData: Uint8Array[]): Promise<Uint8Array>;
+  clear(): this;
+}
+
+/**
+ * A cipher which provides an Authenticated Encryption with Associated Data (AEAD) interface
+ */
+export interface IAEADLike {
+  seal(plaintext: Uint8Array, nonce: Uint8Array, associatedData: Uint8Array): Promise<Uint8Array>;
+  open(ciphertext: Uint8Array, nonce: Uint8Array, associatedData: Uint8Array): Promise<Uint8Array>;
   clear(): this;
 }

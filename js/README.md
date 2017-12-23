@@ -101,21 +101,182 @@ Via [Yarn](https://yarnpkg.com/):
 yarn install miscreant
 ```
 
+Import Miscreant into your project with:
+
+```js
+import * as miscreant from "miscreant";
+```
+
+## AEAD API (Use this!)
+
+The Authenticated Encryption with Associated Data API, or `AEAD` API, is the
+recommended API for encrypting and decrypting data with Miscreant. It accepts
+a nonce, optional associated data (i.e. data you'd like to authenticate along
+with the encrypted message), and a message to encrypt.
+
+When decrypting, the same nonce and associated data must be supplied as were
+passed at the time of encryption. If anything is amiss, e.g. if the ciphertext
+has been tampered with, the cipher will detect it and throw an error.
+
+### miscreant.AEAD.importKey()
+
+The **miscreant.AEAD.importKey()** method creates a new instance of an
+**AES-SIV** AEAD encryptor/decryptor.
+
+#### Syntax
+
+```
+miscreant.AEAD.importKey(keyData, algorithm[, provider = new WebCryptoProvider()])
+```
+
+#### Parameters
+
+* **keyData**: a [Uint8Array] containing the encryption key to use.
+  Key must be 32-bytes (for AES-128) or 64-bytes (for AES-256), as
+  SIV uses two distinct AES keys to perform its operations.
+* **algorithm**: a string describing the algorithm to use. The following
+  algorithms are supported:
+  * `"AES-SIV"`: CMAC-based construction described in [RFC 5297]. Slower but
+  standardized and more common.
+  * `"AES-PMAC-SIV"`: PMAC-based construction. Supports potentially faster
+  implementations, but is non-standard and only available in Miscreant libraries.
+* **provider**: a cryptography provider that implements Miscreant's
+  [ICryptoProvider] interface.
+
+#### Return Value
+
+The **miscreant.AEAD.importKey()** method returns a [Promise] that, when
+fulfilled, returns an `AEAD` encryptor/decryptor.
+
+#### Exceptions
+
+The **miscreant.AEAD.importKey()** method will throw an error if it's
+attempting to use the default `window.crypto` provider either doesn't exist
+(e.g. `window` is not defined because we're on Node.js) or if that provider
+does not provide native implementations of the cryptographic primitives
+**AES-SIV** is built on top of.
+
+In these cases, you may choose to use `PolyfillCrypto`, but be aware this may
+decrease security.
+
+#### Example
+
+```typescript
+import * as miscreant from "miscreant";
+
+let keyData = new Uint32Array(32);
+
+// Assuming window.crypto.getRandomValues is available
+window.crypto.getRandomValues(keyData);
+
+let key = await miscreant.AEAD.importKey(keyData, "AES-PMAC-SIV");
+```
+
+### seal()
+
+The **seal()** method encrypts a message along with a set of message headers
+known as *associated data*.
+
+#### Syntax
+
+```
+key.seal(plaintext, nonce[, associatedData])
+```
+
+#### Parameters
+
+* **plaintext**: [Uint8Array] of data to be encrypted.
+* **nonce**: a single-use value which MUST be unique per encrypted message.
+  Can be any length, and use any uniqueness strategy you like, e.g. a counter
+  or a cryptographically secure random number generator.
+* **associatedData**: (optional) [Uint8Array] that will be *authenticated*
+  along with the message (but not encrypted).
+
+#### Return Value
+
+The **seal()** method returns a [Promise] that, when fulfilled, returns a
+[Uint8Array] containing the resulting ciphertext.
+
+#### Example
+
+```typescript
+import * as miscreant from "miscreant";
+
+let keyData = new Uint8Array(32);
+
+// Assuming window.crypto.getRandomValues is available
+window.crypto.getRandomValues(keyData);
+
+let key = await miscreant.SIV.importKey(keyData, "AES-PMAC-SIV");
+
+// Encrypt plaintext
+
+let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
+let nonce = new Uint8Array(16);
+window.crypto.getRandomValues(nonce);
+
+let ciphertext = await key.seal(plaintext, nonce);
+```
+
+### open()
+
+The **open()** method decrypts a message which has been encrypted using
+**AES-SIV** or **AES-PMAC-SIV**.
+
+#### Syntax
+
+```
+key.open(ciphertext, nonce[, associatedData])
+```
+
+#### Parameters
+
+* **ciphertext**: [Uint8Array] containing an encrypted message.
+* **nonce**: [Uint8Array] supplied when the message was originally encrypted.
+* **associatedData**: (optional) [Uint8Array] supplied when the message was
+  originally encrypted.
+
+#### Return Value
+
+The **open()** method returns a [Promise] that, when fulfilled,
+returns a [Uint8Array] containing the decrypted plaintext.
+
+If the message has been tampered with or is otherwise corrupted, the promise
+will be rejected with an **IntegrityError**.
+
+#### Example
+
+```typescript
+import * as miscreant from "miscreant";
+
+let keyData = new Uint8Array(32);
+
+// Assuming window.crypto.getRandomValues is available
+window.crypto.getRandomValues(keyData);
+
+let key = await miscreant.SIV.importKey(keyData, "AES-PMAC-SIV");
+
+// Encrypt plaintext
+
+let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
+let nonce = new Uint8Array(16);
+window.crypto.getRandomValues(nonce);
+
+let ciphertext = await key.seal(plaintext, nonce);
+
+// Decrypt ciphertext
+var decrypted = await key.open(ciphertext, nonce);
+```
+
 ## SIV API
 
 The `SIV` API is a power-user API that allows you to make full use of the
-multi-header feature the construction provides.
+multiple header feature the SIV construction provides.
 
-Import `SIV` into your project with:
+### miscreant.SIV.importKey()
 
-```js
-import SIV from "miscreant";
-```
-
-### SIV.importKey()
-
-The **SIV.importKey()** method creates a new instance of an **AES-SIV**
-encryptor/decryptor.
+The **miscreant.SIV.importKey()** method creates a new instance of an
+**AES-SIV** encryptor/decryptor.
 
 #### Syntax
 
@@ -139,29 +300,31 @@ SIV.importKey(keyData, algorithm[, provider = new WebCryptoProvider()])
 
 #### Return Value
 
-The **SIV.importKey()** method returns a [Promise] that, when fulfilled,
-returns a SIV encryptor/decryptor.
+The **miscreant.SIV.importKey()** method returns a [Promise] that, when
+fulfilled, returns a SIV encryptor/decryptor.
 
 #### Exceptions
 
-The **SIV.importKey()** method will throw an error if it's attempting to use
-the default `window.crypto` provider either doesn't exist (e.g. `window` is
-not defined because we're on Node.js) or if that provider does not provide
-native implementations of the cryptographic primitives **AES-SIV** is built
-on top of.
+The **miscreant.SIV.importKey()** method will throw an error if it's
+attempting to use the default `window.crypto` provider either doesn't exist
+(e.g. `window` is not defined because we're on Node.js) or if that provider
+does not provide native implementations of the cryptographic primitives
+**AES-SIV** is built on top of.
 
 In these cases, you may choose to use `PolyfillCrypto`, but be aware this may
 decrease security.
 
 #### Example
 
-```
-// Assuming window.crypto.getRandomValues is available
+```typescript
+import * as miscreant from "miscreant";
 
 let keyData = new Uint32Array(32);
+
+// Assuming window.crypto.getRandomValues is available
 window.crypto.getRandomValues(keyData);
 
-let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
+let key = await miscreant.SIV.importKey(keyData, "AES-PMAC-SIV");
 ```
 
 ### seal()
@@ -190,10 +353,12 @@ The **seal()** method returns a [Promise] that, when fulfilled, returns a
 
 #### Example
 
-```
-// Assuming window.crypto.getRandomValues is available
+```typescript
+import * as miscreant from "miscreant";
 
 let keyData = new Uint8Array(32);
+
+// Assuming window.crypto.getRandomValues is available
 window.crypto.getRandomValues(keyData);
 
 let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
@@ -204,7 +369,7 @@ let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
 let nonce = new Uint8Array(16);
 window.crypto.getRandomValues(nonce);
 
-let ciphertext = await key.seal([nonce], plaintext);
+let ciphertext = await key.seal(plaintext, [nonce]);
 ```
 
 ### open()
@@ -234,10 +399,12 @@ will be rejected with an **IntegrityError**.
 
 #### Example
 
-```
-// Assuming window.crypto.getRandomValues is available
+```typescript
+import * as miscreant from "miscreant";
 
 let keyData = new Uint8Array(32);
+
+// Assuming window.crypto.getRandomValues is available
 window.crypto.getRandomValues(keyData);
 
 let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
@@ -248,10 +415,10 @@ let plaintext = new Uint8Array([2,3,5,7,11,13,17,19,23,29]);
 let nonce = new Uint8Array(16);
 window.crypto.getRandomValues(nonce);
 
-let ciphertext = await key.seal([nonce], plaintext);
+let ciphertext = await key.seal(plaintext, [nonce]);
 
 // Decrypt ciphertext
-var decrypted = await key.open([nonce], ciphertext);
+var decrypted = await key.open(ciphertext, [nonce]);
 ```
 
 [Promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
@@ -278,17 +445,11 @@ the polyfill implementations, although please see that project's security
 warning before using it.
 
 If you have already read the [Polyfill Security Warning](#polyfill-security-warning),
-understand the security concerns, and would like to use it anyway, call the
-following to obtain a `PolyfillCrypto` instance:
+understand the security concerns, and would like to use it anyway, create a
+`PolyfillCryptoProvider` instance and pass it into a constructor:
 
-```
-SIV.polyfillCryptoProvider()
-```
-
-You can pass it to `SIV.importKey()` like so:
-
-```
-const key = SIV.importKey(keyData, "AES-PMAC-SIV", new PolyfillCryptoProvider());
+```typescript
+const key = miscreant.AEAD.importKey(keyData, "AES-PMAC-SIV", new PolyfillCryptoProvider());
 ```
 
 ## Code of Conduct

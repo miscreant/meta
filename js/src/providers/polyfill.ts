@@ -12,11 +12,11 @@ export default class PolyfillCryptoProvider implements ICryptoProvider {
     // This class doesn't do anything, it just signals that polyfill impls should be used
   }
 
-  public async importAesKey(keyData: Uint8Array): Promise<IBlockCipher> {
+  public async importBlockCipherKey(keyData: Uint8Array): Promise<IBlockCipher> {
     return new PolyfillAes(keyData);
   }
 
-  public async importAesCtrKey(keyData: Uint8Array): Promise<ICTRLike> {
+  public async importCTRKey(keyData: Uint8Array): Promise<ICTRLike> {
     return new PolyfillAesCtr(new PolyfillAes(keyData));
   }
 }
