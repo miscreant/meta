@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import Block from "../block";
-import { ICtrLike } from "../interfaces";
+import Block from "../../internals/block";
+import { ICTRLike } from "../../internals/interfaces";
 
 import PolyfillAes from "./aes";
 
@@ -15,7 +15,7 @@ import PolyfillAes from "./aes";
  * Note that CTR mode is malleable and generally should not be used without
  * authentication. Instead, use an authenticated encryption mode, like AES-SIV!
  */
-export default class PolyfillAesCtr implements ICtrLike {
+export default class PolyfillAesCtr implements ICTRLike {
   private _counter: Block;
   private _buffer: Block;
   private _cipher: PolyfillAes;

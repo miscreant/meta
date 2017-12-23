@@ -11,9 +11,9 @@
 // by Vincent Rijmen, Antoon Bosselaers, Paulo Barreto
 // (rijndael-alg-fst.c, 3.0, December 2000)
 
-import Block from "../block";
-import { IBlockCipher } from "../interfaces";
-import { wipe } from "../util/wipe";
+import Block from "../../internals/block";
+import { IBlockCipher } from "../../internals/interfaces";
+import { wipe } from "../../internals/util/wipe";
 
 // Powers of x mod poly in GF(2).
 const POWX = new Uint8Array([

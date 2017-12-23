@@ -7,9 +7,9 @@ import { AesCtrExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
 
-import PolyfillAes from "../src/internal/polyfill/aes";
-import PolyfillAesCtr from "../src/internal/polyfill/aes_ctr";
-import WebCryptoAesCtr from "../src/internal/webcrypto/aes_ctr";
+import PolyfillAes from "../src/providers/polyfill/aes";
+import PolyfillAesCtr from "../src/providers/polyfill/aes_ctr";
+import WebCryptoAesCtr from "../src/providers/webcrypto/aes_ctr";
 
 @suite class PolyfillAesCtrSpec {
   static vectors: AesCtrExample[];

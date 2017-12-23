@@ -101,23 +101,26 @@ Via [Yarn](https://yarnpkg.com/):
 yarn install miscreant
 ```
 
-Import **miscreant.js** into your project with:
+## SIV API
+
+The `SIV` API is a power-user API that allows you to make full use of the
+multi-header feature the construction provides.
+
+Import `SIV` into your project with:
 
 ```js
-import Miscreant from "miscreant";
+import SIV from "miscreant";
 ```
 
-## API
+### SIV.importKey()
 
-### Miscreant.importKey()
-
-The **Miscreant.importKey()** method creates a new instance of an **AES-SIV**
+The **SIV.importKey()** method creates a new instance of an **AES-SIV**
 encryptor/decryptor.
 
 #### Syntax
 
 ```
-Miscreant.importKey(keyData, algorithm[, provider = Miscreant.webCryptoProvider()])
+SIV.importKey(keyData, algorithm[, provider = new WebCryptoProvider()])
 ```
 
 #### Parameters
@@ -136,12 +139,12 @@ Miscreant.importKey(keyData, algorithm[, provider = Miscreant.webCryptoProvider(
 
 #### Return Value
 
-The **Miscreant.importKey()** method returns a [Promise] that, when fulfilled,
+The **SIV.importKey()** method returns a [Promise] that, when fulfilled,
 returns a SIV encryptor/decryptor.
 
 #### Exceptions
 
-The **Miscreant.importKey()** method will throw an error if it's attempting to use
+The **SIV.importKey()** method will throw an error if it's attempting to use
 the default `window.crypto` provider either doesn't exist (e.g. `window` is
 not defined because we're on Node.js) or if that provider does not provide
 native implementations of the cryptographic primitives **AES-SIV** is built
@@ -158,7 +161,7 @@ decrease security.
 let keyData = new Uint32Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
+let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
 ```
 
 ### seal()
@@ -193,7 +196,7 @@ The **seal()** method returns a [Promise] that, when fulfilled, returns a
 let keyData = new Uint8Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
+let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
 
 // Encrypt plaintext
 
@@ -237,7 +240,7 @@ will be rejected with an **IntegrityError**.
 let keyData = new Uint8Array(32);
 window.crypto.getRandomValues(keyData);
 
-let key = await Miscreant.importKey(keyData, "AES-PMAC-SIV");
+let key = await SIV.importKey(keyData, "AES-PMAC-SIV");
 
 // Encrypt plaintext
 
@@ -264,7 +267,7 @@ By default, this library uses a WebCrypto-based implementation of **AES-SIV** an
 will throw an exception if WebCrypto is unavailable.
 
 However, this library also contains a `PolyfillCrypto` implementation which
-can be passed as the second parameter to `Miscreant.importKey()`. This implementation
+can be passed as the second parameter to `SIV.importKey()`. This implementation
 uses pure JavaScript, however is not provided by default because there are
 security concerns around its implementation.
 
@@ -279,13 +282,13 @@ understand the security concerns, and would like to use it anyway, call the
 following to obtain a `PolyfillCrypto` instance:
 
 ```
-Miscreant.polyfillCryptoProvider()
+SIV.polyfillCryptoProvider()
 ```
 
-You can pass it to `Miscreant.importKey()` like so:
+You can pass it to `SIV.importKey()` like so:
 
 ```
-const key = Miscreant.importKey(keyData, "AES-PMAC-SIV", Miscreant.polyfillCryptoProvider());
+const key = SIV.importKey(keyData, "AES-PMAC-SIV", new PolyfillCryptoProvider());
 ```
 
 ## Code of Conduct

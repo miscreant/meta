@@ -24,13 +24,13 @@ export interface IBlockCipher {
  */
 export interface ICryptoProvider {
   importAesKey(keyData: Uint8Array): Promise<IBlockCipher>;
-  importAesCtrKey(keyData: Uint8Array): Promise<ICtrLike>;
+  importAesCtrKey(keyData: Uint8Array): Promise<ICTRLike>;
 }
 
 /**
  * A cipher which provides CTR (counter mode) encryption
  */
-export interface ICtrLike {
+export interface ICTRLike {
   encryptCtr(iv: Uint8Array, plaintext: Uint8Array): Promise<Uint8Array>;
   clear(): this;
 }
@@ -38,7 +38,7 @@ export interface ICtrLike {
 /**
  * An implementation of a message authentication code (MAC)
  */
-export interface IMacLike {
+export interface IMACLike {
   reset(): this;
   clear(): void;
   update(data: Uint8Array): Promise<this>;

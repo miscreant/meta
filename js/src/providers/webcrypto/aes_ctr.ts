@@ -1,9 +1,9 @@
-import { ICtrLike } from "../interfaces";
+import { ICTRLike } from "../../internals/interfaces";
 
 /**
  * AES-CTR using a WebCrypto (or similar) API
  */
-export default class WebCryptoAesCtr implements ICtrLike {
+export default class WebCryptoAesCtr implements ICTRLike {
   public static async importKey(crypto: Crypto, keyData: Uint8Array): Promise<WebCryptoAesCtr> {
     // Only AES-128 and AES-256 supported. AES-192 is not.
     if (keyData.length !== 16 && keyData.length !== 32) {
