@@ -11,8 +11,8 @@
 // by Vincent Rijmen, Antoon Bosselaers, Paulo Barreto
 // (rijndael-alg-fst.c, 3.0, December 2000)
 
-import Block from "../../internals/block";
 import { IBlockCipher } from "../../interfaces";
+import Block from "../../internals/block";
 import { wipe } from "../../internals/wipe";
 
 // Powers of x mod poly in GF(2).

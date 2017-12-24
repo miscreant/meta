@@ -1,8 +1,8 @@
 // Copyright (C) 2016 Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import Block from "../../internals/block";
 import { ICTRLike } from "../../interfaces";
+import Block from "../../internals/block";
 
 import PolyfillAes from "./aes";
 
