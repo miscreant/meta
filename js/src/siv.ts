@@ -7,8 +7,8 @@ import { xor } from "./internals/xor";
 
 import IntegrityError from "./exceptions/integrity_error";
 import NotImplementedError from "./exceptions/not_implemented_error";
-import Block from "./internals/block";
 import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./interfaces";
+import Block from "./internals/block";
 
 import CMAC from "./mac/cmac";
 import PMAC from "./mac/pmac";

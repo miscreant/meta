@@ -1,8 +1,8 @@
 // Copyright (C) 2016-2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import Block from "../internals/block";
 import { IBlockCipher, ICryptoProvider, IMACLike } from "../interfaces";
+import Block from "../internals/block";
 import { xor } from "../internals/xor";
 
 /**
