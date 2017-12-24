@@ -8,6 +8,9 @@ export { NotImplementedError } from "./exceptions/not_implemented_error";
 export { AEAD } from "./aead";
 export { SIV } from "./siv";
 
+/** STREAM streaming encryption */
+export * from "./stream";
+
 /** MAC functions */
 export { CMAC } from "./mac/cmac";
 export { PMAC } from "./mac/pmac";

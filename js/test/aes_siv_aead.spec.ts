@@ -55,8 +55,8 @@ chai.use(chaiAsPromised);
       badKey[2] ^= badKey[2];
       badKey[3] ^= badKey[8];
 
-      const siv = await miscreant.AEAD.importKey(badKey, "AES-SIV", polyfillProvider);
-      await expect(siv.open(v.ciphertext, v.nonce, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
+      const aead = await miscreant.AEAD.importKey(badKey, v.alg, polyfillProvider);
+      await expect(aead.open(v.ciphertext, v.nonce, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 
@@ -66,8 +66,8 @@ chai.use(chaiAsPromised);
     for (let v of AEADSpec.vectors) {
       const badAd = new Uint8Array(1);
 
-      const siv = await miscreant.AEAD.importKey(v.key, "AES-SIV", polyfillProvider);
-      await expect(siv.open(v.ciphertext, v.nonce, badAd)).to.be.rejectedWith(miscreant.IntegrityError);
+      const aead = await miscreant.AEAD.importKey(v.key, v.alg, polyfillProvider);
+      await expect(aead.open(v.ciphertext, v.nonce, badAd)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 
@@ -80,8 +80,8 @@ chai.use(chaiAsPromised);
       badOutput[1] ^= badOutput[1];
       badOutput[3] ^= badOutput[8];
 
-      const siv = await miscreant.AEAD.importKey(v.key, "AES-SIV", polyfillProvider);
-      await expect(siv.open(badOutput, v.nonce, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
+      const aead = await miscreant.AEAD.importKey(v.key, v.alg, polyfillProvider);
+      await expect(aead.open(badOutput, v.nonce, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 }
