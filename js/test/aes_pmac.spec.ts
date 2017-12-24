@@ -6,9 +6,8 @@ import { expect } from "chai";
 import { AesPmacExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import PolyfillCryptoProvider from "../src/providers/polyfill";
-import WebCryptoProvider from "../src/providers/webcrypto";
-import PMAC from "../src/mac/pmac";
+import * as miscreant from "../src/index";
+
 
 @suite class PolyfillAesPmacSpec {
   static vectors: AesPmacExample[];
@@ -18,10 +17,10 @@ import PMAC from "../src/mac/pmac";
   }
 
   @test async "passes the AES-PMAC test vectors"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     for (let v of PolyfillAesPmacSpec.vectors) {
-      const mac = await PMAC.importKey(polyfillProvider, v.key);
+      const mac = await miscreant.PMAC.importKey(polyfillProvider, v.key);
       await mac.update(v.message);
       expect(v.tag).to.eql(await mac.finish());
     }
@@ -36,10 +35,10 @@ import PMAC from "../src/mac/pmac";
   }
 
   @test async "passes the AES-PMAC test vectors"() {
-    const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
+    const webCryptoProvider = new miscreant.WebCryptoProvider(new WebCrypto());
 
     for (let v of PolyfillAesPmacSpec.vectors) {
-      const mac = await PMAC.importKey(webCryptoProvider, v.key);
+      const mac = await miscreant.PMAC.importKey(webCryptoProvider, v.key);
       await mac.update(v.message);
       expect(v.tag).to.eql(await mac.finish());
     }

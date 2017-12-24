@@ -17,7 +17,7 @@ const PRECOMPUTED_BLOCKS: number = 31;
  * Uses a non-constant-time (lookup table-based) AES polyfill.
  * See polyfill/aes.ts for more information on the security impact.
  */
-export default class PMAC implements IMACLike {
+export class PMAC implements IMACLike {
   /** Create a new CMAC instance from the given key */
   public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<PMAC> {
     const cipher = await provider.importBlockCipherKey(keyData);

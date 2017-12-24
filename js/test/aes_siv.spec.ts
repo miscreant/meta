@@ -7,11 +7,7 @@ import * as chaiAsPromised from "chai-as-promised";
 import { AesSivExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import PolyfillCryptoProvider from "../src/providers/polyfill";
-import WebCryptoProvider from "../src/providers/webcrypto";
-
 import * as miscreant from "../src/index";
-import IntegrityError from "../src/exceptions/integrity_error";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);
@@ -24,7 +20,7 @@ chai.use(chaiAsPromised);
   }
 
   @test async "should correctly seal and open with polyfill cipher implementations"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     for (let v of AesSivSpec.vectors) {
       const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
@@ -39,7 +35,7 @@ chai.use(chaiAsPromised);
   }
 
   @test async "should correctly seal and open with WebCrypto cipher implementations"() {
-    const webCryptoProvider = new WebCryptoProvider(new WebCrypto());
+    const webCryptoProvider = new miscreant.WebCryptoProvider(new WebCrypto());
 
     for (let v of AesSivSpec.vectors) {
       const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", webCryptoProvider);
@@ -54,7 +50,7 @@ chai.use(chaiAsPromised);
   }
 
   @test async "should correctly seal and open different plaintext under the same key"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     const key = byteSeq(64);
     const ad1 = [byteSeq(32), byteSeq(10)];
@@ -79,7 +75,7 @@ chai.use(chaiAsPromised);
   }
 
   @test async "should not open with incorrect key"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     for (let v of AesSivSpec.vectors) {
       const badKey = v.key;
@@ -88,24 +84,24 @@ chai.use(chaiAsPromised);
       badKey[3] ^= badKey[8];
 
       const siv = await miscreant.SIV.importKey(badKey, "AES-SIV", polyfillProvider);
-      await expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(IntegrityError);
+      await expect(siv.open(v.ciphertext, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 
   @test async "should not open with incorrect associated data"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     for (let v of AesSivSpec.vectors) {
       const badAd = v.ad;
       badAd.push(new Uint8Array(1));
 
       const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
-      await expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(IntegrityError);
+      await expect(siv.open(v.ciphertext, badAd)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 
   @test async "should not open with incorrect ciphertext"() {
-    const polyfillProvider = new PolyfillCryptoProvider();
+    const polyfillProvider = new miscreant.PolyfillCryptoProvider();
 
     for (let v of AesSivSpec.vectors) {
       const badOutput = v.ciphertext;
@@ -114,7 +110,7 @@ chai.use(chaiAsPromised);
       badOutput[3] ^= badOutput[8];
 
       const siv = await miscreant.SIV.importKey(v.key, "AES-SIV", polyfillProvider);
-      await expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(IntegrityError);
+      await expect(siv.open(badOutput, v.ad)).to.be.rejectedWith(miscreant.IntegrityError);
     }
   }
 }
