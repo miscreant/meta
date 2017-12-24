@@ -277,10 +277,12 @@ encrypted data based on the [STREAM] construction, which is provably secure
 against a wide range of attacks including truncation and reordering attacks.
 
 The API is provided in the form of `miscreant.StreamEncryptor` and
-`miscreant.StreamDecryptor` classes, which each take a per-STREAM key and
+`miscreant.StreamDecryptor` classes, which each take a per-***STREAM*** key and
 nonce, and from there operate a message-at-a-time on input plaintext/ciphertext
 along with optional per-message associated data (i.e. data you'd like to
 authenticate along with the encrypted message).
+
+[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
 
 ### miscreant.StreamEncryptor.importKey()
 
@@ -347,9 +349,8 @@ The **seal()** method of `miscreant.StreamEncryptor` encrypts a message, and
 also takes  an optional *associated data* value which will be authenticated
 along with the message (but not encrypted).
 
-Note that unlike the `AEAD` API, STREAM encodes the position of the message
-into the message stream, so the order in which `seal()` is called is
-significant.
+Note that unlike the `AEAD` API, **STREAM** encodes the position of the message
+into the message stream, so the order in which `seal()` is called is significant.
 
 #### Syntax
 
