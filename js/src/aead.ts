@@ -1,8 +1,7 @@
 import { IAEADLike, ICryptoProvider, ISIVLike } from "./interfaces";
 
+import { WebCryptoProvider } from "./providers/webcrypto";
 import { SIV } from "./siv";
-
-import WebCryptoProvider from "./providers/webcrypto";
 
 /** AEAD interface provider for ISIVLike types */
 export class AEAD implements IAEADLike {

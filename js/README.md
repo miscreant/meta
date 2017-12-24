@@ -449,7 +449,7 @@ understand the security concerns, and would like to use it anyway, create a
 `PolyfillCryptoProvider` instance and pass it into a constructor:
 
 ```typescript
-const key = miscreant.AEAD.importKey(keyData, "AES-PMAC-SIV", new PolyfillCryptoProvider());
+const key = miscreant.AEAD.importKey(keyData, "AES-PMAC-SIV", new miscreant.PolyfillCryptoProvider());
 ```
 
 ## Code of Conduct

@@ -7,7 +7,7 @@ import PolyfillAesCtr from "./polyfill/aes_ctr";
  *
  * WARNING: Not constant time! May leak keys or have other security issues.
  */
-export default class PolyfillCryptoProvider implements ICryptoProvider {
+export class PolyfillCryptoProvider implements ICryptoProvider {
   constructor() {
     // This class doesn't do anything, it just signals that polyfill impls should be used
   }

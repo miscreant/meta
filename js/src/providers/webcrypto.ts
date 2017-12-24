@@ -1,10 +1,10 @@
-import NotImplementedError from "../exceptions/not_implemented_error";
+import { NotImplementedError } from "../exceptions/not_implemented_error";
 import { IBlockCipher, ICryptoProvider, ICTRLike } from "../interfaces";
 import WebCryptoAes from "./webcrypto/aes";
 import WebCryptoAesCtr from "./webcrypto/aes_ctr";
 
 /** Placeholder backend for using pure JavaScript crypto implementations */
-export default class WebCryptoProvider implements ICryptoProvider {
+export class WebCryptoProvider implements ICryptoProvider {
   constructor(
     private crypto: Crypto = window.crypto,
   ) {
