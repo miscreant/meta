@@ -28,7 +28,7 @@ export class SIV implements ISIVLike {
   ): Promise<SIV> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
-      throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
+      throw new Error(`AES-SIV: key must be 32 or 64-bytes (got ${keyData.length}`);
     }
 
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
