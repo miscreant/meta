@@ -83,7 +83,7 @@ func (a *aead) Overhead() int  { return a.c.Overhead() }
 
 func (a *aead) Seal(dst, nonce, plaintext, data []byte) (out []byte) {
 	if len(nonce) != a.nonceSize && a.nonceSize >= 0 {
-		panic("siv.AEAD: incorrect nonce length")
+		panic("miscreant.AEAD: incorrect nonce length")
 	}
 	var err error
 	if data == nil {
@@ -92,14 +92,14 @@ func (a *aead) Seal(dst, nonce, plaintext, data []byte) (out []byte) {
 		out, err = a.c.Seal(dst, plaintext, data, nonce)
 	}
 	if err != nil {
-		panic("siv.AEAD: " + err.Error())
+		panic("miscreant.AEAD: " + err.Error())
 	}
 	return out
 }
 
 func (a *aead) Open(dst, nonce, ciphertext, data []byte) ([]byte, error) {
 	if len(nonce) != a.nonceSize && a.nonceSize >= 0 {
-		panic("siv.AEAD: incorrect nonce length")
+		panic("miscreant.AEAD: incorrect nonce length")
 	}
 	if data == nil {
 		return a.c.Open(dst, ciphertext, nonce)
