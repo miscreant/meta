@@ -13,9 +13,17 @@
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Ruby implementation of **Miscreant**: Advanced symmetric encryption using the
-AES-SIV ([RFC 5297]) and [CHAIN/STREAM] constructions, providing easy-to-use (or
-rather, hard-to-misuse) encryption of individual messages or message streams.
+[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
+
+Ruby implementation of **Miscreant**: Advanced symmetric encryption library
+which provides the [AES-SIV] ([RFC 5297]), [AES-PMAC-SIV], and [STREAM]
+constructions. These algorithms are easy-to-use (or rather, hard-to-misuse)
+and support encryption of individual messages or message streams.
+
+[AES-SIV]: https://github.com/miscreant/miscreant/wiki/AES-SIV
+[RFC 5297]: https://tools.ietf.org/html/rfc5297
+[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/AES-PMAC-SIV
+[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
 
 **AES-SIV** provides [nonce-reuse misuse-resistance] (NRMR): accidentally
 reusing a nonce with this construction is not a security catastrophe,
@@ -27,11 +35,7 @@ full plaintext recovery.
 
 For more information, see the [toplevel README.md].
 
-[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
-[AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
-[RFC 5297]: https://tools.ietf.org/html/rfc5297
-[CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-[nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
+[nonce-reuse misuse-resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
 [toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md

@@ -1,7 +1,7 @@
 {
   "name": "miscreant",
   "version": "0.2.0",
-  "description": "Misuse resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN/STREAM constructions",
+  "description": "Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions",
   "homepage": "https://github.com/miscreant/miscreant/tree/master/js/",
   "main": "index.js",
   "author": "Tony Arcieri",

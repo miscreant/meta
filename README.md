@@ -101,7 +101,7 @@ The following algorithms are provided by **Miscreant**:
   When standardization work around **AES-GCM-SIV** is complete, it will be
   [considered for inclusion in this library](https://github.com/miscreant/miscreant/issues/60).
 
-[Misuse Resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
+[Misuse Resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
 [NIST SP 800-38A]: https://dx.doi.org/10.6028/NIST.SP.800-38A
 [NIST SP 800-38B]: https://dx.doi.org/10.6028/NIST.SP.800-38B
 [NIST SP 800-38C]: https://dx.doi.org/10.6028/NIST.SP.800-38C

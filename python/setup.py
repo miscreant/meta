@@ -7,7 +7,7 @@ setup(
     name="miscreant",
     version="0.2.0",
     description="Misuse-resistant authenticated symmetric encryption",
-    long_description="Misuse resistant symmetric encryption using the AES-SIV (RFC 5297) and CHAIN/STREAM constructions",
+    long_description="Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions",
     author="Tony Arcieri",
     author_email="bascule@gmail.com",
     url="https://github.com/miscreant/miscreant/tree/master/python/",
