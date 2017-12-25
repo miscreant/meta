@@ -23,7 +23,7 @@ type aesSIVExample struct {
 	ciphertext []byte
 }
 
-// Load AES-CMAC test vectors from aes_cmac.tjson
+// Load AES-SIV test vectors from aes_siv.tjson
 // TODO: switch to a native Go TJSON parser when available
 func loadAESSIVExamples(filename string) []aesSIVExample {
 	var examplesJSON map[string]interface{}
