@@ -1,7 +1,7 @@
 [package]
 name        = "miscreant"
 description = "Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions"
-version     = "0.2.0"
+version     = "0.3.0"
 license     = "MIT"
 authors     = ["Tony Arcieri <bascule@gmail.com>"]
 homepage    = "https://miscreant.io"

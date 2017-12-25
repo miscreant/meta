@@ -135,7 +135,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "miscreant"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "aesni 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
