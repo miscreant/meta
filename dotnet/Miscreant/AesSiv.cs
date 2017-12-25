@@ -217,7 +217,7 @@ namespace Miscreant
 			{
 				if (header == null)
 				{
-					throw new ArgumentNullException(nameof(header));
+					continue;
 				}
 
 				mac.HashCore(header, 0, header.Length);
