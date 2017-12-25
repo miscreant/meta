@@ -16,6 +16,9 @@ export const NONCE_SIZE = 8;
 /** Byte flag indicating this is the last block in the STREAM (otherwise 0) */
 export const LAST_BLOCK_FLAG = 1;
 
+/** Maximum value of the counter STREAM uses internally to identify messages */
+export const COUNTER_MAX = 0xFFFFFFFF;
+
 /**
  * A STREAM encryptor with a 32-bit counter, generalized for any AEAD algorithm
  *
@@ -133,6 +136,9 @@ class NonceEncoder {
       this.finished = true;
     } else {
       this.counter += 1;
+      if (this.counter > COUNTER_MAX) {
+        throw new Error("STREAM counter overflowed");
+      }
     }
 
     return this.array;

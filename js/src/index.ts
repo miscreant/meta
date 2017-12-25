@@ -9,7 +9,7 @@ export { AEAD } from "./aead";
 export { SIV } from "./siv";
 
 /** STREAM streaming encryption */
-export * from "./stream";
+export { StreamEncryptor, StreamDecryptor } from "./stream";
 
 /** MAC functions */
 export { CMAC } from "./mac/cmac";
