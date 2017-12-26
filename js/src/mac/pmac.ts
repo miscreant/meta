@@ -1,11 +1,11 @@
 // Copyright (C) 2016-2017 Tony Arcieri, Dmitry Chestnykh
 // MIT License. See LICENSE file for details.
 
-import Block from "../block";
-import { IBlockCipher, ICryptoProvider, IMacLike } from "../interfaces";
-import { select } from "../util/constant-time";
-import { ctz } from "../util/ctz";
-import { xor } from "../util/xor";
+import { IBlockCipher, ICryptoProvider, IMACLike } from "../interfaces";
+import Block from "../internals/block";
+import { select } from "../internals/constant-time";
+import { ctz } from "../internals/ctz";
+import { xor } from "../internals/xor";
 
 // Number of L blocks to precompute (i.e. µ in the PMAC paper)
 // TODO: dynamically compute these as needed
@@ -17,10 +17,10 @@ const PRECOMPUTED_BLOCKS: number = 31;
  * Uses a non-constant-time (lookup table-based) AES polyfill.
  * See polyfill/aes.ts for more information on the security impact.
  */
-export default class Pmac implements IMacLike {
+export class PMAC implements IMACLike {
   /** Create a new CMAC instance from the given key */
-  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<Pmac> {
-    const cipher = await provider.importAesKey(keyData);
+  public static async importKey(provider: ICryptoProvider, keyData: Uint8Array): Promise<PMAC> {
+    const cipher = await provider.importBlockCipherKey(keyData);
 
     /**
      * L is defined as follows (quoted from the PMAC paper):
@@ -75,7 +75,7 @@ export default class Pmac implements IMacLike {
     lInv.data[0] ^= select(lastBit, 0x80, 0);
     lInv.data[Block.SIZE - 1] ^= select(lastBit, Block.R >>> 1, 0);
 
-    return new Pmac(cipher, l, lInv);
+    return new PMAC(cipher, l, lInv);
   }
 
   /** The block cipher we're using (i.e. AES-128 or AES-256) */

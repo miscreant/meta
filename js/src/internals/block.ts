@@ -1,5 +1,7 @@
-import { select } from "./util/constant-time";
-import { wipe } from "./util/wipe";
+/** Type which represents AES blocks */
+
+import { select } from "./constant-time";
+import { wipe } from "./wipe";
 
 /** An AES block (128-bits) */
 export default class Block {

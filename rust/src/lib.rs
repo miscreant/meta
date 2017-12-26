@@ -1,5 +1,5 @@
-//! `Miscreant`: Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297) and
-//! CHAIN/STREAM constructions.
+//! `Miscreant`: Misuse resistant symmetric encryption library providing the
+//! AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions
 
 #![crate_name = "miscreant"]
 #![crate_type = "lib"]

@@ -1,11 +1,11 @@
-# miscreant.rb [![Latest Version][gem-shield]][gem-link] [![Build Status][build-image]][build-link] [![Code Climate][codeclimate-image]][codeclimate-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.rb [![Latest Version][gem-shield]][gem-link] [![Build Status][build-image]][build-link] [![Yard Docs][docs-image]][docs-link] [![MIT licensed][license-image]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [gem-shield]: https://badge.fury.io/rb/miscreant.svg
 [gem-link]: https://rubygems.org/gems/miscreant
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: http://travis-ci.org/miscreant/miscreant
-[codeclimate-image]: https://codeclimate.com/github/miscreant/miscreant/badges/gpa.svg
-[codeclimate-link]: https://codeclimate.com/github/miscreant/miscreant
+[docs-image]: https://img.shields.io/badge/yard-docs-blue.svg
+[docs-link]: http://www.rubydoc.info/gems/miscreant/0.3.0
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
@@ -13,9 +13,17 @@
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
 
-Ruby implementation of **Miscreant**: Advanced symmetric encryption using the
-AES-SIV ([RFC 5297]) and [CHAIN/STREAM] constructions, providing easy-to-use (or
-rather, hard-to-misuse) encryption of individual messages or message streams.
+[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
+
+Ruby implementation of **Miscreant**: Advanced symmetric encryption library
+which provides the [AES-SIV] ([RFC 5297]), [AES-PMAC-SIV], and [STREAM]
+constructions. These algorithms are easy-to-use (or rather, hard-to-misuse)
+and support encryption of individual messages or message streams.
+
+[AES-SIV]: https://github.com/miscreant/miscreant/wiki/AES-SIV
+[RFC 5297]: https://tools.ietf.org/html/rfc5297
+[AES-PMAC-SIV]: https://github.com/miscreant/miscreant/wiki/AES-PMAC-SIV
+[STREAM]: https://github.com/miscreant/miscreant/wiki/STREAM
 
 **AES-SIV** provides [nonce-reuse misuse-resistance] (NRMR): accidentally
 reusing a nonce with this construction is not a security catastrophe,
@@ -27,11 +35,7 @@ full plaintext recovery.
 
 For more information, see the [toplevel README.md].
 
-[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
-[AES-SIV]: https://www.iacr.org/archive/eurocrypt2006/40040377/40040377.pdf
-[RFC 5297]: https://tools.ietf.org/html/rfc5297
-[CHAIN/STREAM]: http://web.cs.ucdavis.edu/~rogaway/papers/oae.pdf
-[nonce-reuse misuse-resistance]: https://www.lvh.io/posts/nonce-misuse-resistance-101.html
+[nonce-reuse misuse-resistance]: https://github.com/miscreant/miscreant/wiki/Nonce-Reuse-Misuse-Resistance
 [AES-GCM]: https://en.wikipedia.org/wiki/Galois/Counter_Mode
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
 [toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md

@@ -1,6 +1,6 @@
 import { suite, test } from "mocha-typescript";
 import { expect } from "chai";
-import Block from "../src/internal/block";
+import Block from "../src/internals/block";
 
 import { DblExample } from "./support/test_vectors";
 

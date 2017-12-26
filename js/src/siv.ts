@@ -1,63 +1,65 @@
 // Copyright (C) 2017 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import { equal } from "./util/constant-time";
-import { wipe } from "./util/wipe";
-import { xor } from "./util/xor";
+import { equal } from "./internals/constant-time";
+import { wipe } from "./internals/wipe";
+import { xor } from "./internals/xor";
 
-import IntegrityError from "../exceptions/integrity_error";
-import NotImplementedError from "../exceptions/not_implemented_error";
-import Block from "./block";
-import { ICryptoProvider, ICtrLike, IMacLike, ISivLike } from "./interfaces";
+import { IntegrityError } from "./exceptions/integrity_error";
+import { NotImplementedError } from "./exceptions/not_implemented_error";
+import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./interfaces";
+import Block from "./internals/block";
 
-import Cmac from "./mac/cmac";
-import Pmac from "./mac/pmac";
+import { CMAC } from "./mac/cmac";
+import { PMAC } from "./mac/pmac";
+
+import { WebCryptoProvider } from "./providers/webcrypto";
 
 /** Maximum number of associated data items */
-const MAX_ASSOCIATED_DATA = 126;
+export const MAX_ASSOCIATED_DATA = 126;
 
 /** The AES-SIV mode of authenticated encryption */
-export default class AesSiv implements ISivLike {
-  /** Create a new AesSiv instance with the given 32-byte or 64-byte key */
+export class SIV implements ISIVLike {
+  /** Create a new AES-SIV instance with the given 32-byte or 64-byte key */
   public static async importKey(
-    provider: ICryptoProvider,
-    alg: string,
     keyData: Uint8Array,
-  ): Promise<AesSiv> {
+    alg: string,
+    provider: ICryptoProvider = new WebCryptoProvider(),
+  ): Promise<SIV> {
     // We only support AES-128 and AES-256. AES-SIV needs a key 2X as long the intended security level
     if (keyData.length !== 32 && keyData.length !== 64) {
-      throw new Error(`AES-SIV: key must be 32 or 64-bits (got ${keyData.length}`);
+      throw new Error(`AES-SIV: key must be 32 or 64-bytes (got ${keyData.length}`);
     }
 
     const macKey = keyData.subarray(0, keyData.length / 2 | 0);
     const encKey = keyData.subarray(keyData.length / 2 | 0);
 
-    let mac: IMacLike;
+    let mac: IMACLike;
 
     switch (alg) {
       case "AES-SIV":
-        mac = await Cmac.importKey(provider, macKey);
+        mac = await CMAC.importKey(provider, macKey);
         break;
       case "AES-CMAC-SIV":
-        mac = await Cmac.importKey(provider, macKey);
+        mac = await CMAC.importKey(provider, macKey);
         break;
       case "AES-PMAC-SIV":
-        mac = await Pmac.importKey(provider, macKey);
+        mac = await PMAC.importKey(provider, macKey);
         break;
       default:
         throw new NotImplementedError(`Miscreant: algorithm not supported: ${alg}`);
     }
 
-    const ctr = await provider.importAesCtrKey(encKey);
-    return new AesSiv(mac, ctr);
+    const ctr = await provider.importCTRKey(encKey);
+    return new SIV(mac, ctr);
   }
 
-  private _mac: IMacLike;
-  private _ctr: ICtrLike;
+  private _mac: IMACLike;
+  private _ctr: ICTRLike;
   private _tmp1: Block;
   private _tmp2: Block;
 
-  constructor(mac: IMacLike, ctr: ICtrLike) {
+  constructor(mac: IMACLike, ctr: ICTRLike) {
     this._mac = mac;
     this._ctr = ctr;
     this._tmp1 = new Block();
@@ -114,7 +116,7 @@ export default class AesSiv implements ISivLike {
     return result;
   }
 
-  /** Make a best effort to wipe memory used by this AesSiv instance */
+  /** Make a best effort to wipe memory used by this instance */
   public clear(): this {
     this._tmp1.clear();
     this._tmp2.clear();
@@ -126,7 +128,7 @@ export default class AesSiv implements ISivLike {
 
   /**
    * The S2V operation consists of the doubling and XORing of the outputs
-   * of the pseudo-random function CMAC.
+   * of the pseudo-random function CMAC (or PMAC in the case of AES-PMAC-SIV).
    *
    * See Section 2.4 of RFC 5297 for more information
    */

@@ -1,8 +1,8 @@
 // Copyright (C) 2017 Tony Arcieri
 // MIT License. See LICENSE file for details.
 
-import Block from "../block";
-import { IBlockCipher } from "../interfaces";
+import { IBlockCipher } from "../../interfaces";
+import Block from "../../internals/block";
 
 /**
  * WebCrypto-based implementation of the AES block cipher.

@@ -11,8 +11,8 @@ Gem::Specification.new do |spec|
   spec.email         = ["bascule@gmail.com"]
   spec.summary       = "Misuse-resistant authenticated symmetric encryption"
   spec.description   = <<-DESCRIPTION.strip.gsub(/\s+/, " ")
-    Misuse-resistant symmetric encryption using the AES-SIV (RFC 5297)
-    and CHAIN/STREAM constructions.
+    Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297),
+    AES-PMAC-SIV, and STREAM constructions
   DESCRIPTION
 
   spec.version       = Miscreant::VERSION
