@@ -5,8 +5,7 @@ namespace Miscreant
 {
 	internal class NonceEncoder
 	{
-		private const int NonceSize = 8;
-		private const int CounterSize = 4;
+		private const int NonceSize = Constants.StreamNonceSize;
 
 		private readonly byte[] nonce;
 		private uint counter;
@@ -23,7 +22,7 @@ namespace Miscreant
 				throw new CryptographicException("Specified nonce does not match the nonce size for this algorithm.");
 			}
 
-			this.nonce = new byte[NonceSize + CounterSize + 1];
+			this.nonce = new byte[NonceSize + Constants.StreamCounterSize + 1];
 			Array.Copy(nonce, this.nonce, NonceSize);
 		}
 

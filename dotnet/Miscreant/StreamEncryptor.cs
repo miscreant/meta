@@ -23,6 +23,15 @@ namespace Miscreant
 		}
 
 		/// <summary>
+		/// Generates a random 8-byte STREAM nonce.
+		/// </summary>
+		/// <returns>Generated nonce.</returns>
+		public static byte[] GenerateNonce()
+		{
+			return Utils.GetRandomBytes(Constants.StreamNonceSize);
+		}
+
+		/// <summary>
 		/// Initializes a new instance of the STREAM encryptor using the AES-CMAC-SIV algorithm.
 		/// </summary>
 		/// <param name="key">The secret key for encryption.</param>

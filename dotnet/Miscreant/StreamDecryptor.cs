@@ -57,7 +57,7 @@ namespace Miscreant
 		/// <param name="last">True if this is the last block in the STREAM.</param>
 		/// <returns>The decrypted plaintext.</returns>
 		/// <exception cref="CryptographicException">Thrown when the ciphertext is invalid.</exception>
-		public byte[] Open(byte[] plaintext, byte[] data = null, bool last = false)
+		public byte[] Open(byte[] ciphertext, byte[] data = null, bool last = false)
 		{
 			if (disposed)
 			{
@@ -71,7 +71,7 @@ namespace Miscreant
 
 			finished = last;
 
-			return siv.Open(plaintext, data, nonce.Next(last));
+			return siv.Open(ciphertext, data, nonce.Next(last));
 		}
 
 		public void Dispose()
