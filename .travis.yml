@@ -32,4 +32,8 @@ matrix:
   - language: rust
     rust: nightly
     before_script: cd rust
-    script: cargo build --no-default-features
+    script:
+    - cargo build --no-default-features --features=staticlib --release
+    - cd tests/ffi
+    - make
+    - ./ffi_test
