@@ -10,10 +10,7 @@ namespace Miscreant
 	public sealed class AesSiv : IDisposable
 	{
 		private const int BlockSize = Constants.BlockSize;
-		private const int AesSiv256KeySize = 32;
-		private const int AesSiv512KeySize = 64;
 		private const int MaxAssociatedDataItems = 126;
-		private const int MinimumRandomNonceSize = BlockSize;
 
 		private static readonly byte[] Empty = new byte[0];
 		private static readonly byte[] Zero = new byte[BlockSize];
@@ -29,7 +26,7 @@ namespace Miscreant
 				throw new ArgumentNullException(nameof(key));
 			}
 
-			if (key.Length != AesSiv256KeySize && key.Length != AesSiv512KeySize)
+			if (key.Length != Constants.AesSiv256KeySize && key.Length != Constants.AesSiv512KeySize)
 			{
 				throw new CryptographicException("Specified key is not a valid size for this algorithm.");
 			}
@@ -64,39 +61,6 @@ namespace Miscreant
 		public static AesSiv CreateAesPmacSiv(byte[] key)
 		{
 			return new AesSiv(AesPmac.Create, key);
-		}
-
-		/// <summary>
-		/// Generates a random nonce.
-		/// </summary>
-		/// <param name="size">Nonce size in bytes.</param>
-		/// <returns>Generated nonce.</returns>
-		public static byte[] GenerateNonce(int size)
-		{
-			if (size < MinimumRandomNonceSize)
-			{
-				throw new CryptographicException("Nonce size is too small.");
-			}
-
-			return Utils.GetRandomBytes(size);
-		}
-
-		/// <summary>
-		/// Generates a random 32-byte encryption key.
-		/// </summary>
-		/// <returns>Generated key.</returns>
-		public static byte[] GenerateKey256()
-		{
-			return Utils.GetRandomBytes(AesSiv256KeySize);
-		}
-
-		/// <summary>
-		/// Generates a random 64-byte encryption key.
-		/// </summary>
-		/// <returns>Generated key.</returns>
-		public byte[] GenerateKey512()
-		{
-			return Utils.GetRandomBytes(AesSiv512KeySize);
 		}
 
 		/// <summary>
