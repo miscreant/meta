@@ -62,12 +62,12 @@ and .NET Core 2.1.2, but it should also work on any of the following platforms:
 
 ## API
 
-The `Miscreant.AesSiv` class provides the main interface to the **AES-SIV** misuse
+The `Miscreant.Aead` class provides the main interface to the **AES-SIV** misuse
 resistant authenticated encryption function.
 
 ```csharp
-public static AesSiv CreateAesCmacSiv(byte[] key)
-public static AesSiv CreateAesPmacSiv(byte[] key)
+public static Aead CreateAesCmacSiv(byte[] key)
+public static Aead CreateAesPmacSiv(byte[] key)
 ```
 
 To make a new AES-SIV instance that uses CMAC, call the
@@ -78,17 +78,17 @@ Note that these keys are twice the size of what you might
 be expecting (AES-SIV uses two AES keys).
 
 You can generate random 32-byte or 64-byte keys using the static
-`AesSiv.GenerateKey256` or `AesSiv.GenerateKey512` methods:
+`Aead.GenerateKey256` or `Aead.GenerateKey512` methods:
 
 ```csharp
-var key = AesSiv.GenerateKey256();
-var siv = AesSiv.CreateAesCmacSiv(key);
+var key = Aead.GenerateKey256();
+var siv = Aead.CreateAesCmacSiv(key);
 ```
 
 #### Encryption (Seal)
 
 ```csharp
-public byte[] Seal(byte[] plaintext, params byte[][] data)
+public byte[] Seal(byte[] plaintext, byte[] nonce = null, byte[] data = null)
 ```
 
 The `Seal` method encrypts a message along with a set of *associated data*
@@ -104,7 +104,7 @@ attackers.
 #### Decryption (Open)
 
 ```csharp
-public byte[] Open(byte[] ciphertext, params byte[][] data)
+public byte[] Open(byte[] ciphertext, byte[] nonce = null, byte[] data = null)
 ```
 
 The `Open` method decrypts a ciphertext with the given key.
@@ -116,24 +116,25 @@ The `Open` method decrypts a ciphertext with the given key.
 var plaintext = "I'm cooking MC's like a pound of bacon";
 
 // Create a 32-byte key.
-var key = AesSiv.GenerateKey256();
+var key = Aead.GenerateKey256();
 
 // Create a 16-byte nonce (optional).
-var nonce = AesSiv.GenerateNonce(16);
+var nonce = Aead.GenerateNonce(16);
 
-// Create a new AES-CMAC-SIV instance. It implements the IDisposable
-// interface, so it's best to create it inside using statement.
-using (var siv = CreateAesCmacSiv(key))
+// Create a new AEAD instance using the AES-CMAC-SIV
+// algorithm. It implements the IDisposable interface,
+// so it's best to create it inside using statement.
+using (var aead = Aead.CreateAesCmacSiv(key))
 {
   // If the message is string, convert it to byte array first.
   var bytes = Encoding.UTF8.GetBytes(plaintext);
 
   // Encrypt the message.
-  var ciphertext = siv.Seal(bytes, nonce);
+  var ciphertext = aead.Seal(bytes, nonce);
 
   // To decrypt the message, call the Open method with the
   // ciphertext and the same nonce that you generated previously.
-  bytes = siv.Open(ciphertext, nonce);
+  bytes = aead.Open(ciphertext, nonce);
 
   // If the message was originally string,
   // convert if from byte array to string.
