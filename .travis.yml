@@ -20,7 +20,10 @@ matrix:
     python: 3.6
     before_script: cd python
   - language: ruby
-    rvm: 2.4.3
+    rvm: 2.5.0
+    before_install:
+    - gem update --system
+    - gem --version
     before_script: cd ruby
   - language: ruby
     rvm: 2.2
