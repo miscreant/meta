@@ -9,6 +9,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "bench", feature(test))]
+#![cfg_attr(feature = "staticlib", feature(lang_items))]
 
 extern crate aesni;
 extern crate byteorder;
@@ -30,9 +31,18 @@ extern crate test;
 pub mod aead;
 mod ctr;
 pub mod error;
+pub mod ffi;
 pub mod siv;
 mod s2v;
 pub mod stream;
 
 #[cfg(feature = "bench")]
 mod bench;
+
+// no_std boilerplate for building a static library
+#[cfg(feature = "staticlib")]
+#[allow(unsafe_code)]
+#[lang = "panic_fmt"]
+extern "C" fn panic_fmt(_args: ::core::fmt::Arguments, _file: &'static str, _line: u32) -> ! {
+    loop {}
+}
