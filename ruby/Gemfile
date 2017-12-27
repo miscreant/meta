@@ -4,11 +4,13 @@ source "https://rubygems.org"
 
 gemspec
 
+group :development do
+  gem "benchmark-ips", require: false
+end
+
 group :development, :test do
-  gem "benchmark-ips"
-  gem "guard-rspec"
-  gem "rake"
-  gem "rspec", "~> 3.5"
-  gem "rubocop", "0.49.1"
-  gem "tjson", "~> 0.5"
+  gem "rake",              require: false
+  gem "rspec",   "~> 3.5", require: false
+  gem "rubocop", "0.52.1", require: false
+  gem "tjson",   "~> 0.5", require: false
 end
