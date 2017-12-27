@@ -1,5 +1,6 @@
 AllCops:
   DisplayCopNames: true
+  TargetRubyVersion: 2.2
 
 #
 # Metrics
@@ -41,6 +42,9 @@ Style/ClassAndModuleChildren:
 
 Style/ConditionalAssignment:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
 
 Style/NumericPredicate:
   Enabled: false
