@@ -64,6 +64,7 @@ This library is tested against the following MRI versions:
 - 2.2
 - 2.3
 - 2.4
+- 2.5
 
 Other Ruby versions may work, but are not officially supported.
 
