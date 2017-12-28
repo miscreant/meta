@@ -84,55 +84,12 @@ Or install it yourself as:
 
     $ gem install miscreant
 
-## API
+## Documentation
 
-### Miscreant::AEAD
+[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki/Ruby-Documentation)
+for API documentation.
 
-The `Miscreant::AEAD` class provides the main interface to the **AES-SIV**
-misuse resistant authenticated encryption function.
-
-To make a new instance, pass in a binary-encoded 32-byte or 64-byte key.
-Note that these options are twice the size of what you might be expecting
-(AES-SIV uses two AES keys).
-
-```ruby
-secret_key = Miscreant::AEAD.generate_key
-encryptor = Miscreant::AEAD.new("AES-SIV", secret_key)
-```
-
-#### Encryption (#seal)
-
-The `Miscreant::AEAD#seal` method encrypts a binary-encoded message along with
-a set of *associated data* message headers.
-
-It's recommended to include a unique "nonce" value with each message. This
-prevents those who may be observing your ciphertexts from being able to tell
-if you encrypted the same message twice. However, unlike other cryptographic
-algorithms where using a nonce has catastrophic security implications such as
-key recovery, reusing a nonce with AES-SIV only leaks repeated ciphertexts to
-attackers.
-
-Example:
-
-```ruby
-message = "Hello, world!"
-nonce = Miscreant::AEAD.generate_nonce
-ciphertext = key.seal(message, nonce)
-```
-
-#### Decryption (#open)
-
-The `Miscreant::AEAD#open` method decrypts a binary-encoded ciphertext with the
-given key.
-
-Example:
-
-```ruby
-message = "Hello, world!"
-nonce = Miscreant::AEAD.generate_nonce
-ciphertext = key.seal(message, nonce)
-plaintext = key.open(ciphertext, nonce)
-```
+[Yard documentation][docs-link] is also available.
 
 ## Code of Conduct
 

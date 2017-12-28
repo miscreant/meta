@@ -81,73 +81,10 @@ Install **Miscreant** with pip using:
 $ pip install miscreant
 ```
 
-## API
+## Documentation
 
-Import the `SIV` class from `miscreant.aes.siv` using:
-
-```python
-from miscreant.aes.siv import SIV
-```
-
-The `SIV` class provides the main interface to the **AES-SIV** misuse resistant
-authenticated encryption function.
-
-To make a new instance, pass in a 32-byte or 64-byte key. Note that these
-options are twice the size of what you might be expecting (AES-SIV uses two
-AES keys).
-
-You can generate a random key using the `generate_key` method (default 32 bytes):
-
-```python
-key = SIV.generate_key()
-siv = SIV.new(key)
-```
-
-#### Encryption (seal)
-
-The `seal` method encrypts a message along with a set of *associated data*
-which acts as message headers.
-
-It's recommended to include a unique "nonce" value with each message. This
-prevents those who may be observing your ciphertexts from being able to tell
-if you encrypted the same message twice. However, unlike other cryptographic
-algorithms where using a nonce has catastrophic security implications such as
-key recovery, reusing a nonce with AES-SIV only leaks repeated ciphertexts to
-attackers.
-
-Example:
-
-```python
-import os
-from miscreant.aes.siv import SIV
-
-key = SIV.generate_key()
-siv = SIV.new(key)
-
-message = "Hello, world!"
-nonce = os.urandom(16)
-ciphertext = siv.seal(message, [nonce])
-```
-
-#### Decryption (open)
-
-The `open` method decrypts a ciphertext with the given key.
-
-Example:
-
-```python
-import os
-from miscreant.aes.siv import SIV
-
-key = SIV.generate_key()
-siv = SIV.new(key)
-
-message = "Hello, world!"
-nonce = os.urandom(16)
-
-ciphertext = siv.seal(message, [nonce])
-plaintext = siv.open(message, [nonce])
-```
+[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki/Python-Documentation)
+for API documentation.
 
 ## Code of Conduct
 
