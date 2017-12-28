@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 
 lib = File.expand_path("../lib", __FILE__)
@@ -14,11 +13,9 @@ Gem::Specification.new do |spec|
     Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297),
     AES-PMAC-SIV, and STREAM constructions
   DESCRIPTION
-
-  spec.version       = Miscreant::VERSION
-  spec.licenses      = ["MIT"]
   spec.homepage      = "https://github.com/miscreant/miscreant/tree/master/ruby/"
-  spec.description   = ""
+  spec.licenses      = ["MIT"]
+  spec.version       = Miscreant::VERSION
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

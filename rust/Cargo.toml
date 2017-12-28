@@ -10,6 +10,9 @@ readme      = "README.md"
 categories  = ["cryptography", "no-std"]
 keywords    = ["cryptography", "encryption", "security", "streaming"]
 
+[lib]
+crate-type = ["rlib", "staticlib"]
+
 [dependencies]
 aesni = "0.2"
 crypto-mac = "0.6"
@@ -30,7 +33,17 @@ serde_json = "1"
 [features]
 bench = ["ring"]
 default = ["std"]
+staticlib = []
 std = []
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = false
+debug-assertions = false
+codegen-units = 1
+panic = "abort"
 
 [profile.bench]
 opt-level = 3

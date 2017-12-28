@@ -20,7 +20,10 @@ matrix:
     python: 3.6
     before_script: cd python
   - language: ruby
-    rvm: 2.4.3
+    rvm: 2.5.0
+    before_install:
+    - gem update --system
+    - gem --version
     before_script: cd ruby
   - language: ruby
     rvm: 2.2
@@ -32,7 +35,11 @@ matrix:
   - language: rust
     rust: nightly
     before_script: cd rust
-    script: cargo build --no-default-features
+    script:
+    - cargo build --no-default-features --features=staticlib --release
+    - cd tests/ffi
+    - make
+    - ./ffi_test
   - language: csharp
     mono: none
     dotnet: 2.0.0

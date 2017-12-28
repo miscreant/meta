@@ -1,10 +1,10 @@
 # encoding: binary
 # frozen_string_literal: true
 
+require "miscreant/version"
+
 require "openssl"
 require "securerandom"
-
-require "miscreant/version"
 
 require "miscreant/aead"
 require "miscreant/aes/cmac"
