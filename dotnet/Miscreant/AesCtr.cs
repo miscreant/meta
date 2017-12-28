@@ -7,7 +7,7 @@ namespace Miscreant
 	/// Counter (CTR) mode, defined in NIST Special Publication
 	/// <see href="https://csrc.nist.gov/publications/detail/sp/800-38a/final">SP 800-38A</see>.
 	/// </summary>
-	public sealed class AesCtr : IDisposable
+	internal sealed class AesCtr : IDisposable
 	{
 		private const int BlockSize = Constants.BlockSize;
 		private const int KeyStreamBufferSize = 4096;
