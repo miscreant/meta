@@ -54,13 +54,13 @@ namespace Miscreant
 
 			for (int i = BlockSize - 1; i > 0; --i)
 			{
-				int carry = Utils.ConstantTimeSelect(inv[i - 1] & 1, 0x80, 0);
+				int carry = Subtle.ConstantTimeSelect(inv[i - 1] & 1, 0x80, 0);
 				inv[i] = (byte)((inv[i] >> 1) | carry);
 			}
 
 			inv[0] >>= 1;
-			inv[0] ^= (byte)Utils.ConstantTimeSelect(lastBit, 0x80, 0);
-			inv[BlockSize - 1] ^= (byte)Utils.ConstantTimeSelect(lastBit, Constants.R >> 1, 0);
+			inv[0] ^= (byte)Subtle.ConstantTimeSelect(lastBit, 0x80, 0);
+			inv[BlockSize - 1] ^= (byte)Subtle.ConstantTimeSelect(lastBit, Constants.R >> 1, 0);
 		}
 
 		internal static IMac Create(byte[] key)

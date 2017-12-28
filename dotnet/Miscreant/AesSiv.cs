@@ -144,7 +144,7 @@ namespace Miscreant
 
 			byte[] v = S2V(data, output);
 
-			if (!Utils.ConstantTimeEquals(ciphertext, v, BlockSize))
+			if (!Subtle.ConstantTimeEquals(ciphertext, v, BlockSize))
 			{
 				throw new CryptographicException("Malformed or corrupt ciphertext.");
 			}
