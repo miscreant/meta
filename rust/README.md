@@ -46,28 +46,6 @@ For more information, see the [toplevel README.md].
 [chosen ciphertext attacks]: https://en.wikipedia.org/wiki/Chosen-ciphertext_attack
 [toplevel README.md]: https://github.com/miscreant/miscreant/blob/master/README.md
 
-## Help and Discussion
-
-Have questions? Want to suggest a feature or change?
-
-* [Gitter]: web-based chat about **Miscreant** projects including **miscreant.rs**
-* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
-
-[Gitter]: https://gitter.im/miscreant/Lobby
-[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
-[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
-
-## Security Notice
-
-Though this library is written by cryptographic professionals, it has not
-undergone a thorough security audit, and cryptographic professionals are still
-humans that make mistakes.
-
-This library makes an effort to use constant time operations throughout its
-implementation, however actual constant time behavior has not been verified.
-
-Use this library at your own risk.
-
 ## Requirements
 
 This library presently requires the following:
@@ -81,12 +59,37 @@ hardware-based implementation. No software-only implementation of AES is
 provided. Additionally it includes Intel assembly language implementations of
 certain secret-dependent functions which have verified constant-time operation.
 
-This library also makes use of certain nightly-only features including inline
-assembly and `repr_align`. Supporting stable Rust will first require upstream
-changes in the [aesni] crate, which is also nightly-only.
+Supporting stable Rust will require upstream changes in the [aesni] crate,
+which is nightly-only due to its use of inline assembly.
 
 [aesni]: https://github.com/RustCrypto/block-ciphers
 [Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms
+
+## Help and Discussion
+
+Have questions? Want to suggest a feature or change?
+
+* [Gitter]: web-based chat about **Miscreant** projects including **miscreant.rs**
+* [Google Group]: join via web or email ([miscreant-crypto+subscribe@googlegroups.com])
+
+[Gitter]: https://gitter.im/miscreant/Lobby
+[Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
+[miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
+
+## Documentation
+
+[Please see the Rustdocs on docs.rs][docs-link] for API documentation.
+
+## Security Notice
+
+Though this library is written by cryptographic professionals, it has not
+undergone a thorough security audit, and cryptographic professionals are still
+humans that make mistakes.
+
+This library makes an effort to use constant time operations throughout its
+implementation, however actual constant time behavior has not been verified.
+
+Use this library at your own risk.
 
 ## Code of Conduct
 
