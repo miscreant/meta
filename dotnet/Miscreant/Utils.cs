@@ -79,10 +79,6 @@ namespace Miscreant
 			return aes;
 		}
 
-		/// <summary>
-		/// Count the number of trailing zeros bits in x.
-		/// See <see href="https://golang.org/src/math/bits/bits.go">bits.go</see> for more details.
-		/// </summary>
 		public static int TrailingZeros(uint x)
 		{
 			return x > 0 ? deBruijn[(uint)((x & -x) * 0x077CB531) >> (32 - 5)] : 32;
