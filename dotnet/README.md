@@ -1,5 +1,7 @@
-# miscreant.net [![MIT licensed][license-shield]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.net [![Build Status][build-shield]][build-link] [![MIT licensed][license-shield]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
+[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
+[build-link]: http://travis-ci.org/miscreant/miscreant
 [license-shield]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
