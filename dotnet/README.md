@@ -47,9 +47,7 @@ Have questions? Want to suggest a feature or change?
 
 ## Security Notice
 
-Though this library is written by cryptographic professionals, it has not
-undergone a thorough security audit, and cryptographic professionals are still
-humans that make mistakes. Use this library at your own risk.
+This library has not undergone a thorough security audit. Use it at your own risk.
 
 ## Requirements
 
