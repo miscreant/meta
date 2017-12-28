@@ -53,7 +53,7 @@ Have questions? Want to suggest a feature or change?
 
 ## Documentation
 
-[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki/Go-Quickstart)
+[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki/Go-Documentation)
 for API documentation.
 
 [godoc][godoc-link] documentation is also available.
