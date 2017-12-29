@@ -45,9 +45,18 @@ Have questions? Want to suggest a feature or change?
 [Google Group]: https://groups.google.com/forum/#!forum/miscreant-crypto
 [miscreant-crypto+subscribe@googlegroups.com]: mailto:miscreant-crypto+subscribe@googlegroups.com?subject=subscribe
 
+## Documentation
+
+[Please see the Miscreant Wiki](https://github.com/miscreant/miscreant/wiki/C%23-Documentation)
+for API documentation.
+
 ## Security Notice
 
-This library has not undergone a thorough security audit. Use it at your own risk.
+This library has not undergone a thorough security audit, and though it makes
+an effort to use constant time operations throughout its implementation, actual
+constant time behavior has not been verified.
+ 
+Use this library at your own risk.
 
 ## Requirements
 
@@ -61,91 +70,6 @@ and .NET Core 2.1.2, but it should also work on any of the following platforms:
 - Xamarin.Mac 3.8
 - Xamarin.Android 7.5
 - Universal Windows Platform 10.0.16299
-
-## API
-
-The `Miscreant.Aead` class provides the main interface to the **AES-SIV** misuse
-resistant authenticated encryption function.
-
-```csharp
-public static Aead CreateAesCmacSiv(byte[] key)
-public static Aead CreateAesPmacSiv(byte[] key)
-```
-
-To make a new AES-SIV instance that uses CMAC, call the
-`CreateAesCmacSiv` method with a 32-byte or 64-byte key.
-To make a new AES-SIV instance that uses PMAC, call the
-`CreateAesPmacSiv` method with a 32-byte or 64-byte key.
-Note that these keys are twice the size of what you might
-be expecting (AES-SIV uses two AES keys).
-
-You can generate random 32-byte or 64-byte keys using the static
-`Aead.GenerateKey256` or `Aead.GenerateKey512` methods:
-
-```csharp
-var key = Aead.GenerateKey256();
-var siv = Aead.CreateAesCmacSiv(key);
-```
-
-#### Encryption (Seal)
-
-```csharp
-public byte[] Seal(byte[] plaintext, byte[] nonce = null, byte[] data = null)
-```
-
-The `Seal` method encrypts a message along with a set of *associated data*
-which acts as message headers.
-
-It's recommended to include a unique "nonce" value with each message. This
-prevents those who may be observing your ciphertexts from being able to tell
-if you encrypted the same message twice. However, unlike other cryptographic
-algorithms where using a nonce has catastrophic security implications such as
-key recovery, reusing a nonce with AES-SIV only leaks repeated ciphertexts to
-attackers.
-
-#### Decryption (Open)
-
-```csharp
-public byte[] Open(byte[] ciphertext, byte[] nonce = null, byte[] data = null)
-```
-
-The `Open` method decrypts a ciphertext with the given key.
-
-#### Example
-
-```csharp
-// Plaintext to encrypt.
-var plaintext = "I'm cooking MC's like a pound of bacon";
-
-// Create a 32-byte key.
-var key = Aead.GenerateKey256();
-
-// Create a 16-byte nonce (optional).
-var nonce = Aead.GenerateNonce(16);
-
-// Create a new AEAD instance using the AES-CMAC-SIV
-// algorithm. It implements the IDisposable interface,
-// so it's best to create it inside using statement.
-using (var aead = Aead.CreateAesCmacSiv(key))
-{
-  // If the message is string, convert it to byte array first.
-  var bytes = Encoding.UTF8.GetBytes(plaintext);
-
-  // Encrypt the message.
-  var ciphertext = aead.Seal(bytes, nonce);
-
-  // To decrypt the message, call the Open method with the
-  // ciphertext and the same nonce that you generated previously.
-  bytes = aead.Open(ciphertext, nonce);
-
-  // If the message was originally string,
-  // convert if from byte array to string.
-  plaintext = Encoding.UTF8.GetString(bytes);
-
-  // Print the decrypted message to the standard output.
-  Console.WriteLine(plaintext);
-}
-```
 
 ## Code of Conduct
 
