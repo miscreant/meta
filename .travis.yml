@@ -34,10 +34,8 @@ matrix:
     before_script: cd rust
   - language: rust
     rust: nightly
-    before_script: cd rust
+    before_script: cd rust/tests/ffi
     script:
-    - cargo build --no-default-features --features=staticlib --release
-    - cd tests/ffi
     - make
     - ./ffi_test
   - language: csharp
