@@ -7,3 +7,4 @@ and have granted the right to use their contributions under the terms of the
 * [Tony Arcieri (@tarcieri)](https://github.com/tarcieri)
 * [Dmitry Chestnykh (@dchest)](https://github.com/dchest)
 * [John Downey (@jtdowney)](https://github.com/jtdowney)
+* [Nemanja Mijailovic (@metalnem)](https://github.com/metalnem)

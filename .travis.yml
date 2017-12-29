@@ -40,3 +40,7 @@ matrix:
     - cd tests/ffi
     - make
     - ./ffi_test
+  - language: csharp
+    mono: none
+    dotnet: 2.0.0
+    before_script: cd dotnet
