@@ -117,14 +117,15 @@ The following algorithms are provided by **Miscreant**:
 
 | Language               | Version                              |
 |------------------------|--------------------------------------|
-| [C#][csharp-link]      | N/A                                  |
+| [C#][nuget-link]       | [![nuget][nuget-shield]][nuget-link] |
 | [Go][go-link]          | N/A                                  |
 | [JavaScript][npm-link] | [![npm][npm-shield]][npm-link]       |
 | [Python][pypi-link]    | [![pypi][pypi-shield]][pypi-link]    |
 | [Ruby][gem-link]       | [![gem][gem-shield]][gem-link]       |
 | [Rust][crate-link]     | [![crate][crate-shield]][crate-link] |
 
-[csharp-link]: https://github.com/miscreant/miscreant/tree/master/dotnet
+[nuget-link]: https://www.nuget.org/packages/Miscreant
+[nuget-shield]: https://img.shields.io/nuget/v/Miscreant.svg
 [go-link]: https://github.com/miscreant/miscreant/tree/master/go
 [npm-shield]: https://img.shields.io/npm/v/miscreant.svg
 [npm-link]: https://www.npmjs.com/package/miscreant

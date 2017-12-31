@@ -1,5 +1,12 @@
-# miscreant.net [![Build Status][build-image]][build-link] [![MIT licensed][license-shield]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
+# miscreant.net
 
+[![Latest Version][nuget-shield]][nuget-link]
+[![Build Status][build-image]][build-link]
+[![MIT licensed][license-shield]][license-link]
+[![Gitter Chat][gitter-image]][gitter-link]
+
+[nuget-shield]: https://img.shields.io/nuget/v/Miscreant.svg
+[nuget-link]: https://www.nuget.org/packages/Miscreant
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
 [build-link]: https://travis-ci.org/miscreant/miscreant
 [license-shield]: https://img.shields.io/badge/license-MIT-blue.svg
@@ -8,6 +15,8 @@
 [gitter-link]: https://gitter.im/miscreant/Lobby
 
 > The best crypto you've never heard of, brought to you by [Phil Rogaway]
+
+[Phil Rogaway]: https://en.wikipedia.org/wiki/Phillip_Rogaway
 
 C# implementation of **Miscreant**: Advanced symmetric encryption library
 which provides the [AES-SIV] ([RFC 5297]), [AES-PMAC-SIV], and [STREAM]
