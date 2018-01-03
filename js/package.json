@@ -26,21 +26,19 @@
     "test": "mocha --require ts-node/register test/**/*.spec.ts"
   },
   "devDependencies": {
-    "@types/chai": "^3.4.35",
-    "@types/chai-as-promised": ">= 0.0.31",
-    "@types/mocha": "^2.2.40",
-    "@types/node": "^7.0.13",
+    "@types/chai": "^4.0.10",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^2.2.45",
+    "@types/node": "^8.5.2",
     "async-file": "^2.0.2",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^7.0.0",
-    "mocha": "^3.4.2",
-    "mocha-typescript": "^1.0.23",
-    "node-webcrypto-ossl": "^1.0.26",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^4.1.0",
+    "mocha-typescript": "^1.1.12",
+    "node-webcrypto-ossl": "1.0.26",
     "tjson-js": "^0.1.2",
-    "ts-node": "^3.0.2",
-    "typescript": "^2.3.0"
-  },
-  "dependencies": {
-    "global": "^4.3.2"
+    "ts-node": "^4.1.0",
+    "typescript": "^2.6.2",
+    "webcrypto-core": "0.1.16"
   }
 }
