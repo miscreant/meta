@@ -206,7 +206,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/miscre
 
 ## Copyright
 
-Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
 Distributed under the MIT license. See [LICENSE.txt] for further details.
 
 Some language-specific subprojects include sources from other authors with more

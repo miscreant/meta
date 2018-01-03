@@ -106,7 +106,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/miscre
 
 ## Copyright
 
-Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
 See [LICENSE.txt] for further details.
 
 [AUTHORS]: https://github.com/miscreant/miscreant/blob/master/AUTHORS.md

@@ -129,7 +129,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/miscre
 
 ## Copyright
 
-Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
 
 AES polyfill implementation derived from the Go standard library:
 Copyright (c) 2012 The Go Authors. All rights reserved.

@@ -111,7 +111,7 @@ conditions.
 
 ## License
 
-Copyright (c) 2017 [The Miscreant Developers][AUTHORS].
+Copyright (c) 2017-2018 [The Miscreant Developers][AUTHORS].
 
 The Rust implementation of Miscrenant specifically is licensed under either of:
 
