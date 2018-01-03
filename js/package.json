@@ -1,6 +1,6 @@
 {
   "name": "miscreant",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions",
   "homepage": "https://github.com/miscreant/miscreant/tree/master/js/",
   "main": "release/index.js",
