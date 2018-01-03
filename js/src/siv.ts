@@ -1,12 +1,11 @@
-// Copyright (C) 2017 Dmitry Chestnykh, Tony Arcieri
+// Copyright (C) 2017-2018 Dmitry Chestnykh, Tony Arcieri
 // MIT License. See LICENSE file for details.
 
 import { equal } from "./internals/constant-time";
 import { wipe } from "./internals/wipe";
 import { xor } from "./internals/xor";
 
-import { IntegrityError } from "./exceptions/integrity_error";
-import { NotImplementedError } from "./exceptions/not_implemented_error";
+import { IntegrityError, NotImplementedError } from "./exceptions";
 import { ICryptoProvider, ICTRLike, IMACLike, ISIVLike } from "./interfaces";
 import Block from "./internals/block";
 

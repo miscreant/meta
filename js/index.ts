@@ -1,8 +1,7 @@
 export * from "./src/interfaces";
 
 /** Exceptions */
-export { IntegrityError } from "./src/exceptions/integrity_error";
-export { NotImplementedError } from "./src/exceptions/not_implemented_error";
+export * from "./src/exceptions";
 
 /** Symmetric encryption APIs */
 export { AEAD } from "./src/aead";
