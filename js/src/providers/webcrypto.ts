@@ -1,4 +1,4 @@
-import { NotImplementedError } from "../exceptions/not_implemented_error";
+import { NotImplementedError } from "../exceptions";
 import { IBlockCipher, ICryptoProvider, ICTRLike } from "../interfaces";
 import WebCryptoAes from "./webcrypto/aes";
 import WebCryptoAesCtr from "./webcrypto/aes_ctr";
