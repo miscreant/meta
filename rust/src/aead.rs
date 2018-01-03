@@ -28,10 +28,42 @@ pub trait Algorithm {
     /// Panics if the key is the wrong length
     fn new(key: &[u8]) -> Self;
 
-    /// Encrypt the contents of buffer in-place
+    /// Encrypt the given plaintext in-place, replacing it with the SIV tag and
+    /// ciphertext. Requires a buffer with 16-bytes additional space.
+    ///
+    /// To encrypt data, it is recommended to use this API instead of the lower-level `Siv` API.
+    ///
+    /// # Usage
+    ///
+    /// It's important to note that only the *end* of the buffer will be
+    /// treated as the input plaintext:
+    ///
+    /// ```rust
+    /// let buffer = [0u8; 21];
+    /// let plaintext = &buffer[..buffer.len() - 16];
+    /// ```
+    ///
+    /// In this case, only the *last* 5 bytes are treated as the plaintext,
+    /// since `21 - 16 = 5` (the AES block size is 16-bytes).
+    ///
+    /// The buffer must include an additional 16-bytes of space in which to
+    /// write the SIV tag (at the beginning of the buffer).
+    /// Failure to account for this will leave you with plaintext messages that
+    /// are missing their first 16-bytes!
+    ///
+    /// # Panics
+    ///
+    /// Panics if `plaintext.len()` is less than `M::OutputSize`.
+    /// Panics if `nonce.len()` is greater than `MAX_ASSOCIATED_DATA`.
+    /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
     fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]);
 
-    /// Decrypt the contents of buffer in-place
+    /// Decrypt the given ciphertext in-place, authenticating it against the
+    /// synthetic IV included in the message.
+    ///
+    /// To decrypt data, it is recommended to use this API instead of the lower-level `Siv` API.
+    ///
+    /// Returns a slice containing a decrypted message on success.
     fn open_in_place<'a>(
         &mut self,
         nonce: &[u8],
@@ -97,44 +129,10 @@ where
         }
     }
 
-    /// Encrypt the given plaintext in-place, replacing it with the SIV tag and
-    /// ciphertext. Requires a buffer with 16-bytes additional space.
-    ///
-    /// To encrypt data, it is recommended to use this API instead of the lower-level `Siv` API.
-    ///
-    /// # Usage
-    ///
-    /// It's important to note that only the *end* of the buffer will be
-    /// treated as the input plaintext:
-    ///
-    /// ```rust
-    /// let buffer = [0u8; 21];
-    /// let plaintext = &buffer[..buffer.len() - 16];
-    /// ```
-    ///
-    /// In this case, only the *last* 5 bytes are treated as the plaintext,
-    /// since `21 - 16 = 5` (the AES block size is 16-bytes).
-    ///
-    /// The buffer must include an additional 16-bytes of space in which to
-    /// write the SIV tag (at the beginning of the buffer).
-    /// Failure to account for this will leave you with plaintext messages that
-    /// are missing their first 16-bytes!
-    ///
-    /// # Panics
-    ///
-    /// Panics if `plaintext.len()` is less than `M::OutputSize`.
-    /// Panics if `nonce.len()` is greater than `MAX_ASSOCIATED_DATA`.
-    /// Panics if `associated_data.len()` is greater than `MAX_ASSOCIATED_DATA`.
     fn seal_in_place(&mut self, nonce: &[u8], associated_data: &[u8], buffer: &mut [u8]) {
         self.siv.seal_in_place(&[associated_data, nonce], buffer)
     }
 
-    /// Decrypt the given ciphertext in-place, authenticating it against the
-    /// synthetic IV included in the message.
-    ///
-    /// To decrypt data, it is recommended to use this API instead of the lower-level `Siv` API.
-    ///
-    /// Returns a slice containing a decrypted message on success.
     fn open_in_place<'a>(
         &mut self,
         nonce: &[u8],
