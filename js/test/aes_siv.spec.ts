@@ -7,7 +7,7 @@ import * as chaiAsPromised from "chai-as-promised";
 import { AesSivExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import * as miscreant from "../src/index";
+import * as miscreant from "../index";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);
