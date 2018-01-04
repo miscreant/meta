@@ -4,7 +4,7 @@ import * as chaiAsPromised from "chai-as-promised";
 import { STREAMExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import * as miscreant from "../index";
+import * as miscreant from "../src/index";
 
 let expect = chai.expect;
 chai.use(chaiAsPromised);

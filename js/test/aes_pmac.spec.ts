@@ -6,7 +6,7 @@ import { expect } from "chai";
 import { AesPmacExample } from "./support/test_vectors";
 
 import WebCrypto = require("node-webcrypto-ossl");
-import * as miscreant from "../index";
+import * as miscreant from "../src/index";
 
 
 @suite class PolyfillAesPmacSpec {
