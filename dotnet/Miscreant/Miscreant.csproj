@@ -12,7 +12,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/miscreant/miscreant/master/dotnet/PackageIcon.png</PackageIconUrl>
     <Description>Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright © 2017, The Miscreant Developers</Copyright>
+    <Copyright>Copyright © 2017-2018, The Miscreant Developers</Copyright>
     <PackageTags>crypto cryptography security encryption</PackageTags>
   </PropertyGroup>
 
