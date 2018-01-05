@@ -2,7 +2,7 @@
 name        = "miscreant"
 description = "Misuse resistant symmetric encryption library providing AES-SIV (RFC 5297), AES-PMAC-SIV, and STREAM constructions"
 version     = "0.3.0"
-license     = "MIT"
+license     = "MIT/Apache-2.0"
 authors     = ["Tony Arcieri <bascule@gmail.com>"]
 homepage    = "https://miscreant.io"
 repository  = "https://github.com/miscreant/miscreant/tree/master/rust"
