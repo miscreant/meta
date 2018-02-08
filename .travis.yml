@@ -35,9 +35,12 @@ matrix:
   - language: rust
     rust: nightly
     before_script: cd rust/tests/ffi
+    env:
+      - CC=clang
+      - LDFLAGS=-rtlib=compiler-rt
     script:
-    - make
-    - ./ffi_test
+      - make
+      - ./ffi_test
   - language: csharp
     mono: none
     dotnet: 2.0.0

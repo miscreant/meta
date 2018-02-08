@@ -11,4 +11,4 @@ $(libmiscreant):
 	cd ../.. && cargo build --no-default-features --features=staticlib --release
 
 ffi_test: ffi_test.o $(libmiscreant)
-	$(CC) -o ffi_test ffi_test.o $(libmiscreant)
+	$(CC) $(LDFLAGS) -o ffi_test ffi_test.o $(libmiscreant)
