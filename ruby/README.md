@@ -3,7 +3,7 @@
 [gem-shield]: https://badge.fury.io/rb/miscreant.svg
 [gem-link]: https://rubygems.org/gems/miscreant
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [docs-image]: https://img.shields.io/badge/yard-docs-blue.svg
 [docs-link]: http://www.rubydoc.info/gems/miscreant/0.3.0
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg

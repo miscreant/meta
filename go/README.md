@@ -1,7 +1,7 @@
 # miscreant.go [![Build Status][build-shield]][build-link] [![GoDoc][godoc-shield]][godoc-link] [![Go Report Card][goreport-shield]][goreport-link] [![MIT licensed][license-shield]][license-link] [![Gitter Chat][gitter-image]][gitter-link]
 
 [build-shield]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [godoc-shield]: https://godoc.org/github.com/miscreant/miscreant/go?status.svg
 [godoc-link]: https://godoc.org/github.com/miscreant/miscreant/go
 [goreport-shield]: https://goreportcard.com/badge/github.com/miscreant/miscreant

@@ -6,7 +6,7 @@
 [![Gitter Chat][gitter-image]][gitter-link]
 
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [appveyor-image]: https://ci.appveyor.com/api/projects/status/xi4cc74iyqsjke2l?svg=true
 [appveyor-link]: https://ci.appveyor.com/project/tarcieri/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg

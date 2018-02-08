@@ -11,7 +11,7 @@
 [docs-image]: https://docs.rs/miscreant/badge.svg
 [docs-link]: https://docs.rs/miscreant/
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT/Apache2.0-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg

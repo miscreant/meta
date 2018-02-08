@@ -3,7 +3,7 @@
 [pypi-shield]: https://img.shields.io/pypi/v/miscreant.svg
 [pypi-link]: https://pypi.python.org/pypi/miscreant/
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg

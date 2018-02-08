@@ -3,7 +3,7 @@
 [npm-shield]: https://img.shields.io/npm/v/miscreant.svg
 [npm-link]: https://www.npmjs.com/package/miscreant
 [build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: http://travis-ci.org/miscreant/miscreant
+[build-link]: https://travis-ci.org/miscreant/miscreant
 [snyk-image]: https://snyk.io/test/github/miscreant/miscreant/badge.svg?targetFile=js%2Fpackage.json
 [snyk-link]: https://snyk.io/test/github/miscreant/miscreant?targetFile=js%2Fpackage.json
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
