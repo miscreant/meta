@@ -13,6 +13,18 @@ SIZE = 16
 # Minimal irreducible polynomial for a 128-bit block size
 R = 0x87
 
+def _validate_bytes_or_bytearray(value):
+    # type: (Union[bytearray, bytes]) -> bytearray
+    if isinstance(value, bytes):
+        value = bytearray(value)
+    elif not isinstance(value, bytearray):
+        raise TypeError("value must be bytes or bytearray")
+
+    if len(value) != SIZE:
+        raise ValueError("value must be 16-bytes")
+
+    return value
+
 class Block(object):
     """128-bit AES blocks"""
 
@@ -21,15 +33,7 @@ class Block(object):
         if data is None:
             self.data = bytearray(SIZE)
         else:
-            if isinstance(data, bytes):
-                data = bytearray(data)
-            elif not isinstance(data, bytearray):
-                raise TypeError("data must be bytes or bytearray")
-
-            if len(data) != SIZE:
-                raise ValueError("data must be 16-bytes")
-
-            self.data = data
+            self.data = _validate_bytes_or_bytearray(data)
 
     def clear(self):
         # type: () -> None
@@ -87,13 +91,8 @@ class Block(object):
 
         if isinstance(value, Block):
             value = value.data
-        elif isinstance(value, bytes):
-            value = bytearray(value)
-        elif not isinstance(value, bytearray):
-            raise TypeError("value must be bytes or bytearray")
-
-        if len(value) != SIZE:
-            raise ValueError("value must be 16-bytes")
+        else:
+            value = _validate_bytes_or_bytearray(value)
 
         for i in range(SIZE):
             self.data[i] ^= value[i]
