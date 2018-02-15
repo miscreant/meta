@@ -21,5 +21,6 @@ CTZ_TABLE = [
 ]
 
 def trailing_zeroes(value):
+    # type: (int) -> int
     """Count the number of trailing zeros in a given 8-bit integer"""
     return CTZ_TABLE[value]

@@ -17,15 +17,18 @@ class AEAD(object):
 
     @staticmethod
     def generate_key(size=32):
+        # type: (int) -> bytes
         """Generate a new random AES-SIV key of the given size"""
         return SIV.generate_key(size)
 
     @staticmethod
     def generate_nonce(size=16):
+        # type: (int) -> bytes
         """Generate a random "nonce" (i.e. number used once) value"""
         return os.urandom(size)
 
     def __init__(self, alg, key):
+        # type: (str, bytes) -> None
         """Create a new AEAD encryptor instance. You will need to select an
         algorithm to use, passed as a string:
 
@@ -49,6 +52,7 @@ class AEAD(object):
         self.siv = SIV(key, mac)
 
     def seal(self, plaintext, nonce=None, associated_data=b""):
+        # type: (bytes, bytes, bytes) -> bytes
         """Encrypt a message, authenticating it along with the associated data"""
 
         if not isinstance(nonce, bytes):
@@ -60,6 +64,7 @@ class AEAD(object):
         return self.siv.seal(plaintext, [associated_data, nonce])
 
     def open(self, ciphertext, nonce=None, associated_data=b""):
+        # type: (bytes, bytes, bytes) -> bytes
         """Verify and decrypt a ciphertext, authenticating it along with the associated data"""
 
         if not isinstance(nonce, bytes):

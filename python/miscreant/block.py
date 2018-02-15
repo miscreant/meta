@@ -1,6 +1,10 @@
 """block.py: A 128-bit block (i.e. for AES)"""
 
 from struct import (pack, unpack)
+
+from cryptography.hazmat.primitives.ciphers import Cipher
+from typing import Optional, Union
+
 from . import ct
 
 # Size of an AES block in bytes
@@ -13,11 +17,14 @@ class Block(object):
     """128-bit AES blocks"""
 
     def __init__(self, data=None):
+        # type: (Union[bytearray, bytes, None]) -> None
         if data is None:
             self.data = bytearray(SIZE)
         else:
-            if not isinstance(data, bytes):
-                raise TypeError("data must be bytes")
+            if isinstance(data, bytes):
+                data = bytearray(data)
+            elif not isinstance(data, bytearray):
+                raise TypeError("data must be bytes or bytearray")
 
             if len(data) != SIZE:
                 raise ValueError("data must be 16-bytes")
@@ -25,11 +32,13 @@ class Block(object):
             self.data = data
 
     def clear(self):
+        # type: () -> None
         """Reset the value of this block to all zeroes"""
         for i in range(SIZE):
             self.data[i] = 0
 
     def copy(self, other_block):
+        # type: (Block) -> None
         """Copy the contents of another block into this block"""
         if not isinstance(other_block, Block):
             raise TypeError("can only copy from other Blocks")
@@ -37,12 +46,14 @@ class Block(object):
         self.data[:] = other_block.data
 
     def clone(self):
+        # type: () -> Block
         """Make another block with the same contents as this block"""
         other = Block()
         other.copy(self)
         return other
 
     def dbl(self):
+        # type: () -> None
         """Double a value over GF(2^128):
 
         a<<1 if firstbit(a)=0
@@ -63,12 +74,15 @@ class Block(object):
         self.data[-1] ^= ct.select(overflow, R, 0)
 
     def encrypt(self, cipher):
+        # type: (Cipher) -> None
         """Encrypt this block in-place with the given cipher"""
+
         # TODO: more efficient in-place encryption options?
         encryptor = cipher.encryptor()
         self.data = bytearray(encryptor.update(bytes(self.data)) + encryptor.finalize())
 
     def xor_in_place(self, value):
+        # type: (Union[Block, bytearray, bytes]) -> None
         """XOR the given data into the current block in-place"""
 
         if isinstance(value, Block):
