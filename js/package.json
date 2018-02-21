@@ -40,9 +40,13 @@
     "mocha": "^4.1.0",
     "mocha-typescript": "^1.1.12",
     "node-webcrypto-ossl": "^1.0.35",
+    "source-map-loader": "^0.2.3",
     "tjson-js": "^0.1.2",
     "ts-node": "^4.1.0",
     "typescript": "^2.7.1",
-    "webcrypto-core": "0.1.16"
+    "uglifyjs-webpack-plugin": "^1.2.0",
+    "webcrypto-core": "0.1.16",
+    "webpack": "^3.11.0",
+    "webpack-stream": "^4.0.1"
   }
 }
