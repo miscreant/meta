@@ -15,11 +15,11 @@ module Miscreant
 
       # Create a new Block, optionally from the given data
       def initialize(data = nil)
-        if data
-          @data = Util.validate_bytestring("block data", data, length: SIZE)
-        else
-          @data = "\0".b * SIZE
-        end
+        @data = if data
+                  Util.validate_bytestring('block data', data, length: SIZE)
+                else
+                  "\0".b * SIZE
+                end
       end
 
       # Inspect the contents of the block in hex
@@ -57,7 +57,7 @@ module Miscreant
       #
       def dbl
         overflow = 0
-        words = @data.unpack("N4").reverse
+        words = @data.unpack('N4').reverse
 
         words.map! do |word|
           new_word = (word << 1) & 0xFFFFFFFF
@@ -66,7 +66,7 @@ module Miscreant
           new_word
         end
 
-        @data = words.reverse.pack("N4")
+        @data = words.reverse.pack('N4')
         @data[-1] = (@data[-1].ord ^ Util.ct_select(overflow, R, 0)).chr
         self
       end
@@ -90,7 +90,7 @@ module Miscreant
         when Block
           value = value.data
         when String
-          Util.validate_bytestring("value", value, length: SIZE)
+          Util.validate_bytestring('value', value, length: SIZE)
         else raise TypeError, "invalid XOR input: #{value.class}"
         end
 
