@@ -1,12 +1,12 @@
 var gulp = require("gulp");
 var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
-var webpack = require('webpack-stream');
-var webpackConfig = require('./webpack.config.js');
+var webpack = require("webpack-stream");
+var webpackConfig = require("./webpack.config.js");
 
 var tsProject = ts.createProject("tsconfig.json");
 
-gulp.task("default", function() {
+gulp.task("default", () => {
     var tsResult = gulp
         .src(["./src/**/*.ts", "index.ts"])
         .pipe(tsProject());
@@ -16,7 +16,7 @@ gulp.task("default", function() {
         .pipe(gulp.dest("release"));
 });
 
-gulp.task("webpack", ["default"], function() {
+gulp.task("webpack", ["default"], () => {
     gulp.src("./release/index.js")
         .pipe(webpack(webpackConfig))
         .pipe(gulp.dest("bundle"));
