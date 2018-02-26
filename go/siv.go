@@ -166,7 +166,7 @@ func (c *Cipher) s2v(s [][]byte, sn []byte) []byte {
 	tmp.Clear()
 
 	// NOTE(dchest): The standalone S2V returns CMAC(1) if the number of
-	// passed vectors is zero, however in SIV contruction this case is
+	// passed vectors is zero, however in SIV construction this case is
 	// never triggered, since we always pass plaintext as the last vector
 	// (even if it's zero-length), so we omit this case.
 
