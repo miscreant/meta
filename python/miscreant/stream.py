@@ -20,11 +20,13 @@ class Encryptor(object):
     """"STREAM encryptor"""
 
     def __init__(self, alg, key, nonce):
+        # type: (str, bytes, bytes) -> None
         """Create a new STREAM encryptor"""
         self.aead = AEAD(alg, key)
         self.nonce_encoder = NonceEncoder(nonce)
 
     def seal(self, plaintext, associated_data=b"", last_block=False):
+        # type: (bytes, bytes, bool) -> bytes
         """Encrypt the next message in the stream"""
         return self.aead.seal(
             plaintext,
@@ -37,11 +39,13 @@ class Decryptor(object):
     """STREAM decryptor"""
 
     def __init__(self, alg, key, nonce):
+        # type: (str, bytes, bytes) -> None
         """Create a new STREAM decryptor"""
         self.aead = AEAD(alg, key)
         self.nonce_encoder = NonceEncoder(nonce)
 
     def open(self, ciphertext, associated_data=b"", last_block=False):
+        # type: (bytes, bytes, bool) -> bytes
         """Decrypt the next message in the stream"""
         return self.aead.open(
             ciphertext,
@@ -53,6 +57,7 @@ class NonceEncoder(object):
     """Computes STREAM nonces based on the current position in the STREAM"""
 
     def __init__(self, nonce_prefix):
+        # type: (bytes) -> None
         """Create a new NonceEncoder"""
         if not isinstance(nonce_prefix, bytes):
             raise TypeError("nonce must be bytes")
@@ -65,6 +70,7 @@ class NonceEncoder(object):
         self.finished = False
 
     def next(self, last_block):
+        # type: (bool) -> bytes
         """Obtain the next nonce in the stream"""
         if self.finished:
             raise exceptions.FinishedError("STREAM is already finished")

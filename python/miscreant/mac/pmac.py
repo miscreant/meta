@@ -1,9 +1,11 @@
 """pmac.py: The Parallel Message Authentication Code (PMAC)"""
 
 from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.backends.interfaces import CipherBackend
 from cryptography.hazmat.primitives.ciphers import (
-    Cipher, modes
+    BlockCipherAlgorithm, Cipher, modes
 )
+from typing import Iterator
 
 from .. import (block, ct, ctz)
 from ..block import Block
@@ -12,10 +14,18 @@ from ..block import Block
 # TODO: dynamically compute these as needed
 PRECOMPUTED_BLOCKS = 31
 
+def precompute_blocks(b, number_of_blocks):
+# type: (Block, int) -> Iterator[Block]
+    for i in range(number_of_blocks):
+        yield b.clone()
+        b.dbl()
+
 class PMAC(object):
     """The Parallel Message Authentication Code"""
 
     def __init__(self, algorithm, backend=default_backend()):
+        # type: (BlockCipherAlgorithm, CipherBackend) -> None
+
         # NOTE: the one acceptable use of ECB mode is constructing higher-level
         # cryptographic primitives. In this case, we're using it to implement PMAC.
         self.cipher = Cipher(algorithm, modes.ECB(), backend)
@@ -46,13 +56,10 @@ class PMAC(object):
         #
         # (Alternatively, [ed: as we have done in this codebase] defer computing
         # some or  all of these L(i) values until the value is actually needed.)
-        self.l = [None] * PRECOMPUTED_BLOCKS
         tmp = Block()
         tmp.encrypt(self.cipher)
 
-        for i in range(PRECOMPUTED_BLOCKS):
-            self.l[i] = tmp.clone()
-            tmp.dbl()
+        self.l = [b for b in precompute_blocks(tmp, PRECOMPUTED_BLOCKS)]
 
         # lInv contains the multiplicative inverse (i.e. right shift) of the first
         # l-value, computed as described above, and is XORed into the tag in the
@@ -88,6 +95,7 @@ class PMAC(object):
         self.finished = False
 
     def reset(self):
+        # type: () -> None
         """Clears the digest state, starting a new digest"""
         self.digest.clear()
         self.offset.clear()
@@ -97,6 +105,7 @@ class PMAC(object):
         self.finished = False
 
     def update(self, message):
+        # type: (bytes) -> int
         """Update the PMAC internal state with the given message"""
         if self.finished:
             raise RuntimeError("pmac: already finished")
@@ -124,6 +133,7 @@ class PMAC(object):
         return len(message)
 
     def finalize(self):
+        # type: () -> bytes
         """Return the computed PMAC tag for the data we've hashed so far"""
         if self.finished:
             raise RuntimeError("pmac: already finished")
@@ -142,6 +152,7 @@ class PMAC(object):
         return bytes(self.digest.data)
 
     def __process_buffer(self):
+        # type: () -> None
         self.offset.xor_in_place(self.l[ctz.trailing_zeroes(self.counter + 1)])
         self.buffer.xor_in_place(self.offset)
         self.counter += 1

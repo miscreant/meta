@@ -5,5 +5,6 @@
 # "Security Notice" section in python/README.md.
 
 def select(subject, result_if_one, result_if_zero):
+    # type: (int, int, int) -> int
     """Perform a constant time(-ish) branch operation"""
     return (~(subject - 1) & result_if_one) | ((subject - 1) & result_if_zero)

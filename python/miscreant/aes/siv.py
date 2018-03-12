@@ -1,22 +1,24 @@
 """siv.py: The AES-SIV misuse resistant authenticated encryption cipher"""
 
 import os
+
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import (
-    cmac, constant_time
-)
+from cryptography.hazmat.primitives import cmac, constant_time # type: ignore
 from cryptography.hazmat.primitives.ciphers import (
     Cipher, algorithms, modes
 )
+from typing import List, Union, Type
 
 from .. import (block, exceptions)
 from ..block import Block
+from ..mac import pmac
 
 class SIV(object):
     """The AES-SIV misuse resistant authenticated encryption cipher"""
 
     @staticmethod
     def generate_key(size=32):
+        # type: (int) -> bytes
         """Generate a new random AES-SIV key of the given size"""
         if size != 32 and size != 64:
             raise ValueError("key size must be 32 or 64 bytes")
@@ -24,6 +26,7 @@ class SIV(object):
         return os.urandom(size)
 
     def __init__(self, key, mac=cmac.CMAC):
+        # type: (bytes, Union[Type[cmac.CMAC], Type[pmac.PMAC]]) -> None
         """Create a new SIV object"""
         if not isinstance(key, bytes):
             raise TypeError("key must be bytes")
@@ -37,6 +40,7 @@ class SIV(object):
         self.mac_alg = mac
 
     def seal(self, plaintext, associated_data=None):
+        # type: (bytes, List[bytes]) -> bytes
         """Encrypt a message using AES-SIV, authenticating and the associated data"""
         if not isinstance(plaintext, bytes):
             raise TypeError("plaintext must be bytes")
@@ -49,6 +53,7 @@ class SIV(object):
         return v + ciphertext
 
     def open(self, ciphertext, associated_data=None):
+        # type: (bytes, List[bytes]) -> bytes
         """Verify and decrypt an AES-SIV ciphertext, authenticating and the associated data"""
         if not isinstance(ciphertext, bytes):
             raise TypeError("ciphertext must be bytes")
@@ -67,6 +72,7 @@ class SIV(object):
         return plaintext
 
     def __transform(self, v, message):
+        # type: (bytes, bytes) -> bytes
         """Performs raw unauthenticted encryption or decryption of the message"""
         if not message:
             return b""
@@ -87,6 +93,7 @@ class SIV(object):
         return encryptor.update(message) + encryptor.finalize()
 
     def __s2v(self, associated_data, plaintext):
+        # type: (List[bytes], bytes) -> bytes
         """
         The S2V operation consists of the doubling and XORing of the outputs
         of the pseudo-random function CMAC.
@@ -125,6 +132,7 @@ class SIV(object):
         return self.__mac(d.data)
 
     def __mac(self, message):
+        # type: (bytes) -> bytes
         mac = self.mac_alg(algorithms.AES(self.mac_key), backend=default_backend())
         mac.update(bytes(message))
         return mac.finalize()

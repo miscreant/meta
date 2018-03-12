@@ -14,7 +14,7 @@ setup(
     packages=find_packages(exclude=["tests"]),
     package_dir={"miscreant": "miscreant"},
     include_package_data=True,
-    install_requires=["cryptography>=2.0"],
+    install_requires=["cryptography>=2.0", "typing>=3.6"],
     license="MIT license",
     zip_safe=False,
     keywords=["cryptography", "encryption", "security", "streaming"],
