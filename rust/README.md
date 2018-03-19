@@ -61,14 +61,14 @@ To access these features, you will need both a relatively recent
 Rust nightly and to pass the following as RUSTFLAGS:
 
 ```
-RUSTFLAGS=-C target-feature=+aes
+RUSTFLAGS=-Ctarget-feature=+aes
 ```
 
 You can configure your `~/.cargo/config` to always pass these flags:
 
 ```toml
 [build]
-rustflags = ["-C", "target-feature=+aes"]
+rustflags = ["-Ctarget-feature=+aes"]
 ```
 
 [aesni]: https://github.com/RustCrypto/block-ciphers
