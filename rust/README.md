@@ -48,19 +48,28 @@ For more information, see the [toplevel README.md].
 
 ## Requirements
 
-This library presently requires the following:
+miscreant.rs presently requires the following:
 
 * **x86_64** CPU architecture
 * Rust **nightly** compiler
 
-This library implements the AES cipher using the [aesni] crate, which
-uses the [Intel AES-NI] CPU instructions to provide a fast, constant-time
-hardware-based implementation. No software-only implementation of AES is
-provided. Additionally it includes Intel assembly language implementations of
-certain secret-dependent functions which have verified constant-time operation.
+This is because it depends on the `aesni` crate which uses the `core::arch` API
+for (soon-to-be) stable access to CPU intrinsics, namely the [Intel AES-NI] CPU
+instructions which provide a hardware implementation of AES.
 
-Supporting stable Rust will require upstream changes in the [aesni] crate,
-which is nightly-only due to its use of inline assembly.
+To access these features, you will need both a relatively recent
+Rust nightly and to pass the following as RUSTFLAGS:
+
+```
+RUSTFLAGS=-C target-feature=+aes
+```
+
+You can configure your `~/.cargo/config` to always pass these flags:
+
+```toml
+[build]
+rustflags = ["-C", "target-feature=+aes"]
+```
 
 [aesni]: https://github.com/RustCrypto/block-ciphers
 [Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms

@@ -1,35 +1,51 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
 use aesni::{Aes128, Aes256};
+use aesni::block_cipher_trait::BlockCipher;
+use aesni::block_cipher_trait::generic_array::ArrayLength;
+use aesni::block_cipher_trait::generic_array::GenericArray;
+use aesni::block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use cmac::Cmac;
+use core::marker::PhantomData;
 use crypto_mac::Mac;
 use ctr::{Aes128Ctr, Aes256Ctr, Ctr, IV_SIZE};
 use error::Error;
-use generic_array::GenericArray;
-use generic_array::typenum::{U16, Unsigned};
 use pmac::Pmac;
 use s2v::s2v;
 use subtle;
 
 /// The SIV misuse resistant block cipher mode of operation
-pub struct Siv<C: Ctr, M: Mac> {
+pub struct Siv<B, C, M>
+where
+    B: BlockCipher<BlockSize = U16>,
+    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
+    C: Ctr<B>,
+    M: Mac,
+{
+    block_cipher: PhantomData<B>,
     mac: M,
     ctr: C,
 }
 
 /// AES-CMAC-SIV with a 128-bit key
-pub type Aes128Siv = Siv<Aes128Ctr, Cmac<Aes128>>;
+pub type Aes128Siv = Siv<Aes128, Aes128Ctr, Cmac<Aes128>>;
 
 /// AES-CMAC-SIV with a 256-bit key
-pub type Aes256Siv = Siv<Aes256Ctr, Cmac<Aes256>>;
+pub type Aes256Siv = Siv<Aes256, Aes256Ctr, Cmac<Aes256>>;
 
 /// AES-PMAC-SIV with a 128-bit key
-pub type Aes128PmacSiv = Siv<Aes128Ctr, Pmac<Aes128>>;
+pub type Aes128PmacSiv = Siv<Aes128, Aes128Ctr, Pmac<Aes128>>;
 
 /// AES-PMAC-SIV with a 256-bit key
-pub type Aes256PmacSiv = Siv<Aes256Ctr, Pmac<Aes256>>;
+pub type Aes256PmacSiv = Siv<Aes256, Aes256Ctr, Pmac<Aes256>>;
 
-impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
+impl<B, C, M> Siv<B, C, M>
+where
+    B: BlockCipher<BlockSize = U16>,
+    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
+    C: Ctr<B>,
+    M: Mac<OutputSize = U16>,
+{
     /// Create a new AES-SIV instance
     ///
     /// Panics if the key is the wrong length
@@ -45,6 +61,7 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
         );
 
         Self {
+            block_cipher: PhantomData,
             mac: M::new(GenericArray::from_slice(&key[..(key_size / 2)])),
             ctr: C::new(&key[(key_size / 2)..]),
         }
@@ -87,10 +104,8 @@ impl<C: Ctr, M: Mac<OutputSize = U16>> Siv<C, M> {
         // Compute the synthetic IV for this plaintext
         let iv = s2v(&mut self.mac, associated_data, &plaintext[IV_SIZE..]);
         plaintext[..IV_SIZE].copy_from_slice(iv.as_slice());
-        self.ctr.xor_in_place(
-            &zero_iv_bits(&iv),
-            &mut plaintext[IV_SIZE..],
-        );
+        self.ctr
+            .xor_in_place(&zero_iv_bits(&iv), &mut plaintext[IV_SIZE..]);
     }
 
     /// Decrypt the given ciphertext in-place, authenticating it against the

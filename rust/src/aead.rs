@@ -3,6 +3,9 @@
 //! and authenticity.
 
 use aesni::{Aes128, Aes256};
+use aesni::block_cipher_trait::BlockCipher;
+use aesni::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aesni::block_cipher_trait::generic_array::typenum::{U16, U32, U64};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;
@@ -10,8 +13,6 @@ use ctr::{Aes128Ctr, Aes256Ctr, Ctr};
 #[cfg(feature = "std")]
 use ctr::IV_SIZE;
 use error::Error;
-use generic_array::ArrayLength;
-use generic_array::typenum::{U16, U32, U64};
 use pmac::Pmac;
 use siv::Siv;
 
@@ -96,26 +97,36 @@ pub trait Algorithm {
 }
 
 /// AEAD interface provider for AES-(PMAC-)SIV types
-pub struct SivAlgorithm<C: Ctr, M: Mac<OutputSize = U16>, K: ArrayLength<u8>> {
-    siv: Siv<C, M>,
+pub struct SivAlgorithm<B, C, M, K>
+where
+    B: BlockCipher<BlockSize = U16>,
+    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
+    C: Ctr<B>,
+    M: Mac<OutputSize = U16>,
+    K: ArrayLength<u8>,
+{
+    block_cipher: PhantomData<B>,
+    siv: Siv<B, C, M>,
     key_size: PhantomData<K>,
 }
 
 /// AES-CMAC-SIV in AEAD mode with 256-bit key size (128-bit security)
-pub type Aes128Siv = SivAlgorithm<Aes128Ctr, Cmac<Aes128>, U32>;
+pub type Aes128Siv = SivAlgorithm<Aes128, Aes128Ctr, Cmac<Aes128>, U32>;
 
 /// AES-CMAC-SIV in AEAD mode with 512-bit key size (256-bit security)
-pub type Aes256Siv = SivAlgorithm<Aes256Ctr, Cmac<Aes256>, U64>;
+pub type Aes256Siv = SivAlgorithm<Aes256, Aes256Ctr, Cmac<Aes256>, U64>;
 
 /// AES-PMAC-SIV in AEAD mode with 256-bit key size (128-bit security)
-pub type Aes128PmacSiv = SivAlgorithm<Aes128Ctr, Pmac<Aes128>, U32>;
+pub type Aes128PmacSiv = SivAlgorithm<Aes128, Aes128Ctr, Pmac<Aes128>, U32>;
 
 /// AES-PMAC-SIV in AEAD mode with 512-bit key size (256-bit security)
-pub type Aes256PmacSiv = SivAlgorithm<Aes256Ctr, Pmac<Aes256>, U64>;
+pub type Aes256PmacSiv = SivAlgorithm<Aes256, Aes256Ctr, Pmac<Aes256>, U64>;
 
-impl<C, M, K> Algorithm for SivAlgorithm<C, M, K>
+impl<B, C, M, K> Algorithm for SivAlgorithm<B, C, M, K>
 where
-    C: Ctr,
+    B: BlockCipher<BlockSize = U16>,
+    B::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
+    C: Ctr<B>,
     M: Mac<OutputSize = U16>,
     K: ArrayLength<u8>,
 {
@@ -124,6 +135,7 @@ where
 
     fn new(key: &[u8]) -> Self {
         Self {
+            block_cipher: PhantomData,
             siv: Siv::new(key),
             key_size: PhantomData,
         }

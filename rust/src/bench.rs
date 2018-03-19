@@ -1,7 +1,7 @@
 extern crate ring;
 
 use self::ring::aead;
-use siv::{Aes128Siv, Aes128PmacSiv};
+use siv::{Aes128PmacSiv, Aes128Siv};
 use test::Bencher;
 
 // WARNING: Do not ever actually use a key of all zeroes
@@ -22,7 +22,9 @@ fn bench_aes_siv_128_encrypt_128_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 144];
     b.bytes = 128;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 #[bench]
@@ -33,7 +35,9 @@ fn bench_aes_siv_128_encrypt_1024_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 1040];
     b.bytes = 1024;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 #[bench]
@@ -44,7 +48,9 @@ fn bench_aes_siv_128_encrypt_16384_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 16400];
     b.bytes = 16384;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 //
@@ -59,7 +65,9 @@ fn bench_aes_pmac_siv_128_encrypt_128_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 144];
     b.bytes = 128;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 #[bench]
@@ -70,7 +78,9 @@ fn bench_aes_pmac_siv_128_encrypt_1024_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 1040];
     b.bytes = 1024;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 #[bench]
@@ -81,7 +91,9 @@ fn bench_aes_pmac_siv_128_encrypt_16384_bytes(b: &mut Bencher) {
     let mut buffer = vec![0u8; 16400];
     b.bytes = 16384;
 
-    b.iter(|| { siv.seal_in_place(&[NONCE], &mut buffer); });
+    b.iter(|| {
+        siv.seal_in_place(&[NONCE], &mut buffer);
+    });
 }
 
 //
@@ -90,8 +102,8 @@ fn bench_aes_pmac_siv_128_encrypt_16384_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_gcm_128_encrypt_128_bytes(b: &mut Bencher) {
-    let sealing_key = aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..])
-        .expect("valid key");
+    let sealing_key =
+        aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..]).expect("valid key");
 
     // 128 bytes input + 16 bytes tag
     let mut buffer = [0u8; 144];
@@ -110,8 +122,8 @@ fn bench_aes_gcm_128_encrypt_128_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_gcm_128_encrypt_1024_bytes(b: &mut Bencher) {
-    let sealing_key = aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..])
-        .expect("valid key");
+    let sealing_key =
+        aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..]).expect("valid key");
 
     // 1024 bytes input + 16 bytes tag
     let mut buffer = [0u8; 1040];
@@ -130,8 +142,8 @@ fn bench_aes_gcm_128_encrypt_1024_bytes(b: &mut Bencher) {
 
 #[bench]
 fn bench_aes_gcm_128_encrypt_16384_bytes(b: &mut Bencher) {
-    let sealing_key = aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..])
-        .expect("valid key");
+    let sealing_key =
+        aead::SealingKey::new(&aead::AES_128_GCM, &KEY_128_BIT[..]).expect("valid key");
 
     // 16384 bytes input + 16 bytes tag
     let mut buffer = [0u8; 16400];

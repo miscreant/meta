@@ -1,7 +1,7 @@
+use aesni::block_cipher_trait::generic_array::GenericArray;
+use aesni::block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use crypto_mac::Mac;
 use dbl::Dbl;
-use generic_array::GenericArray;
-use generic_array::typenum::{U16, Unsigned};
 
 /// Maximum number of associated data items
 pub const MAX_ASSOCIATED_DATA: usize = 126;
