@@ -1,12 +1,11 @@
 //! `ffi.rs`: Foreign Function Interface providing C ABI
 
 // This is the only code in Miscreant allowed to be unsafe
-#![allow(unsafe_code)]
-#![allow(non_upper_case_globals)]
+#![allow(unsafe_code, non_upper_case_globals, unknown_lints, too_many_arguments)]
 
 use aead;
+use aesni::block_cipher_trait::generic_array::typenum::Unsigned;
 use core::{ptr, slice};
-use generic_array::typenum::Unsigned;
 
 //
 // AES-128-SIV AEAD
@@ -25,17 +24,7 @@ pub unsafe extern "C" fn crypto_aead_aes128siv_encrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_encrypt::<aead::Aes128Siv>(
-        ct,
-        ctlen_p,
-        msg,
-        msglen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_encrypt::<aead::Aes128Siv>(ct, ctlen_p, msg, msglen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-SIV AEAD: authenticated decryption
@@ -51,17 +40,7 @@ pub unsafe extern "C" fn crypto_aead_aes128siv_decrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_decrypt::<aead::Aes128Siv>(
-        msg,
-        msglen_p,
-        ct,
-        ctlen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_decrypt::<aead::Aes128Siv>(msg, msglen_p, ct, ctlen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-SIV key size
@@ -89,17 +68,7 @@ pub unsafe extern "C" fn crypto_aead_aes256siv_encrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_encrypt::<aead::Aes256Siv>(
-        ct,
-        ctlen_p,
-        msg,
-        msglen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_encrypt::<aead::Aes256Siv>(ct, ctlen_p, msg, msglen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-256-SIV AEAD: authenticated decryption
@@ -115,17 +84,7 @@ pub unsafe extern "C" fn crypto_aead_aes256siv_decrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_decrypt::<aead::Aes256Siv>(
-        msg,
-        msglen_p,
-        ct,
-        ctlen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_decrypt::<aead::Aes256Siv>(msg, msglen_p, ct, ctlen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-SIV key size
@@ -153,17 +112,7 @@ pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_encrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_encrypt::<aead::Aes128PmacSiv>(
-        ct,
-        ctlen_p,
-        msg,
-        msglen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_encrypt::<aead::Aes128PmacSiv>(ct, ctlen_p, msg, msglen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-PMAC-SIV AEAD: authenticated decryption
@@ -179,17 +128,7 @@ pub unsafe extern "C" fn crypto_aead_aes128pmacsiv_decrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_decrypt::<aead::Aes128PmacSiv>(
-        msg,
-        msglen_p,
-        ct,
-        ctlen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_decrypt::<aead::Aes128PmacSiv>(msg, msglen_p, ct, ctlen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-PMAC-SIV key size
@@ -217,17 +156,7 @@ pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_encrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_encrypt::<aead::Aes256PmacSiv>(
-        ct,
-        ctlen_p,
-        msg,
-        msglen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_encrypt::<aead::Aes256PmacSiv>(ct, ctlen_p, msg, msglen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-256-PMAC-SIV AEAD: authenticated decryption
@@ -243,17 +172,7 @@ pub unsafe extern "C" fn crypto_aead_aes256pmacsiv_decrypt(
     adlen: u64,
     key: *const u8,
 ) -> i32 {
-    aead_decrypt::<aead::Aes256PmacSiv>(
-        msg,
-        msglen_p,
-        ct,
-        ctlen,
-        nonce,
-        noncelen,
-        ad,
-        adlen,
-        key,
-    )
+    aead_decrypt::<aead::Aes256PmacSiv>(msg, msglen_p, ct, ctlen, nonce, noncelen, ad, adlen, key)
 }
 
 /// AES-128-SIV key size
@@ -296,7 +215,7 @@ unsafe fn aead_encrypt<A: aead::Algorithm>(
 
     A::new(key_slice).seal_in_place(nonce_slice, ad_slice, ct_slice);
 
-    return 0;
+    0
 }
 
 /// Generic C-like interface to AEAD decryption
@@ -345,5 +264,5 @@ unsafe fn aead_decrypt<A: aead::Algorithm>(
         *c = 0;
     }
 
-    return 0;
+    0
 }

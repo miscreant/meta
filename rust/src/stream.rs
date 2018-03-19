@@ -1,7 +1,7 @@
 //! `stream.rs`: The STREAM online authenticated encryption construction.
 //! See <https://eprint.iacr.org/2015/189.pdf> for definition.
 
-use aead::{self, Aes128Siv, Aes128PmacSiv, Aes256Siv, Aes256PmacSiv};
+use aead::{self, Aes128PmacSiv, Aes128Siv, Aes256PmacSiv, Aes256Siv};
 use byteorder::{BigEndian, ByteOrder};
 use error::Error;
 
@@ -183,9 +183,9 @@ impl NonceEncoder32 {
 
     /// Increment the nonce value in-place
     pub fn increment(&mut self) {
-        self.counter = self.counter.checked_add(1).expect(
-            "STREAM nonce counter overflowed",
-        );
+        self.counter = self.counter
+            .checked_add(1)
+            .expect("STREAM nonce counter overflowed");
 
         BigEndian::write_u32(&mut self.value[NONCE_SIZE..(NONCE_SIZE + 4)], self.counter);
     }

@@ -1,19 +1,50 @@
-//! `internals/ctr.rs`: Counter Mode encryption/decryption (128-bit IV size)
+//! `ctr.rs`: Counter Mode encryption/decryption (128-bit IV size)
+//!
+//! TODO: this whole module is a legacy wrapper around aesni's former internal
+//! AES-CTR implementation. We should really get rid of it and leverage the
+//! `Ctr` types in the `block-modes` crate directly.
 
-use aesni::CtrAes128 as CtrAesNi128;
-use aesni::CtrAes256 as CtrAesNi256;
+use aesni::{Aes128, Aes256, BlockCipher};
+use aesni::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aesni::block_cipher_trait::generic_array::typenum::consts::U16;
+use block_modes::{BlockMode, BlockModeIv, Ctr128};
+use block_modes::block_padding::ZeroPadding;
 use clear_on_drop::clear::Clear;
 
 /// Size of the initial counter value in bytes
 pub const IV_SIZE: usize = 16;
 
+/// Size of an AES block
+const BLOCK_SIZE: usize = 16;
+
 /// Common interface to counter mode encryption/decryption
-pub trait Ctr {
+pub trait Ctr<C>
+where
+    C: BlockCipher<BlockSize = U16>,
+    C::ParBlocks: ArrayLength<GenericArray<u8, U16>>,
+{
     /// Create a new CTR instance
     fn new(key: &[u8]) -> Self;
 
+    /// Hax: Obtain a new cipher instance
+    fn cipher(&self) -> C;
+
     /// XOR the CTR keystream into the given buffer
-    fn xor_in_place(&self, iv: &[u8; IV_SIZE], buf: &mut [u8]);
+    fn xor_in_place(&self, iv: &[u8; IV_SIZE], buf: &mut [u8]) {
+        let cipher = self.cipher();
+        let mut ctr = Ctr128::<C, ZeroPadding>::new(cipher, &GenericArray::clone_from_slice(iv));
+
+        let offset = buf.len() % BLOCK_SIZE;
+        let aligned = buf.len() - offset;
+
+        ctr.encrypt_nopad(&mut buf[..aligned]).unwrap();
+
+        if offset != 0 {
+            let mut block = [0u8; BLOCK_SIZE];
+            ctr.encrypt_nopad(&mut block).unwrap();
+            xor_in_place(&mut buf[aligned..], &block[..offset]);
+        }
+    }
 }
 
 /// AES-CTR with a 128-bit key
@@ -22,7 +53,7 @@ pub struct Aes128Ctr {
     key: [u8; 16],
 }
 
-impl Ctr for Aes128Ctr {
+impl Ctr<Aes128> for Aes128Ctr {
     #[inline]
     fn new(key: &[u8]) -> Self {
         debug_assert_eq!(key.len(), 16, "expected 16-byte key, got {}", key.len());
@@ -33,8 +64,9 @@ impl Ctr for Aes128Ctr {
         Self { key: k }
     }
 
-    fn xor_in_place(&self, iv: &[u8; IV_SIZE], buf: &mut [u8]) {
-        CtrAesNi128::new(&self.key, iv).xor(buf);
+    #[inline]
+    fn cipher(&self) -> Aes128 {
+        Aes128::new_varkey(&self.key).unwrap()
     }
 }
 
@@ -50,7 +82,7 @@ pub struct Aes256Ctr {
     key: [u8; 32],
 }
 
-impl Ctr for Aes256Ctr {
+impl Ctr<Aes256> for Aes256Ctr {
     #[inline]
     fn new(key: &[u8]) -> Self {
         debug_assert_eq!(key.len(), 32, "expected 32-byte key, got {}", key.len());
@@ -61,13 +93,21 @@ impl Ctr for Aes256Ctr {
         Self { key: k }
     }
 
-    fn xor_in_place(&self, iv: &[u8; IV_SIZE], buf: &mut [u8]) {
-        CtrAesNi256::new(&self.key, iv).xor(buf);
+    #[inline]
+    fn cipher(&self) -> Aes256 {
+        Aes256::new_varkey(&self.key).unwrap()
     }
 }
 
 impl Drop for Aes256Ctr {
     fn drop(&mut self) {
         self.key.clear()
+    }
+}
+
+#[inline]
+fn xor_in_place(a: &mut [u8], b: &[u8]) {
+    for i in 0..b.len() {
+        a[i] ^= b[i];
     }
 }

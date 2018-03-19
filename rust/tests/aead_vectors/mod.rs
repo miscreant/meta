@@ -30,53 +30,50 @@ impl AesSivAeadExample {
         let mut file = File::open(&path).expect("valid aes_siv_aead.tjson");
         let mut tjson_string = String::new();
 
-        file.read_to_string(&mut tjson_string).expect(
-            "aes_siv_aead.tjson read successfully",
-        );
+        file.read_to_string(&mut tjson_string)
+            .expect("aes_siv_aead.tjson read successfully");
 
         let tjson: serde_json::Value =
             serde_json::from_str(&tjson_string).expect("aes_siv.tjson parses successfully");
 
-        let examples = &tjson["examples:A<O>"].as_array().expect(
-            "aes_siv_aead.tjson examples array",
-        );
+        let examples = &tjson["examples:A<O>"]
+            .as_array()
+            .expect("aes_siv_aead.tjson examples array");
 
         examples
             .into_iter()
-            .map(|ex| {
-                Self {
-                    alg: ex["alg:s"].as_str().expect("algorithm name").to_owned(),
-                    key: HEXLOWER
-                        .decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
-                        .expect("hex encoded"),
-                    ad: HEXLOWER
-                        .decode(ex["ad:d16"].as_str().expect("encoded example").as_bytes())
-                        .expect("hex encoded"),
-                    nonce: HEXLOWER
-                        .decode(
-                            ex["nonce:d16"]
-                                .as_str()
-                                .expect("encoded example")
-                                .as_bytes(),
-                        )
-                        .expect("hex encoded"),
-                    plaintext: HEXLOWER
-                        .decode(
-                            ex["plaintext:d16"]
-                                .as_str()
-                                .expect("encoded example")
-                                .as_bytes(),
-                        )
-                        .expect("hex encoded"),
-                    ciphertext: HEXLOWER
-                        .decode(
-                            ex["ciphertext:d16"]
-                                .as_str()
-                                .expect("encoded example")
-                                .as_bytes(),
-                        )
-                        .expect("hex encoded"),
-                }
+            .map(|ex| Self {
+                alg: ex["alg:s"].as_str().expect("algorithm name").to_owned(),
+                key: HEXLOWER
+                    .decode(ex["key:d16"].as_str().expect("encoded example").as_bytes())
+                    .expect("hex encoded"),
+                ad: HEXLOWER
+                    .decode(ex["ad:d16"].as_str().expect("encoded example").as_bytes())
+                    .expect("hex encoded"),
+                nonce: HEXLOWER
+                    .decode(
+                        ex["nonce:d16"]
+                            .as_str()
+                            .expect("encoded example")
+                            .as_bytes(),
+                    )
+                    .expect("hex encoded"),
+                plaintext: HEXLOWER
+                    .decode(
+                        ex["plaintext:d16"]
+                            .as_str()
+                            .expect("encoded example")
+                            .as_bytes(),
+                    )
+                    .expect("hex encoded"),
+                ciphertext: HEXLOWER
+                    .decode(
+                        ex["ciphertext:d16"]
+                            .as_str()
+                            .expect("encoded example")
+                            .as_bytes(),
+                    )
+                    .expect("hex encoded"),
             })
             .collect()
     }

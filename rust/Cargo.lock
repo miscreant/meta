@@ -1,6 +1,6 @@
 [[package]]
 name = "aesni"
-version = "0.2.1"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -19,6 +19,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "block-modes"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "block-padding 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "block-padding"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "byteorder"
@@ -142,15 +156,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "miscreant"
 version = "0.3.0"
 dependencies = [
- "aesni 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aesni 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "block-modes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "clear_on_drop 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "cmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "crypto-mac 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "data-encoding 2.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dbl 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "generic-array 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "pmac 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ring 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -263,9 +276,11 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
-"checksum aesni 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "b7ba47de7c13f758a674d0685118346945e8bb0e2e906da6e36e403788a73662"
+"checksum aesni 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "2f167a87ec3aab2a7b5084689d2c6e7342dc0d865de8cd895cf95f820bf98164"
 "checksum bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)" = "aad18937a628ec6abcd26d1489012cc0e18c21798210f491af69ded9b881106d"
 "checksum block-cipher-trait 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d6136d803280ae3532efa36114335255ea94f3d75d735ddedd66b0d7cd30bad3"
+"checksum block-modes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "862511b40f91a3305dc119fdfdc25b561779f78828495e41b71d360b8c9f56df"
+"checksum block-padding 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "75bc2cfa52dc218b47ea000b15e6e5d00ca2f831db31e41592383c14d8802907"
 "checksum byteorder 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "652805b7e73fada9d85e9a6682a4abd490cb52d96aeecc12e33a0de34dfd0d23"
 "checksum cc 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "a9b13a57efd6b30ecd6598ebdb302cca617930b5470647570468a65d12ef9719"
 "checksum clear_on_drop 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "97276801e127ffb46b66ce23f35cc96bd454fa311294bced4bbace7baa8b1d17"

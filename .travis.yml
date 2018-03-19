@@ -32,12 +32,15 @@ matrix:
   - language: rust
     rust: nightly
     before_script: cd rust
+    env:
+      - RUSTFLAGS=-Ctarget-feature=+aes
   - language: rust
     rust: nightly
     before_script: cd rust/tests/ffi
     env:
       - CC=clang
       - LDFLAGS=-rtlib=compiler-rt
+      - RUSTFLAGS=-Ctarget-feature=+aes
     script:
       - make
       - ./ffi_test

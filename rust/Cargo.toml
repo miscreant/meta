@@ -14,14 +14,13 @@ keywords    = ["cryptography", "encryption", "security", "streaming"]
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-aesni = "0.2"
+aesni = "0.3"
 crypto-mac = "0.6"
-block-cipher-trait = "0.5"
+block-modes = "0.1"
 byteorder = { version = "1.2", default-features = false }
 clear_on_drop = { version = "0.2", features = ["nightly"] }
 cmac = "0.1"
 dbl = "0.1"
-generic-array = "0.9"
 pmac = "0.1"
 ring = { version = "0.11", optional = true }
 subtle = { version = "0.3", default-features = false }
