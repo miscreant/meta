@@ -69,16 +69,16 @@ Use this library at your own risk.
 
 ## Requirements
 
-This library is targeting .NET Standard 2.0. It was tested on .NET Framework 4.7.1
+This library is targeting .NET Standard 1.3. It was tested on .NET Framework 4.7.1
 and .NET Core 2.1.2, but it should also work on any of the following platforms:
 
-- .NET Framework 4.6.1
-- .NET Core 2.0
-- Mono 5.4
-- Xamarin.iOS 10.14
-- Xamarin.Mac 3.8
-- Xamarin.Android 7.5
-- Universal Windows Platform 10.0.16299
+- .NET Framework 4.6
+- .NET Core 1.0
+- Mono 4.6
+- Xamarin.iOS 10.0
+- Xamarin.Mac 3.0
+- Xamarin.Android 7.0
+- Universal Windows Platform 10.0
 
 ## Code of Conduct
 
