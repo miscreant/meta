@@ -29,7 +29,7 @@ namespace Miscreant
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AesPmac"/> class with the specified key.
 		/// </summary>
-		/// <param name="key">The secret key for <see cref="AesPmac"> authentication.</param>
+		/// <param name="key">The secret key for <see cref="AesPmac"/> authentication.</param>
 		public AesPmac(byte[] key)
 		{
 			if (key == null)
@@ -165,6 +165,9 @@ namespace Miscreant
 			}
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

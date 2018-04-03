@@ -50,7 +50,7 @@ namespace Miscreant
 		/// Open decrypts the next ciphertext in the STREAM, authenticates the
 		/// decrypted plaintext and the associated data and, if successful, returns
 		/// the result. In case of failed decryption, this method throws
-		/// <see cref="CryptographicException">.
+		/// <see cref="CryptographicException"/>.
 		/// </summary>
 		/// <param name="ciphertext">The ciphertext to decrypt.</param>
 		/// <param name="data">Associated data items to authenticate.</param>
@@ -74,6 +74,9 @@ namespace Miscreant
 			return siv.Open(ciphertext, data, nonce.Next(last));
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

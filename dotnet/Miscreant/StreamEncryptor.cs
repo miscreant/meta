@@ -80,6 +80,9 @@ namespace Miscreant
 			return siv.Seal(plaintext, data, nonce.Next(last));
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

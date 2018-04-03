@@ -105,7 +105,7 @@ namespace Miscreant
 		/// and the given associated data items and, if successful, returns
 		/// the result. For nonce-based encryption, the nonce should be the
 		/// last associated data item. In case of failed decryption, this
-		/// method throws <see cref="CryptographicException">.
+		/// method throws <see cref="CryptographicException"/>.
 		/// </summary>
 		/// <param name="ciphertext">The ciphertext to decrypt.</param>
 		/// <param name="data">Associated data items to authenticate.</param>
@@ -217,6 +217,9 @@ namespace Miscreant
 			iv[iv.Length - 4] &= 0x7f;
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)
