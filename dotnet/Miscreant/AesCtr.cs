@@ -21,8 +21,8 @@ namespace Miscreant
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AesCtr"/> class with the specified key and initialization vector.
 		/// </summary>
-		/// <param name="key">The secret key for <see cref="AesCtr"> encryption.</param>
-		/// <param name="iv">The initialization vector for <see cref="AesCtr"> encryption.</param>
+		/// <param name="key">The secret key for <see cref="AesCtr"/> encryption.</param>
+		/// <param name="iv">The initialization vector for <see cref="AesCtr"/> encryption.</param>
 		public AesCtr(byte[] key, byte[] iv)
 		{
 			if (key == null)
@@ -53,9 +53,9 @@ namespace Miscreant
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AesCtr"/> class with the
 		/// specified key. For internal use only. The initialization vector will
-		/// be set later by the <see cref="AesSiv"> object.
+		/// be set later by the <see cref="AesSiv"/> object.
 		/// </summary>
-		/// <param name="key">The secret key for <see cref="AesCtr"> encryption.</param>
+		/// <param name="key">The secret key for <see cref="AesCtr"/> encryption.</param>
 		internal AesCtr(byte[] key)
 		{
 			aes = Aes.Create();
@@ -112,10 +112,10 @@ namespace Miscreant
 		/// <summary>
 		/// Reset the initialization vector. For internal use only. This
 		/// method is needed in order to avoid creating heavyweight
-		/// <see cref="AesCtr"> object every time we call
-		/// <see cref="AesSiv.Seal"> or <see cref="AesSiv.Open"> methods.
+		/// <see cref="AesCtr"/> object every time we call
+		/// <see cref="AesSiv.Seal"/> or <see cref="AesSiv.Open"/> methods.
 		/// </summary>
-		/// <param name="iv">The initialization vector for <see cref="AesCtr"> encryption.</param>
+		/// <param name="iv">The initialization vector for <see cref="AesCtr"/> encryption.</param>
 		internal void Reset(byte[] iv)
 		{
 			counter = iv;

@@ -25,7 +25,7 @@ namespace Miscreant
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AesCmac"/> class with the specified key.
 		/// </summary>
-		/// <param name="key">The secret key for <see cref="AesCmac"> authentication.</param>
+		/// <param name="key">The secret key for <see cref="AesCmac"/> authentication.</param>
 		public AesCmac(byte[] key)
 		{
 			if (key == null)
@@ -121,6 +121,9 @@ namespace Miscreant
 			return encryptor.TransformFinalBlock(buffer, 0, BlockSize);
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)

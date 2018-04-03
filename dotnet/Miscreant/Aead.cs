@@ -88,7 +88,7 @@ namespace Miscreant
 		/// Open decrypts ciphertext, authenticates the decrypted plaintext
 		/// and the associated data and, if successful, returns the result.
 		/// In case of failed decryption, this method throws
-		/// <see cref="CryptographicException">.
+		/// <see cref="CryptographicException"/>.
 		/// </summary>
 		/// <param name="ciphertext">The ciphertext to decrypt.</param>
 		/// <param name="nonce">The nonce for encryption.</param>
@@ -100,6 +100,9 @@ namespace Miscreant
 			return siv.Open(ciphertext, data, nonce);
 		}
 
+		/// <summary>
+		/// Disposes this object.
+		/// </summary>
 		public void Dispose()
 		{
 			if (!disposed)
