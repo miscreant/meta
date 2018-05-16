@@ -15,7 +15,7 @@ const (
 	R = 0x87
 )
 
-// Block is a 128-byte array used by certain block ciphers (i.e. AES)
+// Block is a 128-bit array used by certain block ciphers (i.e. AES)
 type Block [Size]byte
 
 // Clear zeroes out the contents of the block
