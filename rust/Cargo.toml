@@ -15,6 +15,7 @@ crate-type = ["rlib", "staticlib"]
 
 [dependencies]
 aesni = "0.3"
+aes-soft = { version = "0.1", optional = true }
 crypto-mac = "0.6"
 block-modes = "0.1"
 byteorder = { version = "1.2", default-features = false }
@@ -34,6 +35,7 @@ bench = ["ring"]
 default = ["std"]
 staticlib = []
 std = []
+noni = ["aes-soft"]
 
 [profile.release]
 opt-level = 3

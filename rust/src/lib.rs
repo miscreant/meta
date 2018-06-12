@@ -26,7 +26,11 @@
 #![cfg_attr(feature = "bench", feature(test))]
 #![cfg_attr(feature = "staticlib", feature(lang_items))]
 
+#[cfg(features = "noni")]
+extern crate aes_soft as aesni;
+#[cfg(not(features = "noni"))]
 extern crate aesni;
+
 extern crate block_modes;
 extern crate byteorder;
 extern crate clear_on_drop;
@@ -46,8 +50,8 @@ pub mod aead;
 mod ctr;
 pub mod error;
 pub mod ffi;
-pub mod siv;
 mod s2v;
+pub mod siv;
 pub mod stream;
 
 #[cfg(feature = "bench")]
