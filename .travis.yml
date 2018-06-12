@@ -35,6 +35,7 @@ matrix:
     before_script: cd rust
     env:
       - RUSTFLAGS=-Ctarget-feature=+aes
+      - CARGO_FEATURES=--features="aesni"
   - language: rust
     rust: nightly
     before_script: cd rust
@@ -53,6 +54,7 @@ matrix:
       - CC=clang
       - LDFLAGS=-rtlib=compiler-rt
       - RUSTFLAGS=-Ctarget-feature=+aes
+      - CARGO_FEATURES=--features="aesni"
     script:
       - make
       - ./ffi_test
