@@ -42,6 +42,12 @@ matrix:
       - RUSTFLAGS=-Ctarget-feature=+aes
   - language: rust
     rust: nightly
+    before_script: cd rust
+    env:
+      - RUSTFLAGS=-Ctarget-feature=+aes
+      - CARGO_FEATURES=--features="noni"
+  - language: rust
+    rust: nightly
     before_script: cd rust/tests/ffi
     env:
       - CC=clang
