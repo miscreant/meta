@@ -8,7 +8,6 @@ import { AesPmacExample } from "./support/test_vectors";
 import WebCrypto = require("node-webcrypto-ossl");
 import * as miscreant from "../src/index";
 
-
 @suite class PolyfillAesPmacSpec {
   static vectors: AesPmacExample[];
 
