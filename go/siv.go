@@ -105,7 +105,7 @@ func (c *Cipher) Overhead() int {
 // associated data items, and appends the result to dst, returning the updated
 // slice.
 //
-// The ciphertext and dst may alias exactly or not at all.
+// The plaintext and dst may alias exactly or not at all.
 //
 // For nonce-based encryption, the nonce should be the last associated data item.
 func (c *Cipher) Seal(dst []byte, plaintext []byte, data ...[]byte) ([]byte, error) {
