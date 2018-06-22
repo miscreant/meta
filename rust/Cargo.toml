@@ -14,8 +14,7 @@ keywords    = ["cryptography", "encryption", "security", "streaming"]
 crate-type = ["rlib", "staticlib"]
 
 [dependencies]
-aesni = { version = "0.3", optional = true }
-aes-soft = { version = "0.1", optional = true }
+aes = "0.1.0"
 crypto-mac = "0.6"
 block-modes = "0.1"
 byteorder = { version = "1.2", default-features = false }
@@ -32,9 +31,10 @@ serde_json = "1"
 
 [features]
 bench = ["ring"]
-default = ["std", "aesni"]
+default = ["std"]
 staticlib = []
 std = []
+aes-soft = ["aes/force_soft"]
 
 [profile.release]
 opt-level = 3

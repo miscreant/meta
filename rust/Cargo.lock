@@ -1,4 +1,14 @@
 [[package]]
+name = "aes"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "aes-soft 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aesni 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "block-cipher-trait 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "aes-soft"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -209,8 +219,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "miscreant"
 version = "0.3.0"
 dependencies = [
- "aes-soft 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "aesni 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "block-modes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "byteorder 1.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "clear_on_drop 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -349,6 +358,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
+"checksum aes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0275405eedf13afd19de588add12a3b0d481a50b194eeb826e9dece11e741331"
 "checksum aes-soft 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "91f401742d8c1b0a3d01f53563f98d8ef0beea460b8d37322faf9fb4c7977cfa"
 "checksum aesni 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "bd8a2e6eb45ed8f0b78b24bfa773438ca448ad48caf629b1e4ca5a3f4f2ead96"
 "checksum arrayvec 0.4.7 (registry+https://github.com/rust-lang/crates.io-index)" = "a1e964f9e24d588183fcb43503abda40d288c8657dfc27311516ce2f05675aef"
