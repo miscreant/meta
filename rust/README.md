@@ -48,17 +48,15 @@ For more information, see the [toplevel README.md].
 
 ## Requirements
 
-miscreant.rs presently requires the following:
+miscreant.rs works on stable rust since `1.27`. By default it is built with aesni
+support which requires an x86 instruction set. You can disable this with the `aes-soft`
+feature flag which enables usage on other architectures.
 
-* **x86_64** CPU architecture
-* Rust **nightly** compiler
+The default configuration uses the `core::arch` API for stable access to 
+CPU intrinsics, namely the [Intel AES-NI]  instructions which provide a 
+hardware implementation of AES.
 
-This is because it depends on the `aesni` crate which uses the `core::arch` API
-for (soon-to-be) stable access to CPU intrinsics, namely the [Intel AES-NI] CPU
-instructions which provide a hardware implementation of AES.
-
-To access these features, you will need both a relatively recent
-Rust nightly and to pass the following as RUSTFLAGS:
+To access these features, you will need to pass the following as RUSTFLAGS:
 
 ```
 RUSTFLAGS=-Ctarget-feature=+aes
@@ -71,7 +69,6 @@ You can configure your `~/.cargo/config` to always pass these flags:
 rustflags = ["-Ctarget-feature=+aes"]
 ```
 
-[aesni]: https://github.com/RustCrypto/block-ciphers
 [Intel AES-NI]: https://software.intel.com/en-us/blogs/2012/01/11/aes-ni-in-laymens-terms
 
 ## Help and Discussion
