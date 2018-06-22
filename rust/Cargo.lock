@@ -4,7 +4,7 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "aes-soft 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "aesni 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aesni 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "block-cipher-trait 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -20,7 +20,7 @@ dependencies = [
 
 [[package]]
 name = "aesni"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "block-cipher-trait 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -360,7 +360,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum aes 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "0275405eedf13afd19de588add12a3b0d481a50b194eeb826e9dece11e741331"
 "checksum aes-soft 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "91f401742d8c1b0a3d01f53563f98d8ef0beea460b8d37322faf9fb4c7977cfa"
-"checksum aesni 0.3.4 (registry+https://github.com/rust-lang/crates.io-index)" = "bd8a2e6eb45ed8f0b78b24bfa773438ca448ad48caf629b1e4ca5a3f4f2ead96"
+"checksum aesni 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "b1ca074691b47c3dc585e05e45f6d069c75d0209069ca09b1c49ea37720e7b5f"
 "checksum arrayvec 0.4.7 (registry+https://github.com/rust-lang/crates.io-index)" = "a1e964f9e24d588183fcb43503abda40d288c8657dfc27311516ce2f05675aef"
 "checksum bitflags 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "d0c54bb8f454c567f21197eefcdbf5679d0bd99f2ddbe52e84c77061952e6789"
 "checksum block-cipher-trait 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "bd4e45002699a6d10345f5fee7a99545e5bcf3be02d631d7fff9217f8d3cebbd"
