@@ -18,7 +18,7 @@ aesni = "0.3"
 crypto-mac = "0.6"
 block-modes = "0.1"
 byteorder = { version = "1.2", default-features = false }
-clear_on_drop = { version = "0.2", features = ["nightly"] }
+clear_on_drop = { version = "0.2" }
 cmac = "0.1"
 dbl = "0.1"
 pmac = "0.1"

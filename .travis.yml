@@ -30,7 +30,11 @@ matrix:
   - language: ruby
     rvm: 2.2
     before_script: cd ruby
-  # TODO: support stable Rust
+  - language: rust
+    rust: stable
+    before_script: cd rust
+    env:
+      - RUSTFLAGS=-Ctarget-feature=+aes
   - language: rust
     rust: nightly
     before_script: cd rust
