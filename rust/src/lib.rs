@@ -3,8 +3,14 @@
 //!
 //! # Build Notes
 //!
-//! This crate depends on the `aesni` crate, which uses the new `core::arch`
-//! API to invoke CPU instructions for performing AES in hardware.
+//! miscreant.rs works on stable rust since `1.27`. By default it is built with aesni
+//! support which requires an x86 instruction set. You can disable this with 
+//! the `aes-soft` feature flag which enables usage on other architectures.
+//! 
+//! The default configuration uses the `core::arch` API for stable access to 
+//! CPU intrinsics, namely the [Intel AES-NI]  instructions which provide a 
+//! hardware implementation of AES.
+//! 
 //!
 //! To access these features, you will need both a relatively recent
 //! Rust nightly and to pass the following as RUSTFLAGS:
