@@ -2,10 +2,10 @@
 //! Symmetric encryption which ensures message confidentiality, integrity,
 //! and authenticity.
 
-use aesni::{Aes128, Aes256};
-use aesni::block_cipher_trait::BlockCipher;
-use aesni::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
-use aesni::block_cipher_trait::generic_array::typenum::{U16, U32, U64};
+use aes::{Aes128, Aes256};
+use aes::block_cipher_trait::BlockCipher;
+use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aes::block_cipher_trait::generic_array::typenum::{U16, U32, U64};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;

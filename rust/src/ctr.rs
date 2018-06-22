@@ -1,12 +1,12 @@
 //! `ctr.rs`: Counter Mode encryption/decryption (128-bit IV size)
 //!
-//! TODO: this whole module is a legacy wrapper around aesni's former internal
+//! TODO: this whole module is a legacy wrapper around aes's former internal
 //! AES-CTR implementation. We should really get rid of it and leverage the
 //! `Ctr` types in the `block-modes` crate directly.
 
-use aesni::{Aes128, Aes256, BlockCipher};
-use aesni::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
-use aesni::block_cipher_trait::generic_array::typenum::consts::U16;
+use aes::{Aes128, Aes256, BlockCipher};
+use aes::block_cipher_trait::generic_array::{ArrayLength, GenericArray};
+use aes::block_cipher_trait::generic_array::typenum::consts::U16;
 use block_modes::{BlockMode, BlockModeIv, Ctr128};
 use block_modes::block_padding::ZeroPadding;
 use clear_on_drop::clear::Clear;

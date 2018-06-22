@@ -1,10 +1,10 @@
 //! `siv.rs`: The SIV misuse resistant block cipher mode of operation
 
-use aesni::{Aes128, Aes256};
-use aesni::block_cipher_trait::BlockCipher;
-use aesni::block_cipher_trait::generic_array::ArrayLength;
-use aesni::block_cipher_trait::generic_array::GenericArray;
-use aesni::block_cipher_trait::generic_array::typenum::{U16, Unsigned};
+use aes::{Aes128, Aes256};
+use aes::block_cipher_trait::BlockCipher;
+use aes::block_cipher_trait::generic_array::ArrayLength;
+use aes::block_cipher_trait::generic_array::GenericArray;
+use aes::block_cipher_trait::generic_array::typenum::{U16, Unsigned};
 use cmac::Cmac;
 use core::marker::PhantomData;
 use crypto_mac::Mac;

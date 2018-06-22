@@ -35,6 +35,18 @@ matrix:
     before_script: cd rust
     env:
       - RUSTFLAGS=-Ctarget-feature=+aes
+      - CARGO_FEATURES=--features="aes-soft"
+  - language: rust
+    rust: stable
+    before_script: cd rust
+    env:
+      - RUSTFLAGS=-Ctarget-feature=+aes
+  - language: rust
+    rust: nightly
+    before_script: cd rust
+    env:
+      - RUSTFLAGS=-Ctarget-feature=+aes
+      - CARGO_FEATURES=--features="aes-soft"
   - language: rust
     rust: nightly
     before_script: cd rust
@@ -50,6 +62,7 @@ matrix:
     script:
       - make
       - ./ffi_test
+
   - language: csharp
     mono: none
     dotnet: 2.0.0

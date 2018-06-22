@@ -4,7 +4,7 @@
 #![allow(unsafe_code, non_upper_case_globals, unknown_lints, too_many_arguments)]
 
 use aead;
-use aesni::block_cipher_trait::generic_array::typenum::Unsigned;
+use aes::block_cipher_trait::generic_array::typenum::Unsigned;
 use core::{ptr, slice};
 
 //

@@ -2,4 +2,4 @@
 
 set -e
 
-cargo test
+cargo test $CARGO_FEATURES
