@@ -18,7 +18,7 @@ aes = "0.1.0"
 crypto-mac = "0.6"
 block-modes = "0.1"
 byteorder = { version = "1.2", default-features = false }
-clear_on_drop = { version = "0.2" }
+clear_on_drop = "0.2"
 cmac = "0.1"
 dbl = "0.1"
 pmac = "0.1"
@@ -30,11 +30,12 @@ data-encoding = "2.0"
 serde_json = "1"
 
 [features]
+aes-soft = ["aes/force_soft"]
 bench = ["ring"]
 default = ["std"]
+nightly = ["clear_on_drop/nightly"]
 staticlib = []
 std = []
-aes-soft = ["aes/force_soft"]
 
 [profile.release]
 opt-level = 3

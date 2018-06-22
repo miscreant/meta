@@ -9,6 +9,10 @@ matrix:
   allow_failures:
   - rust: nightly
   include:
+  - language: csharp
+    mono: none
+    dotnet: 2.0.0
+    before_script: cd dotnet
   - language: go
     go: 1.9
     before_script: cd go
@@ -34,8 +38,8 @@ matrix:
     rust: stable
     before_script: cd rust
     env:
-      - RUSTFLAGS=-Ctarget-feature=+aes
       - CARGO_FEATURES=--features="aes-soft"
+      - RUSTFLAGS=-Ctarget-feature=+aes
   - language: rust
     rust: stable
     before_script: cd rust
@@ -45,12 +49,13 @@ matrix:
     rust: nightly
     before_script: cd rust
     env:
+      - CARGO_FEATURES=--features="aes-soft,nightly"
       - RUSTFLAGS=-Ctarget-feature=+aes
-      - CARGO_FEATURES=--features="aes-soft"
   - language: rust
     rust: nightly
     before_script: cd rust
     env:
+      - CARGO_FEATURES=--features="aes-soft,nightly"
       - RUSTFLAGS=-Ctarget-feature=+aes
   - language: rust
     rust: nightly
@@ -62,8 +67,3 @@ matrix:
     script:
       - make
       - ./ffi_test
-
-  - language: csharp
-    mono: none
-    dotnet: 2.0.0
-    before_script: cd dotnet
