@@ -56,3 +56,4 @@ codegen-units = 1
 
 [package.metadata.docs.rs]
 all-features = true
+rustc-args = ["-Ctarget-feature=+aes"]
