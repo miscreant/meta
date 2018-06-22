@@ -35,7 +35,6 @@ bench = ["ring"]
 default = ["std", "aesni"]
 staticlib = []
 std = []
-noni = ["aes-soft"]
 
 [profile.release]
 opt-level = 3

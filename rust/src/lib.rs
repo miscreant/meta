@@ -26,10 +26,13 @@
 #![cfg_attr(feature = "bench", feature(test))]
 #![cfg_attr(feature = "staticlib", feature(lang_items))]
 
-#[cfg(features = "noni")]
-extern crate aes_soft as aesni;
-#[cfg(not(features = "noni"))]
-extern crate aesni;
+#[cfg(all(features = "aes-soft", features = "aesni"))]
+compile_errror!("aesni and aes-soft features are mutually exclusive");
+
+#[cfg(features = "aes-soft")]
+extern crate aes_soft as aes;
+#[cfg(features = "aesni")]
+extern crate aesni as aes;
 
 extern crate block_modes;
 extern crate byteorder;
