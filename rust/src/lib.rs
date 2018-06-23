@@ -31,7 +31,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(feature = "bench", feature(test))]
 #![cfg_attr(feature = "staticlib", feature(lang_items))]
-#![doc(html_root_url = "https://docs.rs/miscreant/0.4.0-beta1")]
+#![doc(html_root_url = "https://docs.rs/miscreant/0.4.0-beta2")]
 
 extern crate aes;
 extern crate block_modes;
