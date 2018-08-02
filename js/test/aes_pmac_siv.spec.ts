@@ -27,7 +27,7 @@ chai.use(chaiAsPromised);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
-      const unsealed = await siv.open(sealed, v.ad, );
+      const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clear()).not.to.throw();
@@ -42,7 +42,7 @@ chai.use(chaiAsPromised);
       const sealed = await siv.seal(v.plaintext, v.ad);
       expect(sealed).to.eql(v.ciphertext);
 
-      const unsealed = await siv.open(sealed, v.ad, );
+      const unsealed = await siv.open(sealed, v.ad);
       expect(unsealed).not.to.be.null;
       expect(unsealed!).to.eql(v.plaintext);
       expect(() => siv.clear()).not.to.throw();
