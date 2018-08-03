@@ -46,6 +46,13 @@
             ],
             "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
             "ciphertext:d16":"85b8167310038db7dc4692c0281ca35868181b2762f3c24f2efa5fb80cb143516ce6c434b898a6fd8eb98a418842f51f66fc67de43ac185a66dd72475bbb08"
+        },
+        {
+            "name:s":"Empty Authenticated Data And Block-Size Plaintext Example",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:A<d16>":[],
+            "plaintext:d16":"00112233445566778899aabbccddeeff",
+            "ciphertext:d16":"f304f912863e303d5b540e5057c7010c942ffaf45b0e5ca5fb9a56a5263bb065"
         }
     ]
 }

@@ -189,7 +189,7 @@ namespace Miscreant
 				Utils.Xor(mac.HashFinal(), v, BlockSize);
 			}
 
-			if (message.Length > BlockSize)
+			if (message.Length >= BlockSize)
 			{
 				int n = message.Length - BlockSize;
 
