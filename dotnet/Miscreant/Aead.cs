@@ -46,7 +46,7 @@ namespace Miscreant
 		/// Generates a random 64-byte encryption key.
 		/// </summary>
 		/// <returns>Generated key.</returns>
-		public byte[] GenerateKey512()
+		public static byte[] GenerateKey512()
 		{
 			return Utils.GetRandomBytes(Constants.AesSiv512KeySize);
 		}
