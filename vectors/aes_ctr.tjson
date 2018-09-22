@@ -1,0 +1,16 @@
+{
+    "examples:A<O>":[
+        {
+            "key:d16":"2b7e151628aed2a6abf7158809cf4f3c",
+            "iv:d16":"f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "plaintext:d16":"6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51",
+            "ciphertext:d16":"874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff"
+        },
+        {
+            "key:d16":"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+            "iv:d16":"202122232425262728292a2b2c2d2e2f",
+            "plaintext:d16":"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122",
+            "ciphertext:d16":"61a7916d4a8a161b14c8f398b94faedba3a3e29ad93f55451ed31fe92d3abf841c7c81"
+        }
+    ]
+}

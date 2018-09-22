@@ -1,0 +1,58 @@
+{
+    "examples:A<O>":[
+        {
+            "name:s":"Deterministic Authenticated Encryption Example",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:A<d16>":[
+                "101112131415161718191a1b1c1d1e1f2021222324252627"
+            ],
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"85632d07c6e8f37f950acd320a2ecc9340c02b9690c4dc04daef7f6afe5c"
+        },
+        {
+            "name:s":"Nonce-Based Authenticated Encryption Example",
+            "key:d16":"7f7e7d7c7b7a79787776757473727170404142434445464748494a4b4c4d4e4f",
+            "ad:A<d16>":[
+                "00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddccbbaa99887766554433221100",
+                "102030405060708090a0",
+                "09f911029d74e35bd84156c5635688c0"
+            ],
+            "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
+            "ciphertext:d16":"7bdb6e3b432667eb06f4d14bff2fbd0fcb900f2fddbe404326601965c889bf17dba77ceb094fa663b7a3f748ba8af829ea64ad544a272e9c485b62a3fd5c0d"
+        },
+        {
+            "name:s":"Empty Authenticated Data And Plaintext Example",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:A<d16>":[],
+            "plaintext:d16":"",
+            "ciphertext:d16":"f2007a5beb2b8900c588a7adf599f172"
+        },
+        {
+            "name:s":"NIST SIV test vectors (256-bit subkeys #1)",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f06f6e6d6c6b6a69686766656463626160f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f",
+            "ad:A<d16>":[
+                "101112131415161718191a1b1c1d1e1f2021222324252627"
+            ],
+            "plaintext:d16":"112233445566778899aabbccddee",
+            "ciphertext:d16":"f125274c598065cfc26b0e71575029088b035217e380cac8919ee800c126"
+        },
+        {
+            "name:s":"NIST SIV test vectors (256-bit subkeys #2)",
+            "key:d16":"7f7e7d7c7b7a797877767574737271706f6e6d6c6b6a69686766656463626160404142434445464748494a4b4c4d4e4f505152535455565758595a5b5b5d5e5f",
+            "ad:A<d16>":[
+                "00112233445566778899aabbccddeeffdeaddadadeaddadaffeeddccbbaa99887766554433221100",
+                "102030405060708090a0",
+                "09f911029d74e35bd84156c5635688c0"
+            ],
+            "plaintext:d16":"7468697320697320736f6d6520706c61696e7465787420746f20656e6372797074207573696e67205349562d414553",
+            "ciphertext:d16":"85b8167310038db7dc4692c0281ca35868181b2762f3c24f2efa5fb80cb143516ce6c434b898a6fd8eb98a418842f51f66fc67de43ac185a66dd72475bbb08"
+        },
+        {
+            "name:s":"Empty Authenticated Data And Block-Size Plaintext Example",
+            "key:d16":"fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+            "ad:A<d16>":[],
+            "plaintext:d16":"00112233445566778899aabbccddeeff",
+            "ciphertext:d16":"f304f912863e303d5b540e5057c7010c942ffaf45b0e5ca5fb9a56a5263bb065"
+        }
+    ]
+}

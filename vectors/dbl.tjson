@@ -1,0 +1,32 @@
+{
+  "examples:A<O>":[
+    {
+      "input:d16":"00000000000000000000000000000000",
+      "output:d16":"00000000000000000000000000000000"
+    },
+    {
+      "input:d16":"00000000000000000000000000000001",
+      "output:d16":"00000000000000000000000000000002"
+    },
+    {
+      "input:d16":"ffffffffffffffffffffffffffffffff",
+      "output:d16":"ffffffffffffffffffffffffffffff79"
+    },
+    {
+      "input:d16":"52a2d82a687330bd45d4edb9f3b06527",
+      "output:d16":"a545b054d0e6617a8ba9db73e760ca4e"
+    },
+    {
+      "input:d16":"6e56610687fe93be1ef69690067b4b7b",
+      "output:d16":"dcacc20d0ffd277c3ded2d200cf696f6"
+    },
+    {
+      "input:d16":"d2535bfca5898b81124613fdf94e3d7b",
+      "output:d16":"a4a6b7f94b131702248c27fbf29c7a71"
+    },
+    {
+      "input:d16":"e84b7dda057e100628860a3cdac155c0",
+      "output:d16":"d096fbb40afc200c510c1479b582ab07"
+    }
+  ]
+}
