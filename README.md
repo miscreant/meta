@@ -1,14 +1,8 @@
 # <img alt="miscreant." src="https://miscreant.io/images/miscreant.svg">
 
-[![Travis CI Status][build-image]][build-link]
-[![Appveyor CI Status][appveyor-image]][appveyor-link]
 [![MIT Licensed][license-image]][license-link]
 [![Gitter Chat][gitter-image]][gitter-link]
 
-[build-image]: https://secure.travis-ci.org/miscreant/miscreant.svg?branch=master
-[build-link]: https://travis-ci.org/miscreant/miscreant
-[appveyor-image]: https://ci.appveyor.com/api/projects/status/xi4cc74iyqsjke2l?svg=true
-[appveyor-link]: https://ci.appveyor.com/project/tarcieri/miscreant
 [license-image]: https://img.shields.io/badge/license-MIT-blue.svg
 [license-link]: https://github.com/miscreant/miscreant/blob/master/LICENSE.txt
 [gitter-image]: https://badges.gitter.im/badge.svg
@@ -79,8 +73,8 @@ The following algorithms are provided by **Miscreant**:
 
 | Name              | [Authenticated] | [Misuse Resistance] | x86 Speed      | IoT Speed† | Standardization   |
 |-------------------|-----------------|---------------------|----------------|------------|-------------------|
-| AES-GCM-SIV       | 💚              | 💚                  | 💚             | 💛         | Forthcoming‡      |
-| AES-GCM           | 💚              | 💔                  | 💚             | 💛         | [NIST SP 800-38D] |
+| AES-GCM-SIV       | 💚              | 💚                  | 💖             | 💔         | Forthcoming‡      |
+| AES-GCM           | 💚              | 💔                  | 💖             | 💔         | [NIST SP 800-38D] |
 | AES-CCM           | 💚              | 💔                  | 💛             | 💚         | [NIST SP 800-38C] |
 | AES-CBC           | 💔              | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
 | AES-CTR           | 💔              | 💔                  | 💚             | 💚         | [NIST SP 800-38A] |
